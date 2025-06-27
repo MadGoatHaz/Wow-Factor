@@ -1,0 +1,19 @@
+{
+    "timestamp": "2025-06-27 14:33:02",
+    "duration_seconds": 2.0001,
+    "total_operations": 1605706,
+    "ops_per_second": 802794.81,
+    "breakdown": {
+        "data_points_added": 267615,
+        "data_points_edited": 268067,
+        "data_points_deleted": 268365,
+        "shapes_added": 267615,
+        "stats_calculated": 265993,
+        "plots_generated": 268051
+    },
+    "system": {
+        "platform": "Windows 11",
+        "processor_model": "Snapdragon (TM) 8cx Gen 3 @ 3.0 GHz",
+        "processor_frequency": "2438.00GHz"
+    }
+}

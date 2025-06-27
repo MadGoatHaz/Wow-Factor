@@ -1,0 +1,19 @@
+{
+    "timestamp": "2025-06-27 13:53:40",
+    "duration_seconds": 2.0001,
+    "total_operations": 4383337,
+    "ops_per_second": 2191530.3,
+    "breakdown": {
+        "data_points_added": 730901,
+        "data_points_edited": 731401,
+        "data_points_deleted": 730765,
+        "shapes_added": 730338,
+        "stats_calculated": 729916,
+        "plots_generated": 730016
+    },
+    "system": {
+        "platform": "Windows 11",
+        "processor_model": "AMD Ryzen 9 5950X 16-Core Processor",
+        "processor_frequency": "3.40GHz (Max: 3.40GHz)"
+    }
+}

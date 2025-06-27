@@ -1,0 +1,19 @@
+{
+    "timestamp": "2025-06-27 14:25:41",
+    "duration_seconds": 2.0,
+    "total_operations": 649247,
+    "ops_per_second": 324616.5,
+    "breakdown": {
+        "data_points_added": 107837,
+        "data_points_edited": 108226,
+        "data_points_deleted": 108508,
+        "shapes_added": 108257,
+        "stats_calculated": 108434,
+        "plots_generated": 107985
+    },
+    "system": {
+        "platform": "Linux 6.15.2-061502-generic",
+        "processor_model": "AMD Ryzen 7 5800U",
+        "processor_frequency": "2055.28GHz"
+    }
+}

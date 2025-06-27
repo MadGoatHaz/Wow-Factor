@@ -1,0 +1,19 @@
+{
+    "timestamp": "2025-06-27 14:06:02",
+    "duration_seconds": 2.0002,
+    "total_operations": 4718863,
+    "ops_per_second": 2359209.32,
+    "breakdown": {
+        "data_points_added": 785908,
+        "data_points_edited": 786918,
+        "data_points_deleted": 786011,
+        "shapes_added": 786746,
+        "stats_calculated": 786571,
+        "plots_generated": 786709
+    },
+    "system": {
+        "platform": "Windows 11",
+        "processor_model": "AMD Ryzen 5 5500",
+        "processor_frequency": "4.60GHz (Max: 4.60GHz)"
+    }
+}

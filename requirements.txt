@@ -1,0 +1,5 @@
+colorama
+prettytable
+prompt_toolkit
+psutil
+py-cpuinfo

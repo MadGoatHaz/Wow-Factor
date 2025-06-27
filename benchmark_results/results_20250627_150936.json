@@ -1,0 +1,12 @@
+{
+    "timestamp": "2025-06-27 15:09:36",
+    "duration_seconds": 2.0,
+    "total_operations": 1448792,
+    "ops_per_second": 724381.75,
+    "breakdown": {},
+    "system": {
+        "platform": "Lin 6.15.2",
+        "processor_model": "AMD Ryzen 7 5800U",
+        "processor_frequency": "2419.60GHz"
+    }
+}

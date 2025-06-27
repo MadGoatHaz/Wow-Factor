@@ -1,0 +1,12 @@
+{
+    "timestamp": "2025-06-27 15:04:08",
+    "duration_seconds": 15.0001,
+    "total_operations": 106815726,
+    "ops_per_second": 7121007.77,
+    "breakdown": {},
+    "system": {
+        "platform": "Win 11 (26200)",
+        "processor_model": "AMD Ryzen 9 5950X",
+        "processor_frequency": "3401.00GHz"
+    }
+}

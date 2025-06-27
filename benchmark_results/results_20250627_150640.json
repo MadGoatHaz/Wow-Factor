@@ -1,0 +1,12 @@
+{
+    "timestamp": "2025-06-27 15:06:40",
+    "duration_seconds": 2.0012,
+    "total_operations": 16211588,
+    "ops_per_second": 8100985.72,
+    "breakdown": {},
+    "system": {
+        "platform": "Win 11 (26200)",
+        "processor_model": "AMD Ryzen 5 5500",
+        "processor_frequency": "4601.00GHz"
+    }
+}
