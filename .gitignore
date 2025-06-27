@@ -1,0 +1,14 @@
+# Benchmark results
+benchmark_results/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/ 
