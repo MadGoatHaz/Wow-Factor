@@ -1,5 +1,5 @@
-colorama
-prettytable
-prompt_toolkit
+textual
 psutil
 py-cpuinfo
+textual-plotext
+plotext
