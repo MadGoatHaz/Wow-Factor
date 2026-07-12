@@ -98,14 +98,14 @@ class ViewBestScoresScreen(Screen):
             on_error=self.on_data_load_error,
         )
 
-    def on_data_load_complete(self, message: DataLoadComplete) -> None:
+    def on_data_load_complete(self, data: list) -> None:
         """Handle successful data loading."""
         # Dismiss the loading overlay
         self.navigation.go_back()
 
-        self._update_table_with_scores(message.data)
+        self._update_table_with_scores(data)
 
-    def on_data_load_error(self, message: DataLoadError) -> None:
+    def on_data_load_error(self, error) -> None:
         """Handle data loading error."""
         self._show_error_message()
 
