@@ -1,9 +1,8 @@
-"""
-WowFactor TUI Theme Stylesheet
-
-Centralized CSS for applying theme-based styling to all UI components.
-Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
-"""
+/* ============================================
+   WowFactor TUI Theme Stylesheet
+   Centralized CSS for applying theme-based styling
+   to all UI components.
+   ============================================ */
 
 /* ============================================
    BASE SCREEN CONTAINERS
@@ -11,8 +10,8 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
 
 .screen-container {
     height: 100%;
-    padding: $spacing-lg;
-    background-color: $bg-darker;
+    padding: 8;
+    background: #171717;
 }
 
 /* ============================================
@@ -20,10 +19,9 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
    ============================================ */
 
 .title {
-    font-weight: bold;
-    font-size: $text-xl;
-    margin-bottom: $spacing-md;
-    color: $text-primary;
+    text-style: bold;
+    margin-bottom: 4;
+    color: #f5f5f5;
 }
 
 /* ============================================
@@ -33,10 +31,9 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
 .search-input,
 .cpu-input {
     width: 100%;
-    padding: $spacing-sm $spacing-md;
-    border-color: $border-default;
-    border-width: 1;
-    margin-bottom: $spacing-md;
+    padding: 2 4;
+    border: heavy #52525b;
+    margin-bottom: 4;
 }
 
 /* ============================================
@@ -45,17 +42,16 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
 
 .result-table {
     height: 1fr;
-    margin-top: $spacing-md;
-    margin-bottom: $spacing-lg;
-    border-color: $border-subtle;
-    border-width: 1;
+    margin-top: 4;
+    margin-bottom: 8;
+    border: heavy #3f3f46;
 }
 
 /* Table header styling */
 .result-table > DataTableHeaderRow {
-    background-color: $bg-light;
-    color: $text-primary;
-    font-weight: bold;
+    background: #2d2d2d;
+    color: #f5f5f5;
+    text-style: bold;
 }
 
 /* ============================================
@@ -63,17 +59,15 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
    ============================================ */
 
 .pagination-container {
-    margin-top: $spacing-md;
-    padding: $spacing-sm $spacing-md;
-    border-color: $border-subtle;
-    border-width: 1;
-    background-color: $bg-light;
+    margin-top: 4;
+    padding: 2 4;
+    border: heavy #3f3f46;
+    background: #2d2d2d;
 }
 
 .pagination-info {
-    font-size: $text-sm;
-    color: $text-secondary;
-    margin-bottom: $spacing-sm;
+    color: #a1a1aa;
+    margin-bottom: 1;
 }
 
 .pagination-buttons {
@@ -85,8 +79,7 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
    ============================================ */
 
 .action-buttons {
-    margin-top: $spacing-md;
-    gap: $spacing-sm;
+    margin-top: 4;
 }
 
 /* ============================================
@@ -95,7 +88,7 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
 
 .cpu-selection {
     width: 100%;
-    margin-bottom: $spacing-md;
+    margin-bottom: 4;
 }
 
 /* ============================================
@@ -103,84 +96,20 @@ Uses design tokens from ui.theme.ColorPalette and ui.theme.SpacingScale.
    ============================================ */
 
 #loading_display {
-    font-size: $text-sm;
-    color: $text-secondary;
-    margin-bottom: $spacing-md;
+    color: #a1a1aa;
+    margin-bottom: 8;
 }
-
-/* ============================================
-   COLOR PALETTE TOKENS (for reference)
-   ============================================ */
-
-/* Primary Colors */
-$primary-cyan: #06b6d4;
-$primary-blue: #3b82f6;
-$primary-purple: #8b5cf6;
-
-/* Accent Colors */
-$accent-magenta: #d946ef;
-$accent-pink: #ec4899;
-$accent-orange: #f97316;
-$accent-yellow: #eab308;
-
-/* Semantic Colors */
-$success-green: #22c55e;
-$warning-amber: #f59e0b;
-$error-red: #ef4444;
-$info-blue: #3b82f6;
-
-/* Background Colors */
-$bg-dark: #1e1e1e;
-$bg-darker: #171717;
-$bg-light: #2d2d2d;
-$bg-hover: #3a3a3a;
-
-/* Text Colors */
-$text-primary: #f5f5f5;
-$text-secondary: #a1a1aa;
-$text-muted: #71717a;
-$text-inverse: #09090b;
-
-/* Border/Divider Colors */
-$border-subtle: #3f3f46;
-$border-default: #52525b;
-$border-strong: #71717a;
-
-/* ============================================
-   SPACING SCALE TOKENS (for reference)
-   ============================================ */
-
-$spacing-xs: 1;
-$spacing-sm: 2;
-$spacing-md: 4;
-$spacing-lg: 8;
-$spacing-xl: 16;
-$spacing-2xl: 32;
-$spacing-4xl: 64;
-
-/* ============================================
-   TYPOGRAPHY TOKENS (for reference)
-   ============================================ */
-
-$text-xs: 10;
-$text-sm: 12;
-$text-md: 14;
-$text-lg: 16;
-$text-xl: 20;
-$text-2xl: 24;
-$text-3xl: 30;
-$text-4xl: 36;
 
 /* ============================================
    RANKING STYLES (Gold/Silver/Bronze)
    ============================================ */
 
 .gold {
-    color: $accent-yellow;
+    color: #eab308;
 }
 
 .silver {
-    color: $text-secondary;
+    color: #a1a1aa;
 }
 
 .bronze {
