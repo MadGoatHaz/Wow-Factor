@@ -13,16 +13,10 @@ from textual.widgets import (
 from textual.containers import Container, Horizontal
 from textual.binding import Binding
 from textual.message import Message
-from textual.worker import Worker, get_current_worker
 from textual.events import Key
 import datetime
 import logging
 
-# Import custom message classes and shared utilities
-from ...messages import (
-    DataLoadComplete,
-    DataLoadError,
-)
 from ui.shared import RETRO_GRADIENT_COLORS, colorize_text_gradient, WowFactorHeader
 
 # Import layout optimization utilities for efficient column width calculation
@@ -87,27 +81,14 @@ class ViewBestScoresScreen(Screen):
         # Show loading overlay while fetching data
         self.navigation.navigate_to("loading_overlay", message="Loading best scores...")
 
-        worker = self.load_best_scores_worker()
-        worker.start()
-
-    def load_best_scores_worker(self) -> Worker:
-        """Create a worker to load best scores in the background."""
-        return self.run_worker(
-            get_best_score_per_machine,
-            on_complete=self.on_data_load_complete,
-            on_error=self.on_data_load_error,
-        )
-
-    def on_data_load_complete(self, data: list) -> None:
-        """Handle successful data loading."""
-        # Dismiss the loading overlay
-        self.navigation.go_back()
-
-        self._update_table_with_scores(data)
-
-    def on_data_load_error(self, error) -> None:
-        """Handle data loading error."""
-        self._show_error_message()
+        try:
+            scores = get_best_score_per_machine()
+            # Dismiss the loading overlay
+            self.navigation.go_back()
+            self._update_table_with_scores(scores)
+        except Exception as e:
+            self.navigation.go_back()
+            self._show_error_message()
 
     def _update_table_with_scores(self, scores: list) -> None:
         """Update the table with loaded scores and apply ranking styles.

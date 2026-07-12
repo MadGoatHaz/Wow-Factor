@@ -12,11 +12,9 @@ from textual.widgets import (
 )
 from textual.containers import Container, Horizontal
 from textual.binding import Binding
-from textual.worker import Worker, get_current_worker
 from textual.events import Key
 import logging
 
-# Import custom message classes and shared utilities
 from ui.shared import RETRO_GRADIENT_COLORS, colorize_text_gradient, WowFactorHeader
 
 # Import core functions for data access and formatting
@@ -79,30 +77,18 @@ class CompareCPUScreen(Screen):
 
     def load_available_cpus(self) -> None:
         """Load list of available CPU models from benchmark data."""
-        worker = self.run_worker(
-            _get_all_valid_scores,
-            on_complete=self._on_cpus_loaded,
-            on_error=lambda _: self._show_error_message(),
-        )
-        worker.start()
-
-    def _on_cpus_loaded(self, scores: list) -> None:
-        """Handle completion of CPU loading.
-
-        Extracts unique CPU model names and sorts them alphabetically
-        for dropdown population.
-
-        Args:
-            scores: List of benchmark result dictionaries.
-        """
-        # Extract unique CPU models
-        cpu_models = set()
-        for score in scores:
-            model = score.get("processor_model", "")
-            if model:
-                cpu_models.add(model)
-        self.available_cpus = sorted(cpu_models)
-        self.query_one("#loading_display", Static).display = False
+        try:
+            scores = _get_all_valid_scores()
+            # Extract unique CPU models
+            cpu_models = set()
+            for score in scores:
+                model = score.get("processor_model", "")
+                if model:
+                    cpu_models.add(model)
+            self.available_cpus = sorted(cpu_models)
+            self.query_one("#loading_display", Static).display = False
+        except Exception as e:
+            self._show_error_message()
 
     def export_to_csv(self) -> None:
         """Export comparison data to CSV format (placeholder)."""
@@ -148,20 +134,14 @@ class CompareCPUScreen(Screen):
                 return
 
             # Load scores for each CPU and compare
-            worker1 = self.run_worker(
-                get_scores_for_cpu,
-                args=(first_cpu,),
-                on_complete=lambda s: setattr(self, 'cpu1_data', s),
-            )
-            worker2 = self.run_worker(
-                get_scores_for_cpu,
-                args=(second_cpu,),
-                on_complete=lambda s: setattr(self, 'cpu2_data', s),
-            )
-
-            # Start both workers
-            worker1.start()
-            worker2.start()
+            try:
+                cpu1_data = get_scores_for_cpu(first_cpu)
+                cpu2_data = get_scores_for_cpu(second_cpu)
+                self.cpu1_data = cpu1_data
+                self.cpu2_data = cpu2_data
+                self._display_comparison()
+            except Exception as e:
+                self._show_error_message()
             event.stop()
         elif event.button.id == "back_to_main_menu":
             self.action_go_back()
@@ -169,11 +149,6 @@ class CompareCPUScreen(Screen):
         elif event.button.id == "quit_app":
             self.app.exit()
             event.stop()
-
-    def on_worker_complete(self, worker: Worker) -> None:
-        """Handle worker completion."""
-        if hasattr(self, 'cpu1_data') and hasattr(self, 'cpu2_data'):
-            self._display_comparison()
 
     def _update_comparison_table(self, cpu1_data: list, cpu2_data: list) -> None:
         """Update the comparison table with CPU data.

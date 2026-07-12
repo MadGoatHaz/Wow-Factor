@@ -12,16 +12,10 @@ from textual.widgets import (
 )
 from textual.containers import Container, Horizontal
 from textual.binding import Binding
-from textual.worker import Worker, get_current_worker
 from textual.events import Key
 import datetime
 import logging
 
-# Import custom message classes and shared utilities
-from ...messages import (
-    DataLoadComplete,
-    DataLoadError,
-)
 from ui.shared import RETRO_GRADIENT_COLORS, colorize_text_gradient, WowFactorHeader
 
 # Import layout optimization utilities for efficient column width calculation
@@ -116,33 +110,22 @@ class ViewAllScoresScreen(Screen):
         # Show loading overlay while fetching data
         self.navigation.navigate_to("loading_overlay", message="Loading all scores...")
 
-        worker = self.run_worker(
-            _get_all_valid_scores,
-            on_complete=self._on_scores_loaded,
-            on_error=lambda _: self._show_error_message(),
-        )
-        worker.start()
+        try:
+            scores = _get_all_valid_scores()
+            # Dismiss the loading overlay
+            self.navigation.go_back()
 
-    def _on_scores_loaded(self, scores: list) -> None:
-        """Handle completion of score loading.
+            self.original_all_scores = sorted(scores, key=lambda x: x.get("timestamp", ""), reverse=True)
+            self.filtered_scores = list(self.original_all_scores)
+            self.total_items = len(self.filtered_scores)
+            self._calculate_pages()
+            self.current_page = 1
 
-        Sorts scores by timestamp descending, initializes pagination,
-        and renders the first page.
-
-        Args:
-            scores: List of benchmark result dictionaries.
-        """
-        # Dismiss the loading overlay
-        self.navigation.go_back()
-
-        self.original_all_scores = sorted(scores, key=lambda x: x.get("timestamp", ""), reverse=True)
-        self.filtered_scores = list(self.original_all_scores)
-        self.total_items = len(self.filtered_scores)
-        self._calculate_pages()
-        self.current_page = 1
-
-        self._update_table()
-        self.query_one("#loading_display", Static).display = False
+            self._update_table()
+            self.query_one("#loading_display", Static).display = False
+        except Exception as e:
+            self.navigation.go_back()
+            self._show_error_message()
 
     def _show_error_message(self) -> None:
         """Show error message if data loading fails."""

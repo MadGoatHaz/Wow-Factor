@@ -217,12 +217,12 @@ class TestWorkerCreation:
         assert call_args is not None
         assert callable(call_args[0][0])
 
-    def test_view_best_scores_load_worker_exists(self):
-        """ViewBestScoresScreen has load_best_scores_worker method."""
+    def test_view_best_scores_load_data_method(self):
+        """ViewBestScoresScreen has load_data method for direct data loading."""
         from ui.screens.views.rendering import ViewBestScoresScreen
         screen = ViewBestScoresScreen()
-        assert hasattr(screen, 'load_best_scores_worker')
-        assert callable(screen.load_best_scores_worker)
+        assert hasattr(screen, 'load_data')
+        assert callable(screen.load_data)
 
     def test_compare_cpu_load_cpus_method(self):
         """CompareCPUScreen has load_available_cpus method."""

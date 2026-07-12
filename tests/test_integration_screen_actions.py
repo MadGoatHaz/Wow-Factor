@@ -481,13 +481,13 @@ def test_view_all_scores_calculate_pages():
     assert screen.total_pages == 2
 
 
-def test_view_best_scores_load_worker_exists():
-    """ViewBestScoresScreen.load_best_scores_worker() exists and is callable."""
+def test_view_best_scores_load_data_method():
+    """ViewBestScoresScreen.load_data() exists and is callable."""
     from ui.screens.views import ViewBestScoresScreen
 
     screen = ViewBestScoresScreen()
-    assert hasattr(screen, 'load_best_scores_worker')
-    assert callable(screen.load_best_scores_worker)
+    assert hasattr(screen, 'load_data')
+    assert callable(screen.load_data)
 
 
 def test_compare_cpu_load_cpus_method_exists():
