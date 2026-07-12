@@ -293,82 +293,74 @@ def execute_single_benchmark_run(
     progress_callback: Optional[Callable[[int, float, float], None]] = None
 ) -> Dict:
     """
-    Executes the benchmark using multiprocessing for true parallelism.
+    Executes the benchmark using threads.
+    Since _cpu_workload does pure C-math (math.sin, etc.) that releases the GIL,
+    threads provide true parallelism on multi-core systems.
     """
     stats = {'total_ops': 0}
+    benchmark_start = time.time()
+    stop_monitoring = threading.Event()
+    freq_queue = queue.Queue()
 
-    logger.info("Starting benchmark: %ss (warmup %ss), %d processes, infinite=%s",
+    logger.info("Starting benchmark: %ss (warmup %ss), %d threads, infinite=%s",
                 duration, WARMUP_DURATION, num_threads, is_infinite)
 
-    manager = multiprocessing.Manager()
-    work_queue = manager.Queue()
-
-    freq_queue = queue.Queue()
-    stop_monitoring = threading.Event()
+    # CPU frequency monitoring thread
     monitor_thread = threading.Thread(
         target=_monitor_cpu_freq, args=(stop_monitoring, freq_queue))
     monitor_thread.daemon = True
     monitor_thread.start()
 
-    pool = multiprocessing.Pool(processes=num_threads)
+    work_queue = queue.Queue()
 
-    start_time = time.time()
+    # Start worker threads
+    threads = []
+    for _ in range(num_threads):
+        t = threading.Thread(
+            target=_cpu_workload,
+            args=(duration, WARMUP_DURATION, work_queue, is_infinite),
+            daemon=True
+        )
+        threads.append(t)
+        t.start()
 
-    try:
-        with PowerPlanManager():
-            worker_args = [(duration, WARMUP_DURATION, work_queue, is_infinite)
-                           for _ in range(num_threads)]
+    # Wait for warmup
+    time.sleep(WARMUP_DURATION)
 
-            async_result = pool.starmap_async(_cpu_workload, worker_args)
+    stop_monitoring.set()
+    monitor_thread.join()
 
-            pool.close()
+    total_ops = 0
 
-            time.sleep(WARMUP_DURATION)
+    while any(t.is_alive() for t in threads):
+        while not work_queue.empty():
+            try:
+                total_ops += work_queue.get_nowait()
+            except Exception:
+                break
 
-            stop_monitoring.set()
-            monitor_thread.join()
+        current_time = time.time()
+        if progress_callback and (current_time - benchmark_start > 0.1):
+            if total_ops > 0:
+                progress_callback(total_ops, current_time, benchmark_start)
 
-            start_time = time.time()
+        time.sleep(0.05)
 
-            total_ops = 0
-            last_callback_time = 0
+    # Final drain
+    while not work_queue.empty():
+        try:
+            total_ops += work_queue.get_nowait()
+        except Exception:
+            break
 
-            while not async_result.ready():
-                while not work_queue.empty():
-                    try:
-                        total_ops += work_queue.get_nowait()
-                    except Exception:
-                        break
+    # Join all threads
+    for t in threads:
+        t.join(timeout=30)
 
-                current_time = time.time()
-                if progress_callback and (current_time - last_callback_time > 0.1):
-                    progress_callback(total_ops, current_time, start_time)
-                    last_callback_time = current_time
+    stats['total_ops'] = total_ops
 
-                time.sleep(0.05)
-
-            while not work_queue.empty():
-                try:
-                    total_ops += work_queue.get_nowait()
-                except Exception:
-                    break
-
-            results = async_result.get()
-            stats['total_ops'] = sum(results)
-
-    except KeyboardInterrupt:
-        logger.warning("Benchmark stopped by user.")
-        pool.terminate()
-        pool.join()
-    except Exception as e:
-        logger.error("Benchmark failed: %s", e, exc_info=True)
-        pool.terminate()
-        raise e
-    finally:
-        pool.join()
-
-    actual_duration = time.time() - start_time
-    logger.info("Benchmark finished. Total operations: %d in %.2fs with %d processes.",
+    actual_duration = time.time() - benchmark_start
+    logger.info("Benchmark finished. Total operations: %d in %.2fs with %d threads.",
                 stats['total_ops'], actual_duration, num_threads)
     return save_benchmark_results(stats, actual_duration, num_threads)
 
