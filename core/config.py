@@ -13,8 +13,6 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-
-# Configuration directory
 CONFIG_DIR: str = os.path.expanduser("~/.config/wowfactor")
 DEFAULTS_FILE: str = os.path.join(CONFIG_DIR, "defaults.json")
 PROFILES_FILE: str = os.path.join(CONFIG_DIR, "benchmark_profiles.json")
@@ -121,7 +119,6 @@ class ConfigManager:
         except (OSError, json.JSONDecodeError) as e:
             logger.warning("Could not load profiles file %s: %s",
                            self.profiles_file, e)
-
         return profiles
 
     def save_defaults(self) -> bool:
@@ -246,5 +243,4 @@ class ConfigManager:
         return self.save_profiles()
 
 
-# Global config manager instance
 config_manager: ConfigManager = ConfigManager()

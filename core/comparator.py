@@ -7,10 +7,13 @@ Allows comparing two benchmark runs side-by-side with percentage differences.
 from __future__ import annotations
 
 import json
+import logging
 import os
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -18,7 +21,7 @@ class ComparisonResult:
     """Result of comparing two benchmark runs."""
     run1_name: str
     run2_name: str
-    metrics: dict[str, tuple[float, float, float]]  # metric -> (run1_val, run2_val, diff_pct)
+    metrics: dict[str, tuple[float, float, float]]
 
     def format_comparison(self) -> str:
         """Format comparison result as a readable string."""
@@ -34,7 +37,6 @@ class ComparisonResult:
 
         for metric, (val1, val2, diff) in self.metrics.items():
             if metric == "ops_per_second":
-                # Format as thousands with commas
                 line = f"{metric:20} {val1:>15,.0f}  {val2:>15,.0f}  {diff:+.1f}%"
             else:
                 line = f"{metric:20} {val1:>15}  {val2:>15}  {diff:+.1f}%"
@@ -107,10 +109,13 @@ class ResultsComparator:
             ComparisonResult with metrics and percentage differences,
             or None if comparison failed
         """
+        logger.info("Comparing runs: %s vs %s", run1_file, run2_file)
         data1 = self.load_result(run1_file)
         data2 = self.load_result(run2_file)
 
         if not data1 or not data2:
+            logger.warning("Cannot compare: one or both results not found "
+                           "(%s, %s)", run1_file, run2_file)
             return None
 
         # Extract metrics for comparison
@@ -174,6 +179,7 @@ class ResultsComparator:
         Returns:
             Dictionary mapping (file1, file2) tuples to ComparisonResults
         """
+        logger.info("Starting multi-comparison of %d files", len(files))
         results: dict[tuple[str, str], ComparisonResult | None] = {}
 
         for i in range(len(files)):
