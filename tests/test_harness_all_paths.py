@@ -691,6 +691,7 @@ class TestScreenRunBatchBenchmark:
         screen = RunBatchBenchmarkScreen()
         coro = screen._batch_benchmark_worker_function(2, 1, 1)
         assert asyncio.iscoroutine(coro)
+        coro.close()
 
     def test_execute_single_benchmark_run_delegate(self):
         """Test batch screen delegates to core benchmark."""
@@ -894,6 +895,7 @@ class TestScreenAnalytics:
         screen = AnalyticsScreen()
         coro = screen._load_data_worker()
         assert asyncio.iscoroutine(coro)
+        coro.close()
 
 
 class TestScreenTrendsChart:
@@ -930,6 +932,7 @@ class TestScreenTrendsChart:
         screen = TrendsChartScreen()
         coro = screen._load_data_worker()
         assert asyncio.iscoroutine(coro)
+        coro.close()
 
 
 class TestScreenBaseScreen:

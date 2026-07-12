@@ -68,13 +68,13 @@ def test_csv_export_functionality():
             
     except Exception as e:
         print(f"   ✗ ViewBestScoresScreen CSV export test failed: {e}")
-        return False
-    
+        assert False, f"ViewBestScoresScreen CSV export test failed: {e}"
+
     # Test with CompareCPUScreen
     print("\n2. Testing CompareCPUScreen CSV export:")
     try:
         screen = CompareCPUScreen()
-        
+
         # Mock the table data to simulate having data
         mock_table = MagicMock()
         mock_table.columns = [
@@ -84,15 +84,15 @@ def test_csv_export_functionality():
             MagicMock(label="Timestamp")
         ]
         mock_table.column_keys = ["rank", "platform", "ops_per_second", "timestamp"]
-        
+
         # Mock rows with data
         mock_row1 = MagicMock()
         mock_row1.__iter__ = lambda: iter([1, "Linux", "123456789", "2023-01-01 12:00"])
         mock_row2 = MagicMock()
         mock_row2.__iter__ = lambda: iter([2, "Windows", "987654321", "2023-01-02 12:00"])
-        
+
         mock_table.rows = [mock_row1, mock_row2]
-        
+
         # Mock get_cell_value method
         def mock_get_cell_value(row, key):
             if row == mock_row1:
@@ -102,27 +102,27 @@ def test_csv_export_functionality():
                 return {"rank": 2, "platform": "Windows", "ops_per_second": "987654321",
                         "timestamp": "2023-01-02 12:00"}[key]
             return ""
-        
+
         mock_table.get_cell_value = mock_get_cell_value
-        
+
         # Mock the query_one method to return our mock table
         with patch.object(screen, 'query_one') as mock_query_one:
             mock_query_one.return_value = mock_table
-            
+
             # Test export_to_csv method (this should not raise an exception)
             screen.export_to_csv()
-            
+
             print("   ✓ CompareCPUScreen CSV export test passed")
-            
+
     except Exception as e:
         print(f"   ✗ CompareCPUScreen CSV export test failed: {e}")
-        return False
-    
+        assert False, f"CompareCPUScreen CSV export test failed: {e}"
+
     # Test with ViewAllScoresScreen
     print("\n3. Testing ViewAllScoresScreen CSV export:")
     try:
         screen = ViewAllScoresScreen()
-        
+
         # Mock the table data to simulate having data
         mock_table = MagicMock()
         mock_table.columns = [
@@ -133,15 +133,15 @@ def test_csv_export_functionality():
             MagicMock(label="Timestamp")
         ]
         mock_table.column_keys = ["rank", "cpu_model", "platform", "ops_per_second", "timestamp"]
-        
+
         # Mock rows with data
         mock_row1 = MagicMock()
         mock_row1.__iter__ = lambda: iter([1, "Intel Core i7-9700K", "Linux", "123456789", "2023-01-01 12:00"])
         mock_row2 = MagicMock()
         mock_row2.__iter__ = lambda: iter([2, "AMD Ryzen 7 5800X", "Linux", "987654321", "2023-01-02 12:00"])
-        
+
         mock_table.rows = [mock_row1, mock_row2]
-        
+
         # Mock get_cell_value method
         def mock_get_cell_value(row, key):
             if row == mock_row1:
@@ -151,24 +151,23 @@ def test_csv_export_functionality():
                 return {"rank": 2, "cpu_model": "AMD Ryzen 7 5800X", "platform": "Linux",
                         "ops_per_second": "987654321", "timestamp": "2023-01-02 12:00"}[key]
             return ""
-        
+
         mock_table.get_cell_value = mock_get_cell_value
-        
+
         # Mock the query_one method to return our mock table
         with patch.object(screen, 'query_one') as mock_query_one:
             mock_query_one.return_value = mock_table
-            
+
             # Test export_to_csv method (this should not raise an exception)
             screen.export_to_csv()
-            
+
             print("   ✓ ViewAllScoresScreen CSV export test passed")
-            
+
     except Exception as e:
         print(f"   ✗ ViewAllScoresScreen CSV export test failed: {e}")
-        return False
-    
+        assert False, f"ViewAllScoresScreen CSV export test failed: {e}"
+
     print("\n✓ All CSV export tests passed!")
-    return True
 
 
 if __name__ == "__main__":

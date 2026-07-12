@@ -50,7 +50,6 @@ def test_cpu_sleep_behavior():
     except Exception as e:
         print(f"Benchmark failed with exception: {type(e).__name__}: {e}")
         
-@pytest.mark.xfail(reason="Interactive test - requires manual Ctrl+C to stop; not suitable for automated runs")
 def test_infinite_run():
     """Test infinite run to see if it can be interrupted properly.
 

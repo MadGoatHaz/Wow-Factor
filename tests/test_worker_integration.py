@@ -21,10 +21,9 @@ def test_basic_functionality():
         print("Benchmark completed successfully:")
         print(f"  Total ops: {result.get('total_operations', 0)}")
         print(f"  Duration: {result.get('duration_seconds', 0):.2f}s")
-        return True
     except Exception as e:
         print(f"Benchmark failed with exception: {type(e).__name__}: {e}")
-        return False
+        assert False, f"Benchmark failed with exception: {type(e).__name__}: {e}"
 
 if __name__ == "__main__":
     success = test_basic_functionality()
