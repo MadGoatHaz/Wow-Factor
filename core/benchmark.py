@@ -14,6 +14,7 @@ import multiprocessing
 import math
 import threading
 import queue
+import warnings
 from core.power import PowerPlanManager
 
 # Module-level logger for structured logging
@@ -65,8 +66,38 @@ def _invalidate_cache(cache_key: str) -> None:
 
 
 def _invalidate_all_cache() -> None:
-    """Invalidate all cache entries"""
+    """Invalidate all cache entries (deprecated — use _invalidate_for_cpu or _cleanup_expired_cache)."""
+    warnings.warn(
+        "_invalidate_all_cache is deprecated; use _invalidate_for_cpu(cpu) or _cleanup_expired_cache()",
+        FutureWarning,
+        stacklevel=2,
+    )
     _cache.clear()
+
+
+def _invalidate_for_cpu(cpu_model: str) -> None:
+    """Invalidate all cache entries that contain the given CPU model string,
+    plus the general aggregator caches that depend on all-score data."""
+    keys_to_remove = []
+    for k, (_ts, val) in _cache.items():
+        val_str = str(val)
+        if cpu_model in val_str:
+            keys_to_remove.append(k)
+    for k in keys_to_remove:
+        _cache.pop(k, None)
+    # Also clear aggregator caches that include results from all CPUs
+    for key in ("_get_all_valid_scores", "get_best_score_per_machine",
+                "get_unique_cpu_models"):
+        _cache.pop(key, None)
+
+
+def _cleanup_expired_cache() -> None:
+    """Remove all cache entries whose TTL has expired."""
+    now = time.time()
+    expired_keys = [k for k, (ts, _v) in _cache.items()
+                    if now - ts >= _CACHE_TTL]
+    for k in expired_keys:
+        _cache.pop(k, None)
 
 
 def _monitor_cpu_freq(stop_event: threading.Event, freq_queue: queue.Queue) -> None:
@@ -195,7 +226,8 @@ def save_benchmark_results(stats: Dict, duration: float, num_threads: int = 1) -
         logger.info("Benchmark JSON results saved to '%s'", json_filename)
     except Exception as e:
         logger.error("Failed to save benchmark JSON results: %s", e)
-    _invalidate_all_cache()
+    _invalidate_for_cpu(cpu_model)
+    _cleanup_expired_cache()
     return result_data
 
 
@@ -429,7 +461,11 @@ def cleanup_invalid_scores() -> List[str]:
             logger.info("Deleted invalid score file: %s", filename)
         except OSError as e:
             logger.error("Error deleting %s: %s", filename, e)
-    _invalidate_all_cache()
+    # Invalidate caches that depend on all-score data
+    for key in ("_get_all_valid_scores", "get_best_score_per_machine",
+                "get_unique_cpu_models"):
+        _cache.pop(key, None)
+    _cleanup_expired_cache()
     return deleted_files
 
 
