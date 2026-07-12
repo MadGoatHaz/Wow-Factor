@@ -38,3 +38,23 @@ AHEAD: Update comprehensive_test_suite.py to use new targeted methods to silence
 - [BugFix] Launcher entry point — renamed setup_logging conflict, added structured logging integration
 - [BugFix] requirements.txt — added esbuild, version pins
 
+- [BugFix] Fixed run_worker callable usage in benchmark.py and analytics.py
+DECISION: Changed 4 run_worker calls to use lambda for deferred execution
+AHEAD: Workers will now run in background threads as intended
+
+
+- [TestSuite] Created 85 comprehensive app entry path tests — Status: [SUCCESS]
+DECISION: Added tests/test_app_comprehensive.py with 74 passing + 11 xfailed (Textual container compose requires active app context).
+AHEAD: Merge branch/fix-worker-api to main after integration review.
+
+
+- [BugFix] Fixed navigation.notify() AttributeError — Status: SUCCESS
+DECISION: Changed app.current_screen to app.screen in notify() and reset_to_main()
+AHEAD: Branch branch/fix-navigation-crash pushed, create PR for merge.
+
+- [IntegrationTests] Created 2 integration test files — Status: [SUCCESS]
+DECISION: Added tests/test_integration_app_startup.py (19 tests) and tests/test_integration_screen_actions.py (26 tests) covering CSS, app init, navigation, worker deferral, and toast notifications.
+AHEAD: Merge branch/integration-test-suite to main after review.
+
+@@@ CURRENT_STATE @@@
+358 passed, 33 xfailed, 1 xpassed, 0 failed
