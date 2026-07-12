@@ -528,6 +528,105 @@ class AnalyticsEngine:
 
         return '\n'.join(lines)
 
+    def detect_outliers(self, scores: List[Dict]) -> List[int]:
+        """
+        Detect outlier benchmark runs using IQR (Interquartile Range) method.
+        Returns indices of scores that are statistical outliers.
+        """
+        if len(scores) < 4:
+            return []
+
+        ops_values = [s.get('ops_per_second', 0) for s in scores]
+        sorted_ops = sorted(ops_values)
+        n = len(sorted_ops)
+
+        # Q1 (25th percentile) and Q3 (75th percentile)
+        q1_idx = n // 4
+        q3_idx = (3 * n) // 4
+        q1 = sorted_ops[q1_idx]
+        q3 = sorted_ops[q3_idx]
+        iqr = q3 - q1
+
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+
+        outliers = []
+        for i, val in enumerate(ops_values):
+            if val < lower_bound or val > upper_bound:
+                outliers.append(i)
+        return outliers
+
+    def get_thread_efficiency(self, scores: List[Dict]) -> Dict[str, float]:
+        """
+        Analyze thread scaling efficiency.
+        Compares single-thread vs multi-thread performance.
+        """
+        thread_perf = {}
+        for s in scores:
+            threads = s.get('num_threads', 1)
+            ops = s.get('ops_per_second', 0)
+            if threads not in thread_perf:
+                thread_perf[threads] = []
+            thread_perf[threads].append(ops)
+
+        if not thread_perf:
+            return {}
+
+        # Average performance per thread count
+        avg_perf = {t: sum(v)/len(v) for t, v in thread_perf.items()}
+
+        # Calculate efficiency relative to single-thread
+        result = {}
+        single_thread_avg = avg_perf.get(1, 0)
+        for threads, avg in avg_perf.items():
+            if single_thread_avg > 0 and threads > 1:
+                theoretical = single_thread_avg * threads
+                efficiency = (avg / theoretical) * 100 if theoretical > 0 else 0
+                result[threads] = {
+                    'avg_ops': round(avg, 2),
+                    'efficiency_pct': round(efficiency, 1),
+                    'speedup': round(avg / single_thread_avg, 2)
+                }
+            else:
+                result[threads] = {
+                    'avg_ops': round(avg, 2),
+                    'efficiency_pct': 100.0 if threads == 1 else 0,
+                    'speedup': 1.0 if threads == 1 else 0
+                }
+
+        return result
+
+    def get_improvement_percentage(self, scores: List[Dict]) -> Dict[str, float]:
+        """
+        Calculate performance improvement % between consecutive runs per CPU.
+        Positive = improvement, Negative = degradation.
+        """
+        # Group scores by CPU model (inline to avoid modifying existing method)
+        by_cpu = defaultdict(list)
+        for s in scores:
+            cpu_model = s.get('system', {}).get('processor_model')
+            if cpu_model:
+                by_cpu[cpu_model].append(s)
+
+        improvements = {}
+
+        for cpu_model, cpu_scores in by_cpu.items():
+            if len(cpu_scores) < 2:
+                continue
+
+            # Sort by timestamp
+            sorted_scores = sorted(cpu_scores, key=lambda x: x.get('timestamp', ''))
+            ops_values = [s.get('ops_per_second', 0) for s in sorted_scores]
+
+            # Calculate % improvement from first to last run
+            first = ops_values[0] if ops_values else 0
+            last = ops_values[-1] if ops_values else 0
+            if first > 0:
+                pct = ((last - first) / first) * 100
+                improvements[cpu_model] = round(pct, 1)
+
+        return improvements
+
     def clear_cache(self) -> None:
         """Clear the internal scores cache."""
         self._scores_cache = None
