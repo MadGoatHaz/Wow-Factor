@@ -123,10 +123,38 @@ def _monitor_cpu_freq(stop_event: threading.Event, freq_queue: queue.Queue) -> N
 
 
 def clean_cpu_model_name(model_name: str) -> str:
-    model_name = re.sub(r'\s+\d+-Core Processor', '', model_name, flags=re.IGNORECASE)
-    model_name = re.sub(r'\s+with Radeon Graphics', '', model_name, flags=re.IGNORECASE)
-    model_name = re.sub(r'\s*\(R\)|\(TM\)|@.*', '', model_name)
-    return model_name.strip()
+    """
+    Normalize CPU model name to a canonical form for consistent grouping.
+
+    Examples:
+    - 'AMD Ryzen 9 5950X 16-Core Processor with Radeon Graphics' → 'AMD Ryzen 9 5950X'
+    - 'Intel(R) Core(TM) i7-12700K with UHD Graphics' → 'Intel Core i7-12700K'
+    """
+    if not model_name or not model_name.strip():
+        return ""
+
+    name = model_name.strip()
+
+    # Remove trademark/superscript symbols
+    name = re.sub(r'\s*\(R\)|\(TM\)|\(r\)|\(tm\)', '', name, flags=re.IGNORECASE)
+
+    # Remove "X-Core Processor" patterns (e.g., "16-Core Processor", "6-Core Processor")
+    name = re.sub(r'\s+\d+-Core\s+Processor', '', name, flags=re.IGNORECASE)
+
+    # Remove GPU co-branding (e.g., "with Radeon Graphics", "with UHD Graphics")
+    name = re.sub(r'\s+with\s+(Radeon|UHD|Iris|Intel\s+HD|NVIDIA\s+\w+)\s*Graphics', '', name, flags=re.IGNORECASE)
+
+    # Remove frequency suffixes (e.g., " @ 3.50GHz", "@ 3.5 GHz")
+    name = re.sub(r'\s+@\s+[\d.]+\s*(GHz|MHz)', '', name, flags=re.IGNORECASE)
+
+    # Normalize Intel naming: "Intel(R) Core(TM)" → "Intel Core"
+    name = re.sub(r'Intel\s*Core', 'Intel Core', name, flags=re.IGNORECASE)
+    name = re.sub(r'\s+', ' ', name)  # Collapse multiple spaces
+
+    # Remove trailing/leading punctuation
+    name = re.sub(r'[^a-zA-Z0-9\s.\-\+_]+$', '', name).strip()
+
+    return name
 
 
 def get_cpu_info() -> Tuple[str, str, str]:
@@ -255,11 +283,20 @@ def _cpu_workload(duration: float, warmup_time: float, queue: Any, is_infinite: 
 
             for i in range(batch_size):
                 val = 1.000001 + (i % 100) * 0.001
+                # Float math stress
                 _ = (math.sin(val) * math.cos(val)
                      + math.sqrt(val)
                      + math.pow(val, 1.5)
                      + math.exp(val % 5)
                      + math.log(val + 10))
+
+                # Integer arithmetic stress
+                a, b, c = i * 997 + 31, i * 887 + 13, i * 757 + 7
+                _ = (a * b) % c + (a // c) * 23
+
+                # Bit manipulation stress
+                mask = 0x5A5A5A5A
+                _ = ((mask << (i % 8)) ^ (mask >> (i % 8))) & 0xFFFFFFFF
 
             local_ops += batch_size
 
