@@ -119,7 +119,7 @@ class RunSingleBenchmarkScreen(Screen):
         self.query_one("#progress_display", Static).update("Benchmark started...")
 
         self.benchmark_worker = self.run_worker(
-            self._benchmark_worker_function(duration, is_infinite, num_threads),
+            lambda: self._benchmark_worker_function(duration, is_infinite, num_threads),
             thread=True,  # Sync function requires thread=True
             group="benchmark_workers",
         )
@@ -357,7 +357,7 @@ class RunBatchBenchmarkScreen(Screen):
         self.query_one("#progress_display", Static).update("Progress: Initializing...")
 
         self.batch_worker_instance = self.run_worker(
-            self._batch_benchmark_worker_function(num_batch_runs, duration_per_run, num_threads),
+            lambda: self._batch_benchmark_worker_function(num_batch_runs, duration_per_run, num_threads),
             # thread=True removed - async functions run in main event loop
             group="batch_benchmark_workers",
         )
