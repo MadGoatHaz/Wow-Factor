@@ -56,6 +56,7 @@ markers = [
     "slow: marks tests as slow",
     "integration: marks integration tests",
 ]
+asyncio_mode = "auto"
 
 [tool.ruff]
 target-version = "py312"
