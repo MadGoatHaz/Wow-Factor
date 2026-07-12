@@ -4,7 +4,7 @@ import multiprocessing
 import time
 from typing import Any, Optional
 from textual.screen import Screen
-from textual.widgets import Button, Static, Input, Markdown
+from textual.widgets import Button, Static, Input, Markdown, ProgressBar
 from textual.containers import Container, VerticalScroll, Horizontal
 from textual.events import Key
 from textual.worker import WorkerCancelled
@@ -49,6 +49,7 @@ class RunSingleBenchmarkScreen(Screen):
                 yield Button("Start", id="start_benchmark", variant="primary", classes="action-btn")
                 yield Button("Stop", id="stop_benchmark", variant="error", disabled=True, classes="action-btn")
             yield Static("Progress: Ready to start...", id="progress_display")
+            yield ProgressBar(id="benchmark_progress", show_eta=True)
             yield Static("", id="result_summary_display", classes="result-summary")
             yield Markdown("", id="result_markdown_display") # Using Markdown for flexible output
             with Horizontal(classes="action-buttons"):
@@ -58,6 +59,7 @@ class RunSingleBenchmarkScreen(Screen):
         self.query_one("#app-header", WowFactorHeader).update_title("BENCHMARK")
         self.query_one("#stop_benchmark", Button).display = False # Hide stop button initially
         self.query_one("#result_summary_display", Static).display = False
+        self.query_one("#benchmark_progress", ProgressBar).display = False
         self.query_one("#result_markdown_display", Markdown).display = False
 
     def action_go_back(self) -> None:
@@ -117,6 +119,7 @@ class RunSingleBenchmarkScreen(Screen):
         self.query_one("#result_summary_display", Static).display = False
         self.query_one("#result_markdown_display", Markdown).display = False
         self.query_one("#progress_display", Static).update("Benchmark started...")
+        self.query_one("#benchmark_progress", ProgressBar).display = True
 
         self.benchmark_worker = self.run_worker(
             lambda: self._benchmark_worker_function(duration, is_infinite, num_threads),
@@ -179,6 +182,13 @@ class RunSingleBenchmarkScreen(Screen):
         self.query_one("#progress_display", Static).update(
             f"Progress: [green]Ops: {format_large_number(message.total_ops)}[/green] | [yellow]Ops/sec: {format_large_number(message.ops_per_second)}[/yellow]"
         )
+        # Update progress bar
+        try:
+            pb = self.query_one("#benchmark_progress", ProgressBar)
+            pb.update(total=999999999, completed=message.total_ops)
+            pb.display = True
+        except Exception:
+            pass
 
     def on_benchmark_completion(self, message: BenchmarkCompletion) -> None:
         # Dismiss the loading overlay when benchmark completes or errors
@@ -209,6 +219,10 @@ class RunSingleBenchmarkScreen(Screen):
         self.query_one("#stop_benchmark", Button).disabled = True
         self.query_one("#stop_benchmark", Button).display = False
         self.query_one("#back_to_main_menu", Button).disabled = False
+        try:
+            self.query_one("#benchmark_progress", ProgressBar).display = False
+        except Exception:
+            pass
 
         if "total_operations" in result_data and not message.interrupted: # Only display full summary if not interrupted and results are valid
             summary_text = (
@@ -275,6 +289,7 @@ class RunBatchBenchmarkScreen(Screen):
                 yield Button("Stop Batch", id="stop_batch_benchmark", variant="error", disabled=True, classes="action-btn")
             yield Static("Current Batch: Ready to start...", id="batch_number_display")
             yield Static("Progress: Ready for run 1...", id="progress_display")
+            yield ProgressBar(id="batch_progress", show_eta=True)
             yield Static("", id="cooldown_display")
             yield Static("", id="batch_summary_display", classes="result-summary")
             yield Markdown("", id="batch_markdown_display")
@@ -287,6 +302,7 @@ class RunBatchBenchmarkScreen(Screen):
         self.query_one("#batch_summary_display", Static).display = False
         self.query_one("#batch_markdown_display", Markdown).display = False
         self.query_one("#cooldown_display", Static).display = False
+        self.query_one("#batch_progress", ProgressBar).display = False
 
     def action_go_back(self) -> None:
         self.navigation.go_back()
@@ -355,6 +371,7 @@ class RunBatchBenchmarkScreen(Screen):
 
         self.query_one("#batch_number_display", Static).update(f"Current Batch: Starting {num_batch_runs} runs...")
         self.query_one("#progress_display", Static).update("Progress: Initializing...")
+        self.query_one("#batch_progress", ProgressBar).display = True
 
         self.batch_worker_instance = self.run_worker(
             lambda: self._batch_benchmark_worker_function(num_batch_runs, duration_per_run, num_threads),
@@ -446,6 +463,13 @@ class RunBatchBenchmarkScreen(Screen):
             f"Progress: [green]Ops: {format_large_number(message.total_ops)}[/green] | [yellow]Ops/sec: {format_large_number(message.ops_per_second)}[/yellow]"
         )
         self.query_one("#cooldown_display", Static).display = False
+        # Update progress bar
+        try:
+            pb = self.query_one("#batch_progress", ProgressBar)
+            pb.update(total=999999999, completed=message.total_ops)
+            pb.display = True
+        except Exception:
+            pass
 
     def on_cooldown_message(self, message: CooldownMessage) -> None:
         self.query_one("#cooldown_display", Static).update(
@@ -469,6 +493,10 @@ class RunBatchBenchmarkScreen(Screen):
         self.query_one("#stop_batch_benchmark", Button).display = False
         self.query_one("#back_to_main_menu", Button).disabled = False
         self.query_one("#cooldown_display", Static).display = False
+        try:
+            self.query_one("#batch_progress", ProgressBar).display = False
+        except Exception:
+            pass
 
         summary_text = f"[neon-green-rank]Total {len(message.results)} runs completed.\n[/neon-green-rank]"
         if message.results:
