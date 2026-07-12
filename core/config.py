@@ -6,12 +6,13 @@ Handles loading, saving, and validating application settings.
 
 import json
 import os
+import logging
 from typing import Dict, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
 
-# Configuration directory
 CONFIG_DIR: str = os.path.expanduser("~/.config/wowfactor")
 DEFAULTS_FILE: str = os.path.join(CONFIG_DIR, "defaults.json")
 PROFILES_FILE: str = os.path.join(CONFIG_DIR, "benchmark_profiles.json")
@@ -62,29 +63,21 @@ class BenchmarkProfile:
         return cls(
             name=data.get("name", "Unnamed"),
             defaults=BenchmarkDefaults.from_dict(data.get("defaults", {})),
-            created_at=datetime.fromisoformat(data.get("created_at", datetime.now().isoformat()))
+            created_at=datetime.fromisoformat(
+                data.get("created_at", datetime.now().isoformat())
+            )
         )
 
 
 class ConfigManager:
-    """
-    Manages application configuration including defaults and profiles.
-    
-    Configuration is stored in JSON files under ~/.config/wowfactor/
-    """
+    """Manages application configuration including defaults and profiles."""
     
     def __init__(self, config_dir: Optional[str] = None) -> None:
         self.config_dir = config_dir or CONFIG_DIR
         self.defaults_file = os.path.join(self.config_dir, "defaults.json")
         self.profiles_file = os.path.join(self.config_dir, "benchmark_profiles.json")
-        
-        # Ensure config directory exists
         os.makedirs(self.config_dir, exist_ok=True)
-        
-        # Load defaults
         self._defaults = self._load_defaults()
-        
-        # Load profiles
         self._profiles: Dict[str, BenchmarkProfile] = self._load_profiles()
     
     def _load_defaults(self) -> BenchmarkDefaults:
@@ -93,11 +86,11 @@ class ConfigManager:
             if os.path.exists(self.defaults_file):
                 with open(self.defaults_file, 'r') as f:
                     data = json.load(f)
+                    logger.info("Loaded defaults from %s", self.defaults_file)
                     return BenchmarkDefaults.from_dict(data.get("defaults", {}))
         except (json.JSONDecodeError, IOError) as e:
-            print(f"Warning: Could not load defaults file: {e}")
-        
-        # Return fresh defaults if file doesn't exist or is invalid
+            logger.warning("Could not load defaults file %s: %s",
+                           self.defaults_file, e)
         return BenchmarkDefaults()
     
     def _load_profiles(self) -> Dict[str, BenchmarkProfile]:
@@ -109,9 +102,11 @@ class ConfigManager:
                     data = json.load(f)
                     for name, profile_data in data.get("profiles", {}).items():
                         profiles[name] = BenchmarkProfile.from_dict(profile_data)
+                logger.info("Loaded %d profiles from %s",
+                            len(profiles), self.profiles_file)
         except (json.JSONDecodeError, IOError) as e:
-            print(f"Warning: Could not load profiles file: {e}")
-        
+            logger.warning("Could not load profiles file %s: %s",
+                           self.profiles_file, e)
         return profiles
     
     def save_defaults(self) -> bool:
@@ -120,22 +115,28 @@ class ConfigManager:
             data = {"defaults": self._defaults.to_dict()}
             with open(self.defaults_file, 'w') as f:
                 json.dump(data, f, indent=2)
+            logger.info("Saved defaults to %s", self.defaults_file)
             return True
         except IOError as e:
-            print(f"Error saving defaults: {e}")
+            logger.error("Error saving defaults to %s: %s",
+                         self.defaults_file, e)
             return False
     
     def save_profiles(self) -> bool:
         """Save all profiles to configuration file."""
         try:
             data = {
-                "profiles": {name: profile.to_dict() for name, profile in self._profiles.items()}
+                "profiles": {name: profile.to_dict()
+                             for name, profile in self._profiles.items()}
             }
             with open(self.profiles_file, 'w') as f:
                 json.dump(data, f, indent=2)
+            logger.info("Saved %d profiles to %s",
+                        len(self._profiles), self.profiles_file)
             return True
         except IOError as e:
-            print(f"Error saving profiles: {e}")
+            logger.error("Error saving profiles to %s: %s",
+                         self.profiles_file, e)
             return False
     
     def get_defaults(self) -> BenchmarkDefaults:
@@ -158,7 +159,6 @@ class ConfigManager:
             self._defaults.batch_runs = batch_runs
         if cooldown_seconds is not None:
             self._defaults.cooldown_seconds = cooldown_seconds
-        
         return self.save_defaults()
     
     def get_profile(self, name: str) -> Optional[BenchmarkProfile]:
@@ -179,26 +179,25 @@ class ConfigManager:
     ) -> bool:
         """Create a new benchmark profile."""
         if name in self._profiles:
-            print(f"Profile '{name}' already exists.")
+            logger.warning("Profile '%s' already exists", name)
             return False
-        
         defaults = BenchmarkDefaults(
             duration=duration,
             num_threads=num_threads,
             batch_runs=batch_runs,
             cooldown_seconds=cooldown_seconds
         )
-        
         self._profiles[name] = BenchmarkProfile(name=name, defaults=defaults)
+        logger.info("Created profile '%s'", name)
         return self.save_profiles()
     
     def delete_profile(self, name: str) -> bool:
         """Delete a benchmark profile."""
         if name not in self._profiles:
-            print(f"Profile '{name}' does not exist.")
+            logger.warning("Profile '%s' does not exist", name)
             return False
-        
         del self._profiles[name]
+        logger.info("Deleted profile '%s'", name)
         return self.save_profiles()
     
     def update_profile(
@@ -211,11 +210,9 @@ class ConfigManager:
     ) -> bool:
         """Update an existing profile."""
         if name not in self._profiles:
-            print(f"Profile '{name}' does not exist.")
+            logger.warning("Profile '%s' does not exist", name)
             return False
-        
         profile = self._profiles[name]
-        
         if duration is not None:
             profile.defaults.duration = duration
         if num_threads is not None:
@@ -224,9 +221,7 @@ class ConfigManager:
             profile.defaults.batch_runs = batch_runs
         if cooldown_seconds is not None:
             profile.defaults.cooldown_seconds = cooldown_seconds
-        
         return self.save_profiles()
 
 
-# Global config manager instance
 config_manager: ConfigManager = ConfigManager()
