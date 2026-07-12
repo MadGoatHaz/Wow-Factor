@@ -4,6 +4,8 @@ Configuration management for WowFactor TUI.
 Handles loading, saving, and validating application settings.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import os
@@ -12,6 +14,7 @@ from datetime import datetime
 from typing import Any
 
 logger = logging.getLogger(__name__)
+from core.schema import validate_config
 
 CONFIG_DIR: str = os.path.expanduser("~/.config/wowfactor")
 DEFAULTS_FILE: str = os.path.join(CONFIG_DIR, "defaults.json")
@@ -31,7 +34,7 @@ class BenchmarkDefaults:
             "duration": self.duration,
             "num_threads": self.num_threads,
             "batch_runs": self.batch_runs,
-            "cooldown_seconds": self.cooldown_seconds
+            "cooldown_seconds": self.cooldown_seconds,
         }
 
     @classmethod
@@ -40,7 +43,7 @@ class BenchmarkDefaults:
             duration=data.get("duration", 15),
             num_threads=data.get("num_threads", 1),
             batch_runs=data.get("batch_runs", 5),
-            cooldown_seconds=data.get("cooldown_seconds", 5)
+            cooldown_seconds=data.get("cooldown_seconds", 5),
         )
 
 
@@ -55,7 +58,7 @@ class BenchmarkProfile:
         return {
             "name": self.name,
             "defaults": self.defaults.to_dict(),
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
         }
 
     @classmethod
@@ -65,7 +68,7 @@ class BenchmarkProfile:
             defaults=BenchmarkDefaults.from_dict(data.get("defaults", {})),
             created_at=datetime.fromisoformat(
                 data.get("created_at", datetime.now().isoformat())
-            )
+            ),
         )
 
 
@@ -77,15 +80,15 @@ class ConfigManager:
     """
 
     def __init__(self, config_dir: str | None = None) -> None:
-        self.config_dir = config_dir or CONFIG_DIR
-        self.defaults_file = os.path.join(self.config_dir, "defaults.json")
-        self.profiles_file = os.path.join(self.config_dir, "benchmark_profiles.json")
+        self.config_dir: str = config_dir or CONFIG_DIR
+        self.defaults_file: str = os.path.join(self.config_dir, "defaults.json")
+        self.profiles_file: str = os.path.join(self.config_dir, "benchmark_profiles.json")
 
         # Ensure config directory exists
         os.makedirs(self.config_dir, exist_ok=True)
 
         # Load defaults
-        self._defaults = self._load_defaults()
+        self._defaults: BenchmarkDefaults = self._load_defaults()
 
         # Load profiles
         self._profiles: dict[str, BenchmarkProfile] = self._load_profiles()
@@ -106,26 +109,42 @@ class ConfigManager:
         return BenchmarkDefaults()
 
     def _load_profiles(self) -> dict[str, BenchmarkProfile]:
-        """Load benchmark profiles from file."""
-        profiles = {}
+        """Load benchmark profiles from file.
+
+        Validates loaded JSON against the schema. Malformed configs
+        produce a warning and empty profile dict; valid data is
+        deserialized into BenchmarkProfile instances.
+        """
+        profiles: dict[str, BenchmarkProfile] = {}
         try:
             if os.path.exists(self.profiles_file):
                 with open(self.profiles_file) as f:
                     data = json.load(f)
-                    for name, profile_data in data.get("profiles", {}).items():
-                        profiles[name] = BenchmarkProfile.from_dict(profile_data)
+
+                # Schema-level validation
+                is_valid, errors = validate_config(data)
+                if not is_valid:
+                    error_msg = "; ".join(errors)
+                    print(f"Warning: profiles file failed schema validation: {error_msg}")
+                    return profiles
+
+                for name, profile_data in data.get("profiles", {}).items():
+                    profiles[name] = BenchmarkProfile.from_dict(profile_data)
                 logger.info("Loaded %d profiles from %s",
                             len(profiles), self.profiles_file)
         except (OSError, json.JSONDecodeError) as e:
             logger.warning("Could not load profiles file %s: %s",
                            self.profiles_file, e)
+        except Exception as e:
+            print(f"Warning: Unexpected error loading profiles: {e}")
+
         return profiles
 
     def save_defaults(self) -> bool:
         """Save current defaults to configuration file."""
         try:
             data = {"defaults": self._defaults.to_dict()}
-            with open(self.defaults_file, 'w') as f:
+            with open(self.defaults_file, "w") as f:
                 json.dump(data, f, indent=2)
             logger.info("Saved defaults to %s", self.defaults_file)
             return True
@@ -134,14 +153,42 @@ class ConfigManager:
                          self.defaults_file, e)
             return False
 
+    def validate_config(self) -> tuple[bool, list[str]]:
+        """Validate the current in-memory configuration against the schema.
+
+        Checks every profile dict (via BenchmarkProfile.to_dict()) against
+        the schema. Returns (valid, errors).
+
+        Returns:
+            Tuple of (is_valid, list_of_error_strings).
+        """
+        data = {
+            "profiles": {
+                name: profile.to_dict()
+                for name, profile in self._profiles.items()
+            }
+        }
+        return validate_config(data)
+
     def save_profiles(self) -> bool:
-        """Save all profiles to configuration file."""
+        """Save all profiles to configuration file.
+
+        Validates the configuration against the schema before writing.
+        Returns False without writing if validation fails.
+        """
+        # Validate before writing
+        is_valid, errors = self.validate_config()
+        if not is_valid:
+            error_msg = "; ".join(errors)
+            print(f"Error: profiles failed schema validation — not saving: {error_msg}")
+            return False
+
         try:
             data = {
                 "profiles": {name: profile.to_dict()
                              for name, profile in self._profiles.items()}
             }
-            with open(self.profiles_file, 'w') as f:
+            with open(self.profiles_file, "w") as f:
                 json.dump(data, f, indent=2)
             logger.info("Saved %d profiles to %s",
                         len(self._profiles), self.profiles_file)
@@ -188,7 +235,7 @@ class ConfigManager:
         duration: int = 15,
         num_threads: int = 1,
         batch_runs: int = 5,
-        cooldown_seconds: int = 5
+        cooldown_seconds: int = 5,
     ) -> bool:
         """Create a new benchmark profile."""
         if name in self._profiles:
@@ -199,7 +246,7 @@ class ConfigManager:
             duration=duration,
             num_threads=num_threads,
             batch_runs=batch_runs,
-            cooldown_seconds=cooldown_seconds
+            cooldown_seconds=cooldown_seconds,
         )
 
         self._profiles[name] = BenchmarkProfile(name=name, defaults=defaults)
