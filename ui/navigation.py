@@ -72,8 +72,8 @@ class NavigationManager:
             self.app.pop_screen()
         
         # Ensure main_menu is active
-        if self.app.current_screen and hasattr(self.app.current_screen, 'id'):
-            if self.app.current_screen.id != "main_menu":
+        if self.app.screen and hasattr(self.app.screen, 'id'):
+            if self.app.screen.id != "main_menu":
                 self.app.push_screen("main_menu")
     
     def notify(self, message: str, type: str = "info") -> None:
@@ -96,9 +96,12 @@ class NavigationManager:
         notification_type = type_mapping.get(type.lower(), NotificationType.INFO)
         
         # Show the toast notification on the current screen
-        if self.app.current_screen:
-            ToastNotification.show(
-                parent=self.app.current_screen,
-                message=message,
-                notification_type=notification_type
-            )
+        try:
+            if self.app.screen:
+                ToastNotification.show(
+                    parent=self.app.screen,
+                    message=message,
+                    notification_type=notification_type
+                )
+        except Exception:
+            pass

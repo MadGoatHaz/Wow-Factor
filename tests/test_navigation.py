@@ -24,6 +24,11 @@ def _fresh_manager_and_app():
             self.screen_stack = []
             self.current_screen = None
 
+        @property
+        def screen(self):
+            """Return the top screen from the stack (matches Textual App.screen)."""
+            return self.screen_stack[-1] if self.screen_stack else self.current_screen
+
         def push_screen(self, screen):
             self.screen_stack.append(screen)
             self.current_screen = screen
