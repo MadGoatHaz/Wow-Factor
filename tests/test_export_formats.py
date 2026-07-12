@@ -49,7 +49,7 @@ def test_xml_export_valid_data():
 
         # Verify XML structure elements
         assert '<?xml version="1.0" encoding="UTF-8"?>' in content
-        assert '<benchmarks>' in content
+        assert '<benchmark' in content  # Matches root with metadata attrs and child elements
         assert '</benchmarks>' in content
         assert '<benchmark id="1">' in content
         assert '<cpu>Intel Core i9-12900K</cpu>' in content
@@ -87,7 +87,7 @@ def test_xml_export_special_characters():
 
         # Verify basic XML structure is present
         assert '<?xml version="1.0" encoding="UTF-8"?>' in content
-        assert '<benchmarks>' in content
+        assert '<benchmark' in content  # Root element has metadata attributes
         assert '<cpu>AMD Ryzen 9 Threadripper</cpu>' in content
         assert '<score>20000</score>' in content
 
@@ -114,7 +114,7 @@ def test_xml_export_empty_list():
 
         # Verify XML structure is still valid but empty
         assert '<?xml version="1.0" encoding="UTF-8"?>' in content
-        assert '<benchmarks>' in content
+        assert '<benchmark' in content  # Root has metadata attributes
         assert '</benchmarks>' in content
         assert '<benchmark id=' not in content  # No benchmark entries
     finally:
@@ -320,13 +320,14 @@ def test_yaml_file_creation():
         with open(filepath, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
 
-        # Verify benchmark count and content
+        # Verify benchmark count and content (sorted by ops_per_second desc)
         benchmarks = data['benchmarks'] if data['benchmarks'] is not None else []
         assert len(benchmarks) == 2
-        assert benchmarks[0]['cpu'] == 'Test CPU A'
-        assert benchmarks[1]['cpu'] == 'Test CPU B'
-        assert benchmarks[0]['score'] == 10000
-        assert benchmarks[1]['score'] == 12000
+        # After sorting by ops_per_second descending, Test CPU B (12000) comes first
+        assert benchmarks[0]['cpu'] == 'Test CPU B'
+        assert benchmarks[1]['cpu'] == 'Test CPU A'
+        assert benchmarks[0]['score'] == 12000
+        assert benchmarks[1]['score'] == 10000
     finally:
         if os.path.exists(filepath):
             os.unlink(filepath)

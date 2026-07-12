@@ -4,9 +4,28 @@
 import csv
 import json
 import logging
+from datetime import datetime, timezone
 from typing import List, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
+
+
+def _sort_scores(scores: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Sort benchmark scores by ops_per_second descending."""
+    return sorted(
+        scores,
+        key=lambda s: s.get('ops_per_second', 0),
+        reverse=True
+    )
+
+
+def _build_metadata(source: str, record_count: int) -> Dict[str, Any]:
+    """Build standard metadata for export."""
+    return {
+        'export_timestamp': datetime.now(timezone.utc).isoformat(),
+        'source': source,
+        'record_count': record_count
+    }
 
 
 class XmlExporter:
@@ -15,12 +34,22 @@ class XmlExporter:
     @staticmethod
     def export(scores: List[Dict[str, Any]], filepath: str) -> None:
         """Export scores as XML to the specified file path."""
-        logger.info("Exporting %d scores to XML: %s", len(scores), filepath)
+        sorted_scores = _sort_scores(scores)
+        metadata = _build_metadata('WowFactor Benchmark', len(sorted_scores))
+        logger.info("Exporting %d scores to XML: %s", len(sorted_scores), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-                f.write('<benchmarks>\n')
-                for idx, score in enumerate(scores, start=1):
+                ts = XmlExporter._escape_xml(metadata['export_timestamp'])
+                src = XmlExporter._escape_xml(metadata['source'])
+                cnt = metadata['record_count']
+                f.write(
+                    f'<benchmarks '
+                    f'export_timestamp="{ts}" '
+                    f'source="{src}" '
+                    f'record_count="{cnt}">\n'
+                )
+                for idx, score in enumerate(sorted_scores, start=1):
                     system = score.get('system', {})
                     cpu = score.get(
                         'processor_model',
@@ -65,11 +94,19 @@ class YamlExporter:
     @staticmethod
     def export(scores: List[Dict[str, Any]], filepath: str) -> None:
         """Export scores as YAML to the specified file path."""
-        logger.info("Exporting %d scores to YAML: %s", len(scores), filepath)
+        sorted_scores = _sort_scores(scores)
+        metadata = _build_metadata('WowFactor Benchmark', len(sorted_scores))
+        logger.info("Exporting %d scores to YAML: %s", len(sorted_scores), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8') as f:
+                # Metadata document
+                f.write('# Benchmark Export Metadata\n')
+                f.write(f'# export_timestamp: {metadata["export_timestamp"]}\n')
+                f.write(f'# source: {metadata["source"]}\n')
+                f.write(f'# record_count: {metadata["record_count"]}\n')
+                f.write('---\n')
                 f.write('benchmarks:\n')
-                for score in scores:
+                for score in sorted_scores:
                     system = score.get('system', {})
                     cpu = score.get(
                         'processor_model',
@@ -101,16 +138,24 @@ class CsvExporter:
     @staticmethod
     def export(scores: List[Dict[str, Any]], filepath: str) -> None:
         """Export scores as CSV to the specified file path."""
-        logger.info("Exporting %d scores to CSV: %s", len(scores), filepath)
+        sorted_scores = _sort_scores(scores)
+        metadata = _build_metadata('WowFactor Benchmark', len(sorted_scores))
+        logger.info("Exporting %d scores to CSV: %s", len(sorted_scores), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8', newline='') as f:
+                # Metadata comment row at top
+                f.write(
+                    f'# export_timestamp={metadata["export_timestamp"]}, '
+                    f'source={metadata["source"]}, '
+                    f'record_count={metadata["record_count"]}\n'
+                )
                 writer = csv.writer(f, quoting=csv.QUOTE_ALL)
                 writer.writerow([
                     'id', 'cpu', 'score', 'timestamp',
                     'platform', 'frequency', 'threads',
                     'duration_seconds', 'total_operations'
                 ])
-                for idx, score in enumerate(scores, start=1):
+                for idx, score in enumerate(sorted_scores, start=1):
                     system = score.get('system', {})
                     cpu = score.get(
                         'processor_model',
@@ -137,6 +182,28 @@ class CsvExporter:
         logger.info("CSV export complete: %s", filepath)
 
 
+class JsonExporter:
+    """Exports benchmark scores as JSON format with metadata."""
+
+    @staticmethod
+    def export(scores: List[Dict[str, Any]], filepath: str) -> None:
+        """Export scores as JSON to the specified file path."""
+        sorted_scores = _sort_scores(scores)
+        metadata = _build_metadata('WowFactor Benchmark', len(sorted_scores))
+        logger.info("Exporting %d scores to JSON: %s", len(sorted_scores), filepath)
+        try:
+            output = {
+                'metadata': metadata,
+                'benchmarks': sorted_scores
+            }
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(output, f, indent=2)
+        except IOError as e:
+            logger.error("JSON export failed for %s: %s", filepath, e)
+            raise
+        logger.info("JSON export complete: %s", filepath)
+
+
 class AnalyticsExporter:
     """Exports analytics summary reports in JSON format."""
 
@@ -146,10 +213,15 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export analytics summary report to JSON file."""
+        metadata = _build_metadata('WowFactor Analytics', 1)
         logger.info("Exporting analytics report to JSON: %s", filepath)
         try:
+            output = {
+                'metadata': metadata,
+                **analytics_data
+            }
             with open(filepath, 'w', encoding='utf-8') as f:
-                json.dump(analytics_data, f, indent=2)
+                json.dump(output, f, indent=2)
             logger.info("Analytics JSON export complete: %s", filepath)
         except IOError as e:
             logger.error("Analytics JSON export failed for %s: %s",
@@ -162,10 +234,22 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export statistics per CPU model to CSV format."""
+        # Sort by mean ops_per_second descending
+        sorted_models = sorted(
+            stats_per_model.items(),
+            key=lambda item: item[1].get('ops_per_second', {}).get('mean', 0),
+            reverse=True
+        )
+        metadata = _build_metadata('WowFactor Stats', len(sorted_models))
         logger.info("Exporting stats for %d CPUs to CSV: %s",
-                    len(stats_per_model), filepath)
+                    len(sorted_models), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8', newline='') as f:
+                f.write(
+                    f'# export_timestamp={metadata["export_timestamp"]}, '
+                    f'source={metadata["source"]}, '
+                    f'record_count={metadata["record_count"]}\n'
+                )
                 writer = csv.writer(f)
                 writer.writerow([
                     'CPU Model', 'Sample Count',
@@ -173,7 +257,7 @@ class AnalyticsExporter:
                     'Ops/Sec Std Dev', 'Ops/Sec Min',
                     'Ops/Sec Max', 'Duration Mean (s)', 'Total Ops Mean'
                 ])
-                for cpu_model, stats in stats_per_model.items():
+                for cpu_model, stats in sorted_models:
                     ops_stats = stats.get('ops_per_second', {})
                     duration_stats = stats.get('duration_seconds', {})
                     total_ops_stats = stats.get('total_operations', {})
@@ -200,10 +284,16 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export trend analysis data to CSV format."""
+        metadata = _build_metadata('WowFactor Trends', len(trends))
         logger.info("Exporting trend data for %d entities to CSV: %s",
                     len(trends), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8', newline='') as f:
+                f.write(
+                    f'# export_timestamp={metadata["export_timestamp"]}, '
+                    f'source={metadata["source"]}, '
+                    f'record_count={metadata["record_count"]}\n'
+                )
                 writer = csv.writer(f)
                 writer.writerow([
                     'Entity', 'Trend Direction', 'Change Rate (%)',
@@ -232,10 +322,15 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export pairwise comparison report to JSON format."""
+        metadata = _build_metadata('WowFactor Comparison', 1)
         logger.info("Exporting comparison report to JSON: %s", filepath)
         try:
+            output = {
+                'metadata': metadata,
+                **comparison_data
+            }
             with open(filepath, 'w', encoding='utf-8') as f:
-                json.dump(comparison_data, f, indent=2)
+                json.dump(output, f, indent=2)
             logger.info("Comparison JSON export complete: %s", filepath)
         except IOError as e:
             logger.error("Comparison JSON export failed for %s: %s",
@@ -248,17 +343,29 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export CPU model rankings to CSV format."""
+        # Sort by mean descending (rankings should be ordered by performance)
+        sorted_rankings = sorted(
+            rankings,
+            key=lambda item: item[1].get('mean', 0),
+            reverse=True
+        )
+        metadata = _build_metadata('WowFactor Rankings', len(sorted_rankings))
         logger.info("Exporting %d rankings to CSV: %s",
-                    len(rankings), filepath)
+                    len(sorted_rankings), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8', newline='') as f:
+                f.write(
+                    f'# export_timestamp={metadata["export_timestamp"]}, '
+                    f'source={metadata["source"]}, '
+                    f'record_count={metadata["record_count"]}\n'
+                )
                 writer = csv.writer(f)
                 writer.writerow([
                     'Rank', 'CPU Model', 'Mean Ops/Sec',
                     'Median Ops/Sec', 'Std Dev',
                     'Min Ops/Sec', 'Max Ops/Sec', 'Sample Count'
                 ])
-                for rank, (model_name, stats) in enumerate(rankings, start=1):
+                for rank, (model_name, stats) in enumerate(sorted_rankings, start=1):
                     writer.writerow([
                         rank, model_name,
                         stats.get('mean', 0),
@@ -280,16 +387,28 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export detected outliers to CSV format."""
+        # Sort by ops_per_second descending
+        sorted_outliers = sorted(
+            outliers,
+            key=lambda o: o.get('score', {}).get('ops_per_second', 0),
+            reverse=True
+        )
+        metadata = _build_metadata('WowFactor Outliers', len(sorted_outliers))
         logger.info("Exporting %d outliers to CSV: %s",
-                    len(outliers), filepath)
+                    len(sorted_outliers), filepath)
         try:
             with open(filepath, 'w', encoding='utf-8', newline='') as f:
+                f.write(
+                    f'# export_timestamp={metadata["export_timestamp"]}, '
+                    f'source={metadata["source"]}, '
+                    f'record_count={metadata["record_count"]}\n'
+                )
                 writer = csv.writer(f)
                 writer.writerow([
                     'Timestamp', 'CPU Model', 'Score (Ops/Sec)',
                     'Z-Score', 'Deviation (%)'
                 ])
-                for outlier in outliers:
+                for outlier in sorted_outliers:
                     score_data = outlier.get('score', {})
                     model = score_data.get('system', {}).get(
                         'processor_model', 'Unknown')
@@ -312,14 +431,16 @@ class AnalyticsExporter:
         filepath: str
     ) -> None:
         """Export a human-readable text summary report."""
+        export_timestamp = datetime.now(timezone.utc).isoformat()
         logger.info("Exporting summary text report: %s", filepath)
         try:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write('=' * 60 + '\n')
                 f.write('WOWFACTOR BENCHMARK ANALYTICS SUMMARY REPORT\n')
                 f.write('=' * 60 + '\n\n')
-                generated_at = analytics_data.get('generated_at', 'Unknown')
-                f.write(f'Generated: {generated_at}\n\n')
+                f.write(f'Generated: {export_timestamp}\n')
+                f.write(f'Source: WowFactor Benchmark Suite\n')
+                f.write(f'Format: Summary Text Report\n\n')
 
                 overall_stats = analytics_data.get('overall_statistics', {})
                 if overall_stats:

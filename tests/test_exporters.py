@@ -141,7 +141,7 @@ class TestXmlExporter:
         
         # Verify XML structure - exporter uses 'model' field and defaults to Unknown
         assert '<?xml' in content
-        assert '<benchmarks>' in content
+        assert '<benchmarks ' in content  # Root element now has metadata attributes
         assert '<benchmark' in content
 
     def test_xml_export_special_characters(self, sample_scores_with_special_chars, temp_output_file):
@@ -409,10 +409,13 @@ class TestCsvExporter:
         CsvExporter.export([{'model': 'test', 'raw_score': 100}], csv_file)
         
         with open(csv_file, 'r') as f:
-            first_line = f.readline()
-        
+            lines = f.readlines()
+
+        # First line is metadata comment; header is on second line
+        header_line = next((l for l in lines if not l.startswith('#')), lines[0])
+
         # Should contain common field names
-        assert 'cpu' in first_line.lower()
+        assert 'cpu' in header_line.lower()
 
     def test_csv_export_empty_list(self, temp_output_file):
         """Test CSV export handles empty dataset."""
@@ -518,51 +521,59 @@ class TestJsonExporter:
             # If no separate JsonExporter, test direct JSON writing
             with open(temp_file, 'w') as f:
                 json.dump(sample_scores_data, f, indent=2)
-        
+
         assert os.path.exists(temp_file)
-        
+
         with open(temp_file, 'r') as f:
             data = json.load(f)
-        
+
+        # Handle wrapped format with metadata
+        if isinstance(data, dict) and 'benchmarks' in data:
+            data = data['benchmarks']
+
         assert len(data) == 2
 
     def test_json_export_pretty_printing(self, sample_scores_data):
         """Test JSON export uses pretty printing (indentation)."""
         import json
-        
+
         with tempfile.NamedTemporaryFile(suffix='.json', delete=True) as f:
             temp_file = f.name
-        
+
         try:
             from core.exporters import JsonExporter
             JsonExporter.export(sample_scores_data, temp_file)
         except (ImportError, AttributeError):
             with open(temp_file, 'w') as f:
                 json.dump(sample_scores_data, f, indent=2)
-        
+
         with open(temp_file, 'r') as f:
             content = f.read()
-        
+
         # Pretty-printed JSON should have newlines and indentation
         assert '\n' in content
 
     def test_json_export_empty_list(self):
         """Test JSON export handles empty dataset."""
         import json
-        
+
         with tempfile.NamedTemporaryFile(suffix='.json', delete=True) as f:
             temp_file = f.name
-        
+
         try:
             from core.exporters import JsonExporter
             JsonExporter.export([], temp_file)
         except (ImportError, AttributeError):
             with open(temp_file, 'w') as f:
                 json.dump([], f)
-        
+
         with open(temp_file, 'r') as f:
             data = json.load(f)
-        
+
+        # Handle wrapped format with metadata
+        if isinstance(data, dict) and 'benchmarks' in data:
+            data = data['benchmarks']
+
         assert data == []
 
     def test_json_export_special_characters(self, sample_scores_with_special_chars):
@@ -621,7 +632,11 @@ class TestJsonExporter:
         
         with open(temp_file, 'r') as f:
             data = json.load(f)
-        
+
+        # Handle wrapped format with metadata
+        if isinstance(data, dict) and 'benchmarks' in data:
+            data = data['benchmarks']
+
         assert len(data) >= 1000
 
     def test_json_export_invalid_data_types(self):
@@ -644,6 +659,10 @@ class TestJsonExporter:
         
         with open(temp_file, 'r') as f:
             data = json.load(f)
+        
+        # Handle wrapped format with metadata
+        if isinstance(data, dict) and 'benchmarks' in data:
+            data = data['benchmarks']
         
         assert len(data) == 1
 
