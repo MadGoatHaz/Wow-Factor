@@ -12,7 +12,7 @@ from datetime import datetime
 # Add the project directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ui.components import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+from ui.screens.views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
 from textual.app import App
 from textual.widgets import DataTable
 

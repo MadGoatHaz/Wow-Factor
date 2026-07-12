@@ -9,7 +9,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ui.components import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+from ui.screens.views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
 
 def test_loading_states():
     """Test that the screens have proper loading state implementations."""

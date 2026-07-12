@@ -61,12 +61,12 @@ class BenchmarkTrendsScreen:
     def query_one(self, selector):
         return True
 
-from ui.components import (
-    WowFactorHeader, MainMenuScreen, RunSingleBenchmarkScreen,
-    RunBatchBenchmarkScreen, ViewBestScoresScreen, CompareCPUScreen,
-    ViewAllScoresScreen, ClearInvalidScoresConfirmationScreen,
-    ClearInvalidScoresResultScreen, colorize_text_gradient
-)
+from ui.shared import WowFactorHeader, colorize_text_gradient
+from ui.screens.main_menu import MainMenuScreen
+from ui.screens.benchmark import RunSingleBenchmarkScreen, RunBatchBenchmarkScreen
+from ui.screens.views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+from ui.shared import ClearInvalidScoresConfirmationScreen
+from ui.screens.cleanup import ClearInvalidScoresResultScreen
 
 class TestDataVisualization(unittest.TestCase):
     """Test data visualization features in BenchmarkTrendsScreen"""

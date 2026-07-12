@@ -9,7 +9,7 @@ import os
 # Add the project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ui.components import ViewAllScoresScreen
+from ui.screens.views import ViewAllScoresScreen
 from textual.widgets import DataTable
 
 

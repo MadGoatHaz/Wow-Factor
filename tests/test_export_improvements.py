@@ -13,7 +13,7 @@ from unittest.mock import patch, MagicMock
 # Add the project root to Python path so we can import modules
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ui.components import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+from ui.screens.views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
 
 
 def test_csv_export_functionality():

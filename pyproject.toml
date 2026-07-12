@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wowfactor"
+version = "1.1.1"
+description = "High-performance CPU benchmarking and comparison tool with real-time analytics, power management monitoring, and comprehensive data export"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+authors = [
+    {name = "MadGoatHaz"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Benchmark",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "textual>=0.60.0",
+    "psutil>=5.9.0",
+    "py-cpuinfo>=9.0.0",
+    "textual-plotext>=0.6.0",
+    "plotext>=5.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "pytest-cov>=4.0",
+    "ruff>=0.1",
+    "pre-commit>=3.0",
+]
+
+[project.scripts]
+wowfactor = "wowfactor:check_and_setup_venv_and_launch"
+
+[tool.setuptools.packages.find]
+include = ["core*", "ui*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = ["-v", "--tb=short", "--strict-markers"]
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks integration tests",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = ["core", "ui", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*.py" = ["E402", "F401"]

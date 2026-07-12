@@ -1,0 +1,215 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.3, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/Optane/Documents/WowFactor
+plugins: anyio-4.13.0
+collecting ... collected 70 items
+
+tests/test_aggregation.py::TestAggregationFunctions::test_aggregate_scores_by_cpu_empty_data PASSED [  1%]
+tests/test_aggregation.py::TestAggregationFunctions::test_aggregate_scores_by_cpu_missing_processor_model PASSED [  2%]
+tests/test_aggregation.py::TestAggregationFunctions::test_aggregate_scores_by_cpu_multiple_different_cpus PASSED [  4%]
+tests/test_aggregation.py::TestAggregationFunctions::test_aggregate_scores_by_cpu_multiple_same_cpu PASSED [  5%]
+tests/test_aggregation.py::TestAggregationFunctions::test_aggregate_scores_by_cpu_single_score PASSED [  7%]
+tests/test_aggregation.py::TestAggregationFunctions::test_get_score_distribution_empty_data PASSED [  8%]
+tests/test_aggregation.py::TestAggregationFunctions::test_get_score_distribution_multiple_scores PASSED [ 10%]
+tests/test_aggregation.py::TestAggregationFunctions::test_get_score_distribution_single_score PASSED [ 11%]
+tests/test_aggregation.py::TestAggregationFunctions::test_get_score_distribution_with_custom_bin_size PASSED [ 12%]
+tests/test_charts_ui.py::TestChartsUI::test_render_charts_flow FAILED    [ 14%]
+tests/test_comparator.py::TestResultsComparator::test_compare_multiple PASSED [ 15%]
+tests/test_comparator.py::TestResultsComparator::test_compare_runs PASSED [ 17%]
+tests/test_comparator.py::TestResultsComparator::test_compare_runs_different_threads PASSED [ 18%]
+tests/test_comparator.py::TestResultsComparator::test_get_available_results_empty PASSED [ 20%]
+tests/test_comparator.py::TestResultsComparator::test_get_available_results_with_files PASSED [ 21%]
+tests/test_comparator.py::TestResultsComparator::test_get_best_run PASSED [ 22%]
+tests/test_comparator.py::TestResultsComparator::test_get_stats_for_run PASSED [ 24%]
+tests/test_comparator.py::TestResultsComparator::test_load_result_invalid_json PASSED [ 25%]
+tests/test_comparator.py::TestResultsComparator::test_load_result_missing_fields PASSED [ 27%]
+tests/test_comparator.py::TestResultsComparator::test_load_result_valid PASSED [ 28%]
+tests/test_config_manager.py::TestConfigManager::test_benchmark_defaults_from_dict PASSED [ 30%]
+tests/test_config_manager.py::TestConfigManager::test_benchmark_defaults_partial_from_dict PASSED [ 31%]
+tests/test_config_manager.py::TestConfigManager::test_benchmark_defaults_to_dict PASSED [ 32%]
+tests/test_config_manager.py::TestConfigManager::test_create_duplicate_profile PASSED [ 34%]
+tests/test_config_manager.py::TestConfigManager::test_create_profile PASSED [ 35%]
+tests/test_config_manager.py::TestConfigManager::test_delete_profile PASSED [ 37%]
+tests/test_config_manager.py::TestConfigManager::test_get_all_profiles PASSED [ 38%]
+tests/test_config_manager.py::TestConfigManager::test_initial_defaults PASSED [ 40%]
+tests/test_config_manager.py::TestConfigManager::test_save_and_load_defaults PASSED [ 41%]
+tests/test_config_manager.py::TestConfigManager::test_set_and_get_defaults PASSED [ 42%]
+tests/test_config_manager.py::TestConfigManager::test_update_profile PASSED [ 44%]
+tests/test_cpu_sleep.py::test_cpu_sleep_behavior PASSED                  [ 45%]
+tests/test_cpu_sleep.py::test_infinite_run SKIPPED (Requires manual ...) [ 47%]
+tests/test_error_handling.py::test_error_handling PASSED                 [ 48%]
+tests/test_export_formats.py::test_xml_export_valid_data PASSED          [ 50%]
+tests/test_export_formats.py::test_xml_export_special_characters PASSED  [ 51%]
+tests/test_export_formats.py::test_xml_export_empty_list PASSED          [ 52%]
+tests/test_export_formats.py::test_xml_file_creation PASSED              [ 54%]
+tests/test_export_formats.py::test_yaml_export_valid_data PASSED         [ 55%]
+tests/test_export_formats.py::test_yaml_export_nested_data PASSED        [ 57%]
+tests/test_export_formats.py::test_yaml_export_empty_list PASSED         [ 58%]
+tests/test_export_formats.py::test_yaml_file_creation PASSED             [ 60%]
+tests/test_export_functionality.py::test_view_best_scores_export PASSED  [ 61%]
+tests/test_export_functionality.py::test_compare_cpu_export PASSED       [ 62%]
+tests/test_export_functionality.py::test_view_all_scores_export PASSED   [ 64%]
+tests/test_export_improvements.py::test_csv_export_functionality PASSED  [ 65%]
+tests/test_final_functionality.py::test_imports PASSED                   [ 67%]
+tests/test_final_functionality.py::test_screen_registration PASSED       [ 68%]
+tests/test_final_functionality.py::test_core_functionality PASSED        [ 70%]
+tests/test_final_functionality.py::test_css_styling PASSED               [ 71%]
+tests/test_final_functionality.py::test_button_id_consistency PASSED     [ 72%]
+tests/test_final_functionality.py::test_message_classes PASSED           [ 74%]
+tests/test_loading_states.py::test_loading_states PASSED                 [ 75%]
+tests/test_pagination.py::test_pagination_initialization PASSED          [ 77%]
+tests/test_pagination.py::test_pagination_calculation PASSED             [ 78%]
+tests/test_pagination.py::test_pagination_navigation PASSED              [ 80%]
+tests/test_power_management.py::TestPowerPlanManager::test_enter_linux_already_performance PASSED [ 81%]
+tests/test_power_management.py::TestPowerPlanManager::test_enter_linux_permission_error PASSED [ 82%]
+tests/test_power_management.py::TestPowerPlanManager::test_enter_linux_success PASSED [ 84%]
+tests/test_power_management.py::TestPowerPlanManager::test_enter_non_linux_windows PASSED [ 85%]
+tests/test_threading_logic.py::test_single_threaded_execution PASSED     [ 87%]
+tests/test_threading_logic.py::test_multi_threaded_execution PASSED      [ 88%]
+tests/test_threading_logic.py::test_result_structure_with_threads PASSED [ 90%]
+tests/test_threading_ui_integration.py::TestThreadingUIIntegration::test_on_benchmark_completion_success PASSED [ 91%]
+tests/test_threading_ui_integration.py::TestThreadingUIIntegration::test_start_benchmark_validation_invalid_threads PASSED [ 92%]
+tests/test_threading_ui_integration.py::TestThreadingUIIntegration::test_start_benchmark_validation_max_threads_warning PASSED [ 94%]
+tests/test_threading_ui_integration.py::TestThreadingUIIntegration::test_start_benchmark_validation_non_integer_threads PASSED [ 95%]
+tests/test_threading_ui_integration.py::TestThreadingUIIntegration::test_start_benchmark_validation_valid PASSED [ 97%]
+tests/test_worker_cancel.py::test_worker_cancel_detection PASSED         [ 98%]
+tests/test_worker_integration.py::test_basic_functionality PASSED        [100%]
+
+=================================== FAILURES ===================================
+_____________________ TestChartsUI.test_render_charts_flow _____________________
+
+self = <test_charts_ui.TestChartsUI testMethod=test_render_charts_flow>
+
+    def test_render_charts_flow(self):
+        """
+        Verify that AnalyticsScreen.render_charts passes correct data to PlotextPlot.
+        """
+        print("\n--- Testing AnalyticsScreen Chart Rendering Flow ---")
+    
+        # 1. Instantiate AnalyticsScreen
+        screen = AnalyticsScreen()
+        print("1. Instantiated AnalyticsScreen")
+    
+        # 2. Mock the query_one method to return mock plots
+        # We need two distinct mocks for the two plots to verify them independently
+        mock_cpu_plot = MagicMock()
+        mock_dist_plot = MagicMock()
+    
+        # Each plot has a .plt attribute (the plotext wrapper) which receives the plotting commands
+        mock_cpu_plt = MagicMock()
+        mock_cpu_plot.plt = mock_cpu_plt
+    
+        mock_dist_plt = MagicMock()
+        mock_dist_plot.plt = mock_dist_plt
+    
+        # Setup query_one side effect to return the correct mock based on the CSS selector
+        def query_one_side_effect(selector, type_hint=None):
+            if selector == "#cpu_avg_plot":
+                return mock_cpu_plot
+            elif selector == "#score_dist_plot":
+                return mock_dist_plot
+            raise ValueError(f"Unexpected selector: {selector}")
+    
+        screen.query_one = MagicMock(side_effect=query_one_side_effect)
+        print("2. Mocked query_one and PlotextPlot widgets")
+    
+        # 3. Inject sample data into AnalyticsScreen.all_scores
+        # The structure is representative of what wow_core produces
+        sample_data = [
+            {"system": {"processor_model": "CPU A"}, "ops_per_second": 100},
+            {"system": {"processor_model": "CPU B"}, "ops_per_second": 200},
+        ]
+        screen.all_scores = sample_data
+        print("3. Injected sample data into screen.all_scores")
+    
+        # 4. Patch the aggregation functions in ui.components to return controlled data
+        # This isolates the test from wow_core logic and focuses on the UI data flow
+        with patch('ui.components.aggregate_scores_by_cpu') as mock_agg, \
+             patch('ui.components.get_score_distribution') as mock_dist_func:
+    
+            # Define return values for the helpers to verify they are passed to the plot
+            expected_cpus = ["CPU A", "CPU B"]
+            expected_scores = [100.0, 200.0]
+            mock_agg.return_value = (expected_cpus, expected_scores)
+    
+            expected_bins = ["0-100", "100-200"]
+            expected_counts = [5, 10]
+            mock_dist_func.return_value = (expected_bins, expected_counts)
+    
+            # 5. Call AnalyticsScreen.render_charts()
+            print("4. Calling render_charts()...")
+            screen.render_charts()
+    
+            # 6. Assert that plt.bar was called for both charts with correct data
+    
+            # --- CPU Plot Assertions ---
+            print("5. Verifying CPU Plot calls...")
+            # Check if clear_data was called
+            mock_cpu_plt.clear_data.assert_called_once()
+    
+            # Check if the correct data was passed to bar()
+            # We expect: plt.bar(["CPU A", "CPU B"], [100.0, 200.0])
+            mock_cpu_plt.bar.assert_called_with(expected_cpus, expected_scores)
+            print("   [PASS] CPU Plot received correct data")
+    
+            # Check titles/labels
+            mock_cpu_plt.title.assert_called_with("Average Score by CPU")
+            mock_cpu_plt.xlabel.assert_called_with("CPU Model")
+    
+            # --- Distribution Plot Assertions ---
+            print("6. Verifying Distribution Plot calls...")
+            # Check if clear_data was called
+            mock_dist_plt.clear_data.assert_called_once()
+    
+            # Check if the correct data was passed to bar()
+            # We expect: plt.bar(["0-100", "100-200"], [5, 10])
+>           mock_dist_plt.bar.assert_called_with(expected_bins, expected_counts)
+
+tests/test_charts_ui.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <MagicMock name='mock.plt.bar' id='140697877220384'>
+args = (['0-100', '100-200'], [5, 10]), kwargs = {}
+expected = call(['0-100', '100-200'], [5, 10]), actual = call(['0-500'], [2])
+_error_message = <function NonCallableMock.assert_called_with.<locals>._error_message at 0x7ff6c6f86090>
+cause = None
+
+    def assert_called_with(self, /, *args, **kwargs):
+        """assert that the last call was made with the specified arguments.
+    
+        Raises an AssertionError if the args and keyword args passed in are
+        different to the last call to the mock."""
+        if self.call_args is None:
+            expected = self._format_mock_call_signature(args, kwargs)
+            actual = 'not called.'
+            error_message = ('expected call not found.\nExpected: %s\n  Actual: %s'
+                    % (expected, actual))
+            raise AssertionError(error_message)
+    
+        def _error_message():
+            msg = self._format_mock_failure_message(args, kwargs)
+            return msg
+        expected = self._call_matcher(_Call((args, kwargs), two=True))
+        actual = self._call_matcher(self.call_args)
+        if actual != expected:
+            cause = expected if isinstance(expected, Exception) else None
+>           raise AssertionError(_error_message()) from cause
+E           AssertionError: expected call not found.
+E           Expected: bar(['0-100', '100-200'], [5, 10])
+E             Actual: bar(['0-500'], [2])
+
+/usr/lib/python3.14/unittest/mock.py:985: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+--- Testing AnalyticsScreen Chart Rendering Flow ---
+1. Instantiated AnalyticsScreen
+2. Mocked query_one and PlotextPlot widgets
+3. Injected sample data into screen.all_scores
+4. Calling render_charts()...
+5. Verifying CPU Plot calls...
+   [PASS] CPU Plot received correct data
+6. Verifying Distribution Plot calls...
+=========================== short test summary info ============================
+FAILED tests/test_charts_ui.py::TestChartsUI::test_render_charts_flow - Asser...
+============== 1 failed, 68 passed, 1 skipped in 70.99s (0:01:10) ==============

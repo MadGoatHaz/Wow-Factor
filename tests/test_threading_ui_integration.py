@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import threading
-from ui.components import RunSingleBenchmarkScreen, BenchmarkCompletion
+from ui.screens.benchmark import RunSingleBenchmarkScreen
+from ui.messages import BenchmarkCompletion
 
 class TestThreadingUIIntegration(unittest.TestCase):
     def setUp(self):
@@ -22,6 +23,8 @@ class TestThreadingUIIntegration(unittest.TestCase):
         
         # To be safe in case future logic uses it:
         type(self.screen).app = MagicMock()
+        # Populate SCREENS registry for NavigationManager.navigate_to calls
+        self.screen.app.SCREENS = {"loading_overlay": MagicMock()}
 
         # Create mock widgets ensuring they have the attributes accessed by the screen code
         self.mock_duration_input = MagicMock()
@@ -48,8 +51,16 @@ class TestThreadingUIIntegration(unittest.TestCase):
             if "#result_summary_display" in selector: return self.mock_summary_display
             if "#result_markdown_display" in selector: return self.mock_markdown_display
             return MagicMock()
-            
+
         self.screen.query_one.side_effect = side_effect
+        
+        # Mock NavigationManager.notify to avoid ToastNotification UI setup
+        # and capture calls for assertion
+        self.screen._navigation = None  # Reset so navigation property creates fresh instance
+        nav = self.screen.navigation
+        nav.notify = MagicMock()
+        nav.navigate_to = MagicMock()
+        nav.go_back = MagicMock()
 
     def test_start_benchmark_validation_valid(self):
         """Test that start_benchmark_run processes valid inputs correctly."""
@@ -73,8 +84,10 @@ class TestThreadingUIIntegration(unittest.TestCase):
         
         self.screen.start_benchmark_run()
         
-        # Verify error message
-        self.mock_progress_display.update.assert_called_with("[red]Thread count must be at least 1.[/red]")
+        # Verify error notification via navigation service
+        self.screen.navigation.notify.assert_called_with(
+            "Thread count must be at least 1.", type="error"
+        )
         
         # Verify worker was NOT started
         self.screen.run_worker.assert_not_called()
@@ -85,8 +98,10 @@ class TestThreadingUIIntegration(unittest.TestCase):
         
         self.screen.start_benchmark_run()
         
-        # Verify error message
-        self.mock_progress_display.update.assert_called_with("[red]Invalid thread count. Please enter a positive integer.[/red]")
+        # Verify error notification via navigation service
+        self.screen.navigation.notify.assert_called_with(
+            "Invalid thread count. Please enter a positive integer.", type="error"
+        )
         
         # Verify worker was NOT started
         self.screen.run_worker.assert_not_called()
@@ -120,8 +135,11 @@ class TestThreadingUIIntegration(unittest.TestCase):
         
         self.screen.on_benchmark_completion(message)
         
-        # Verify UI updates
-        self.mock_progress_display.update.assert_called_with("Benchmark completed!")
+        # Verify notification sent via navigation service
+        self.screen.navigation.notify.assert_any_call(
+            "Benchmark completed successfully!", type="success"
+        )
+        # Verify UI state changes
         self.assertFalse(self.mock_start_btn.disabled)
         self.assertTrue(self.mock_stop_btn.disabled)
         self.assertFalse(self.mock_stop_btn.display)

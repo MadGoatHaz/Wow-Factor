@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ui.components import ViewAllScoresScreen
+from ui.screens.views import ViewAllScoresScreen
 
 # Test the exact scenario from the failing test
 print("Testing pagination calculation...")

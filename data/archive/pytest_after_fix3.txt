@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.3, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/Optane/Documents/WowFactor
+plugins: anyio-4.13.0
+collecting ... collected 69 items / 1 error
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_charts_ui.py ___________________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_charts_ui.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_charts_ui.py:21: in <module>
+    from ui.components import AnalyticsScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from 'ui.components' (/mnt/Optane/Documents/WowFactor/ui/components.py)
+=========================== short test summary info ============================
+ERROR tests/test_charts_ui.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.23s ===============================

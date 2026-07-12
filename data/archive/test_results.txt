@@ -1,0 +1,55 @@
+................................s...............................         [100%]/mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/unraisableexception.py:33: RuntimeWarning: coroutine 'RunSingleBenchmarkScreen._benchmark_worker_function' was never awaited
+  gc.collect()
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+
+=============================== warnings summary ===============================
+tests/test_export_improvements.py::test_csv_export_functionality
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_export_improvements.py::test_csv_export_functionality returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_final_functionality.py::test_imports
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_final_functionality.py::test_imports returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_final_functionality.py::test_screen_registration
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_final_functionality.py::test_screen_registration returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_final_functionality.py::test_core_functionality
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_final_functionality.py::test_core_functionality returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_final_functionality.py::test_css_styling
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_final_functionality.py::test_css_styling returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_final_functionality.py::test_button_id_consistency
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_final_functionality.py::test_button_id_consistency returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_final_functionality.py::test_message_classes
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_final_functionality.py::test_message_classes returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+tests/test_worker_integration.py::test_basic_functionality
+  /mnt/Optane/Documents/WowFactor/.venv/lib/python3.14/site-packages/_pytest/python.py:170: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_worker_integration.py::test_basic_functionality returned <class 'bool'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+63 passed, 1 skipped, 8 warnings in 47.63s

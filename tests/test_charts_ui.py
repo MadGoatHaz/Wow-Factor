@@ -18,7 +18,7 @@ except ImportError:
     mock_plotext.PlotextPlot = MagicMock
 
 # Now import the component to test
-from ui.components import AnalyticsScreen
+from ui.screens.analytics import AnalyticsScreen
 
 class TestChartsUI(unittest.TestCase):
     def test_render_charts_flow(self):
@@ -63,10 +63,10 @@ class TestChartsUI(unittest.TestCase):
         screen.all_scores = sample_data
         print("3. Injected sample data into screen.all_scores")
         
-        # 4. Patch the aggregation functions in ui.components to return controlled data
+        # 4. Patch the aggregation functions in ui.screens.analytics to return controlled data
         # This isolates the test from wow_core logic and focuses on the UI data flow
-        with patch('ui.components.aggregate_scores_by_cpu') as mock_agg, \
-             patch('ui.components.get_score_distribution') as mock_dist_func:
+        with patch('ui.screens.analytics.aggregate_scores_by_cpu') as mock_agg, \
+             patch('ui.screens.analytics.get_score_distribution') as mock_dist_func:
             
             # Define return values for the helpers to verify they are passed to the plot
             expected_cpus = ["CPU A", "CPU B"]

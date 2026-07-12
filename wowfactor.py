@@ -84,10 +84,10 @@ def check_and_setup_venv_and_launch():
             # Ensure Textual can be imported before launching
             import textual
             
-            # Import the app class from ui.components
+            # Import the app class from ui.app
             # We need to make sure the current directory is in sys.path
             # (Already added above)
-            from ui.components import WowFactorTUI
+            from ui.app import WowFactorTUI
             
             # Run the app
             app = WowFactorTUI()

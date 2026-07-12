@@ -1,0 +1,149 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.3, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/Optane/Documents/WowFactor
+plugins: anyio-4.13.0
+collecting ... collected 56 items / 6 errors
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_charts_ui.py ___________________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_charts_ui.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_charts_ui.py:21: in <module>
+    from ui.components import AnalyticsScreen
+ui/__init__.py:8: in <module>
+    from .app import WowFactorTUI, DataExportMixin
+ui/app.py:12: in <module>
+    from ui.screens.main_menu import MainMenuScreen
+ui/screens/__init__.py:9: in <module>
+    from .main_menu import MainMenuScreen
+ui/screens/main_menu.py:15: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+ui/screens/analytics.py:22: in <module>
+    from ui.components import (
+ui/components.py:54: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from partially initialized module 'ui.screens.analytics' (most likely due to a circular import) (/mnt/Optane/Documents/WowFactor/ui/screens/analytics.py)
+_____________ ERROR collecting tests/test_export_functionality.py ______________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_export_functionality.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_export_functionality.py:15: in <module>
+    from ui.components import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+ui/__init__.py:8: in <module>
+    from .app import WowFactorTUI, DataExportMixin
+ui/app.py:12: in <module>
+    from ui.screens.main_menu import MainMenuScreen
+ui/screens/__init__.py:9: in <module>
+    from .main_menu import MainMenuScreen
+ui/screens/main_menu.py:15: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+ui/screens/analytics.py:22: in <module>
+    from ui.components import (
+ui/components.py:54: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from partially initialized module 'ui.screens.analytics' (most likely due to a circular import) (/mnt/Optane/Documents/WowFactor/ui/screens/analytics.py)
+______________ ERROR collecting tests/test_export_improvements.py ______________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_export_improvements.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_export_improvements.py:17: in <module>
+    from ui.components import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+ui/__init__.py:8: in <module>
+    from .app import WowFactorTUI, DataExportMixin
+ui/app.py:12: in <module>
+    from ui.screens.main_menu import MainMenuScreen
+ui/screens/__init__.py:9: in <module>
+    from .main_menu import MainMenuScreen
+ui/screens/main_menu.py:15: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+ui/screens/analytics.py:22: in <module>
+    from ui.components import (
+ui/components.py:54: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from partially initialized module 'ui.screens.analytics' (most likely due to a circular import) (/mnt/Optane/Documents/WowFactor/tests/../ui/screens/analytics.py)
+________________ ERROR collecting tests/test_loading_states.py _________________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_loading_states.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_loading_states.py:12: in <module>
+    from ui.components import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+ui/__init__.py:8: in <module>
+    from .app import WowFactorTUI, DataExportMixin
+ui/app.py:12: in <module>
+    from ui.screens.main_menu import MainMenuScreen
+ui/screens/__init__.py:9: in <module>
+    from .main_menu import MainMenuScreen
+ui/screens/main_menu.py:15: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+ui/screens/analytics.py:22: in <module>
+    from ui.components import (
+ui/components.py:54: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from partially initialized module 'ui.screens.analytics' (most likely due to a circular import) (/mnt/Optane/Documents/WowFactor/tests/../ui/screens/analytics.py)
+__________________ ERROR collecting tests/test_pagination.py ___________________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_pagination.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_pagination.py:12: in <module>
+    from ui.components import ViewAllScoresScreen
+ui/__init__.py:8: in <module>
+    from .app import WowFactorTUI, DataExportMixin
+ui/app.py:12: in <module>
+    from ui.screens.main_menu import MainMenuScreen
+ui/screens/__init__.py:9: in <module>
+    from .main_menu import MainMenuScreen
+ui/screens/main_menu.py:15: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+ui/screens/analytics.py:22: in <module>
+    from ui.components import (
+ui/components.py:54: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from partially initialized module 'ui.screens.analytics' (most likely due to a circular import) (/mnt/Optane/Documents/WowFactor/tests/../ui/screens/analytics.py)
+___________ ERROR collecting tests/test_threading_ui_integration.py ____________
+ImportError while importing test module '/mnt/Optane/Documents/WowFactor/tests/test_threading_ui_integration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_threading_ui_integration.py:4: in <module>
+    from ui.components import RunSingleBenchmarkScreen, BenchmarkCompletion
+ui/__init__.py:8: in <module>
+    from .app import WowFactorTUI, DataExportMixin
+ui/app.py:12: in <module>
+    from ui.screens.main_menu import MainMenuScreen
+ui/screens/__init__.py:9: in <module>
+    from .main_menu import MainMenuScreen
+ui/screens/main_menu.py:15: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+ui/screens/analytics.py:22: in <module>
+    from ui.components import (
+ui/components.py:54: in <module>
+    from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
+E   ImportError: cannot import name 'AnalyticsScreen' from partially initialized module 'ui.screens.analytics' (most likely due to a circular import) (/mnt/Optane/Documents/WowFactor/tests/../ui/screens/analytics.py)
+=========================== short test summary info ============================
+ERROR tests/test_charts_ui.py
+ERROR tests/test_export_functionality.py
+ERROR tests/test_export_improvements.py
+ERROR tests/test_loading_states.py
+ERROR tests/test_pagination.py
+ERROR tests/test_threading_ui_integration.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 6 errors in 0.35s ===============================
