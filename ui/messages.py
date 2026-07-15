@@ -9,10 +9,12 @@ from textual.message import Message # Import Message for custom events
 
 class BenchmarkProgress(Message):
     """Message for live progress updates from benchmark worker."""
-    def __init__(self, total_ops: int, ops_per_second: float):
+    def __init__(self, total_ops: int, ops_per_second: float, elapsed_time: float = 0.0):
         super().__init__()
         self.total_ops = total_ops
         self.ops_per_second = ops_per_second
+        self.elapsed_time = elapsed_time
+        self.elapsed_time = elapsed_time
 
 
 class BenchmarkCompletion(Message):

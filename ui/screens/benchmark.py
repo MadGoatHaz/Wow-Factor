@@ -1,8 +1,7 @@
-import json
+import asyncio
 import logging
 import multiprocessing
-import time
-from textual.widgets import Button, Static, Input, Markdown, ProgressBar
+from textual.widgets import Button, Static, Input, ProgressBar, DataTable
 from textual.containers import Container, VerticalScroll, Horizontal
 from textual.worker import WorkerCancelled
 
@@ -38,16 +37,17 @@ class RunSingleBenchmarkScreen(BaseScreen):
             yield Static("Progress: Ready to start...", id="progress_display")
             yield ProgressBar(id="benchmark_progress", show_eta=True)
             yield Static("", id="result_summary_display", classes="result-summary")
-            yield Markdown("", id="result_markdown_display") # Using Markdown for flexible output
+            yield DataTable(id="result_table", zebra_stripes=True)
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BENCHMARK")
-        self.query_one("#stop_benchmark", Button).display = False # Hide stop button initially
+        self.query_one("#stop_benchmark", Button).display = False
         self.query_one("#result_summary_display", Static).display = False
         self.query_one("#benchmark_progress", ProgressBar).display = False
-        self.query_one("#result_markdown_display", Markdown).display = False
+        self.query_one("#result_table", DataTable).display = False
+        self._benchmark_duration = 0  # Track duration for progress bar
 
     def action_go_back(self) -> None:
         self.navigation.go_back()
@@ -96,17 +96,27 @@ class RunSingleBenchmarkScreen(BaseScreen):
 
         is_infinite = (duration == 0)
 
-        # Show loading overlay during benchmark execution
-        self.navigation.navigate_to("loading_overlay", message="Running benchmark...")
+        # Track duration for meaningful progress bar
+        self._benchmark_duration = duration
+        self._benchmark_is_infinite = is_infinite
 
         self.query_one("#start_benchmark", Button).disabled = True
         self.query_one("#stop_benchmark", Button).disabled = False
         self.query_one("#stop_benchmark", Button).display = True
         self.query_one("#back_to_main_menu", Button).disabled = True
         self.query_one("#result_summary_display", Static).display = False
-        self.query_one("#result_markdown_display", Markdown).display = False
+        self.query_one("#result_table", DataTable).display = False
         self.query_one("#progress_display", Static).update("Benchmark started...")
         self.query_one("#benchmark_progress", ProgressBar).display = True
+
+        # Set progress bar mode: indeterminate for infinite, time-based for finite
+        pb = self.query_one("#benchmark_progress", ProgressBar)
+        if is_infinite:
+            pb.update(total=1, completed=0)  # Indeterminate: no ETA
+            pb.show_eta = False
+        else:
+            pb.update(total=duration, completed=0)
+            pb.show_eta = True
 
         self.benchmark_worker = self.run_worker(
             lambda: self._benchmark_worker_function(duration, is_infinite, num_threads),
@@ -132,7 +142,7 @@ class RunSingleBenchmarkScreen(BaseScreen):
                 total_ops = current_total_ops
                 elapsed_time = current_time - start_time
                 ops_per_second = total_ops / elapsed_time if elapsed_time > 0 else 0
-                self.post_message(BenchmarkProgress(total_ops, ops_per_second))
+                self.post_message(BenchmarkProgress(total_ops, ops_per_second, elapsed_time))
 
             result = execute_single_benchmark_run(duration, is_infinite, num_threads, progress_callback)
             self.post_message(BenchmarkCompletion(result))
@@ -157,22 +167,26 @@ class RunSingleBenchmarkScreen(BaseScreen):
                 self.post_message(BenchmarkCompletion({"error": str(e), "message": friendly_error, "error_type": type(e).__name__}, interrupted=True))
 
     def on_benchmark_progress(self, message: BenchmarkProgress) -> None:
-        # Progress updates remain as direct widget updates for real-time feedback
         self.query_one("#progress_display", Static).update(
-            f"Progress: [green]Ops: {format_large_number(message.total_ops)}[/green] | [yellow]Ops/sec: {format_large_number(message.ops_per_second)}[/yellow]"
+            f"Progress: [green]Ops: {format_large_number(message.total_ops)}[/green] "
+            f"| [yellow]Ops/sec: {format_large_number(message.ops_per_second)}[/yellow]"
         )
-        # Update progress bar
         try:
             pb = self.query_one("#benchmark_progress", ProgressBar)
-            pb.update(total=999999999, completed=message.total_ops)
+            if getattr(self, '_benchmark_is_infinite', False):
+                # Indeterminate: just animate with no ETA
+                pb.show_eta = False
+            else:
+                # Time-based progress using elapsed vs total duration
+                duration = getattr(self, '_benchmark_duration', 0)
+                if duration > 0:
+                    pb.update(total=duration, completed=min(message.elapsed_time, duration))
+                    pb.show_eta = True
             pb.display = True
         except Exception:
             pass
 
     def on_benchmark_completion(self, message: BenchmarkCompletion) -> None:
-        # Dismiss the loading overlay when benchmark completes or errors
-        self.navigation.go_back()
-        
         result_data = message.result_data
         status_message = "Benchmark completed!"
         if message.interrupted:
@@ -180,20 +194,20 @@ class RunSingleBenchmarkScreen(BaseScreen):
             if "message" in result_data:
                 status_message += f"\n[red]{result_data['message']}[/red]"
             elif "error" in result_data:
-                # Display more detailed error information
                 error_type = result_data.get('error_type', 'Unknown')
                 error_msg = result_data.get('error', '')
                 status_message += f"\nError: [red]{error_type}: {error_msg}[/red]"
 
-        # Show success/error notification based on benchmark result
         if message.interrupted:
             self.navigation.notify("Benchmark stopped prematurely!", type="warning")
         else:
             self.navigation.notify("Benchmark completed successfully!", type="success")
-        
-        # Replace direct status update with notification for completion feedback
+
         if not message.interrupted:
-            self.navigation.notify(f"Benchmark complete: {format_large_number(message.result_data.get('ops_per_second', 0))} ops/sec", type="SUCCESS")
+            self.navigation.notify(
+                f"Benchmark complete: {format_large_number(message.result_data.get('ops_per_second', 0))} ops/sec",
+                type="SUCCESS"
+            )
         self.query_one("#start_benchmark", Button).disabled = False
         self.query_one("#stop_benchmark", Button).disabled = True
         self.query_one("#stop_benchmark", Button).display = False
@@ -203,7 +217,7 @@ class RunSingleBenchmarkScreen(BaseScreen):
         except Exception:
             pass
 
-        if "total_operations" in result_data and not message.interrupted: # Only display full summary if not interrupted and results are valid
+        if "total_operations" in result_data and not message.interrupted:
             summary_text = (
                 f"[neon-green-rank]Total Operations: [green]{format_large_number(result_data['total_operations'])}[/green]\n"
                 f"[neon-green-rank]Operations Per Second: [green]{format_large_number(result_data['ops_per_second'])}[/green]\n"
@@ -215,24 +229,33 @@ class RunSingleBenchmarkScreen(BaseScreen):
             )
         else:
             summary_text = "[red]Benchmark failed or produced no results.[/red]"
-            if message.interrupted and "message" not in result_data: # If interrupted and no specific error message, add a generic one
-                 summary_text = "[red]Benchmark was interrupted or failed to produce complete results.[/red]"
+            if message.interrupted and "message" not in result_data:
+                summary_text = "[red]Benchmark was interrupted or failed to produce complete results.[/red]"
 
         self.query_one("#result_summary_display", Static).update(summary_text)
         self.query_one("#result_summary_display", Static).display = True
 
-        # For detailed results, format as Markdown or use a DataTable
-        # For simplicity, let's use Markdown for now.
-        markdown_output = "### Detailed Benchmark Results\n\n"
-        if result_data:
-            markdown_output += "```json\n"
-            markdown_output += json.dumps(result_data, indent=2)
-            markdown_output += "\n```"
+        # Populate structured DataTable with key metrics (replaces raw JSON Markdown)
+        table = self.query_one("#result_table", DataTable)
+        table.clear()
+        table.add_columns("Metric", "Value")
+        if result_data and "total_operations" in result_data and not message.interrupted:
+            sys_info = result_data.get("system", {})
+            rows = [
+                ("Total Operations", format_large_number(result_data["total_operations"])),
+                ("Ops/Second", format_large_number(result_data["ops_per_second"])),
+                ("Duration", f"{result_data['duration_seconds']:.2f}s"),
+                ("Threads", str(result_data.get("num_threads", 1))),
+                ("CPU Model", sys_info.get("processor_model", "N/A")),
+                ("CPU Freq", sys_info.get("processor_frequency", "N/A")),
+                ("Platform", sys_info.get("platform", "N/A")),
+                ("Results File", result_data.get("file_path", "N/A")),
+            ]
+            for label, value in rows:
+                table.add_row(label, value)
         else:
-            markdown_output += "No detailed results available."
-        
-        self.query_one("#result_markdown_display", Markdown).update(markdown_output)
-        self.query_one("#result_markdown_display", Markdown).display = True
+            table.add_row("Status", "[red]No valid results[/red]")
+        table.display = True
 
 
 class RunBatchBenchmarkScreen(BaseScreen):
@@ -259,7 +282,7 @@ class RunBatchBenchmarkScreen(BaseScreen):
             yield ProgressBar(id="batch_progress", show_eta=True)
             yield Static("", id="cooldown_display")
             yield Static("", id="batch_summary_display", classes="result-summary")
-            yield Markdown("", id="batch_markdown_display")
+            yield DataTable(id="batch_result_table", zebra_stripes=True)
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
 
@@ -267,9 +290,10 @@ class RunBatchBenchmarkScreen(BaseScreen):
         self.query_one("#app-header", WowFactorHeader).update_title("BATCH BENCHMARK")
         self.query_one("#stop_batch_benchmark", Button).display = False
         self.query_one("#batch_summary_display", Static).display = False
-        self.query_one("#batch_markdown_display", Markdown).display = False
+        self.query_one("#batch_result_table", DataTable).display = False
         self.query_one("#cooldown_display", Static).display = False
         self.query_one("#batch_progress", ProgressBar).display = False
+        self._total_batch_runs = 0  # Track total for progress bar
 
     def action_go_back(self) -> None:
         self.navigation.go_back()
@@ -333,12 +357,17 @@ class RunBatchBenchmarkScreen(BaseScreen):
         self.query_one("#stop_batch_benchmark", Button).display = True
         self.query_one("#back_to_main_menu", Button).disabled = True
         self.query_one("#batch_summary_display", Static).display = False
-        self.query_one("#batch_markdown_display", Markdown).display = False
+        self.query_one("#batch_result_table", DataTable).display = False
         self.query_one("#cooldown_display", Static).display = False
+
+        self._total_batch_runs = num_batch_runs
 
         self.query_one("#batch_number_display", Static).update(f"Current Batch: Starting {num_batch_runs} runs...")
         self.query_one("#progress_display", Static).update("Progress: Initializing...")
-        self.query_one("#batch_progress", ProgressBar).display = True
+        pb = self.query_one("#batch_progress", ProgressBar)
+        pb.update(total=num_batch_runs, completed=0)
+        pb.show_eta = True
+        pb.display = True
 
         self.batch_worker_instance = self.run_worker(
             lambda: self._batch_benchmark_worker_function(num_batch_runs, duration_per_run, num_threads),
@@ -386,7 +415,7 @@ class RunBatchBenchmarkScreen(BaseScreen):
                             raise WorkerCancelled()
 
                         self.post_message(CooldownMessage(i, num_batch_runs, remaining_cooldown))
-                        time.sleep(1) # Safe to sleep in worker thread
+                        await asyncio.sleep(1)  # Non-blocking sleep in async worker
                     
                     # Update to 0 or clear message at end of cooldown if needed,
                     # but next loop iteration will update progress immediately
@@ -422,10 +451,11 @@ class RunBatchBenchmarkScreen(BaseScreen):
             f"Progress: [green]Ops: {format_large_number(message.total_ops)}[/green] | [yellow]Ops/sec: {format_large_number(message.ops_per_second)}[/yellow]"
         )
         self.query_one("#cooldown_display", Static).display = False
-        # Update progress bar
+        # Update progress bar with actual batch run count
         try:
             pb = self.query_one("#batch_progress", ProgressBar)
-            pb.update(total=999999999, completed=message.total_ops)
+            total_runs = getattr(self, '_total_batch_runs', message.total_batch_runs)
+            pb.update(total=total_runs, completed=message.batch_run_number - 1)
             pb.display = True
         except Exception:
             pass
@@ -472,14 +502,18 @@ class RunBatchBenchmarkScreen(BaseScreen):
         self.query_one("#batch_summary_display", Static).update(summary_text)
         self.query_one("#batch_summary_display", Static).display = True
 
-        markdown_output = "### Detailed Batch Benchmark Results\n\n"
+        # Populate structured DataTable with batch results (replaces raw JSON Markdown)
+        table = self.query_one("#batch_result_table", DataTable)
+        table.clear()
+        table.add_columns("Run", "Ops/Second", "Total Ops", "Duration")
         if message.results:
-            for i, result_data in enumerate(message.results):
-                markdown_output += f"#### Run {i+1}\n"
-                markdown_output += "```json\n"
-                markdown_output += json.dumps(result_data, indent=2)
-                markdown_output += "\n```\n"
+            for i, rd in enumerate(message.results):
+                table.add_row(
+                    str(i + 1),
+                    format_large_number(rd.get("ops_per_second", 0)),
+                    format_large_number(rd.get("total_operations", 0)),
+                    f"{rd.get('duration_seconds', 0):.2f}s",
+                )
         else:
-            markdown_output += "No detailed results available."
-        
-        self.query_one("#batch_markdown_display", Markdown).update(markdown_output)
+            table.add_row("N/A", "N/A", "N/A", "N/A")
+        table.display = True

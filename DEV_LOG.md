@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to master. Post-merge: 598 passed, 4 skipped, 3 warnings.
+Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to master. I4 (Benchmark Progress Bars) implemented on branch/i4. Pre-merge: 624 total tests passed.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -123,3 +123,31 @@ Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to mast
 - Branch: branch/i2-runner
 - Tests: 569 passed, 0 failed, 4 skipped, 2 warnings
 - Pushed to origin/branch/i2-runner
+
+## Wave 2 - I4: Fix Benchmark Progress Bars (CHUNK-I4)
+- [Done] Removed `navigate_to("loading_overlay")` from RunSingleBenchmarkScreen —
+  overlay blocked progress visibility during benchmark execution
+- [Done] Replaced `ProgressBar(total=999999999)` fake progress with time-based
+  progress for finite benchmarks (elapsed_time vs total duration) and indeterminate
+  mode for infinite (duration=0) benchmarks
+- [Done] Replaced `Markdown` JSON dump result display with structured `DataTable`
+  showing: Total Operations, Ops/Second, Duration, Threads, CPU Model, CPU Freq,
+  Platform, Results File (single benchmark) and Run, Ops/Second, Total Ops,
+  Duration per run (batch benchmark)
+- [Done] Added `elapsed_time` field to `BenchmarkProgress` message class with
+  backward-compatible default of 0.0
+- [Done] Replaced `time.sleep(1)` with `await asyncio.sleep(1)` in batch benchmark
+  cooldown loop to avoid blocking the event loop
+- [Done] Batch benchmark progress bar now tracks actual batch run count (Run N of M)
+  instead of fake operation counter
+- [Done] Removed unused imports: `json`, `time`, `Markdown`, `Container` from
+  benchmark.py; added `asyncio`, `DataTable`
+- [Done] Added `_benchmark_duration` and `_benchmark_is_infinite` attributes to
+  track benchmark configuration for progress bar mode selection
+- [Done] Updated `ui/messages.py`: `BenchmarkProgress` now accepts `elapsed_time`
+  parameter
+- [Done] Added 26 new tests in `test_i4_progress_bars.py`: fake total removal,
+  loading overlay removal, Markdown replacement, DataTable composition, elapsed_time
+  usage, async cooldown, message field, module-level checks
+- Branch: branch/i4
+- Tests: 624 passed, 0 failed, 4 skipped, 4 warnings
