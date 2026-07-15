@@ -2,16 +2,18 @@
 # Renders side-by-side CPU comparison tables with statistics.
 # Provides comparison display components for textual-plotext integration.
 
+from __future__ import annotations
+
+from math import sqrt
+
 from textual.widgets import (
     Static,
-    Input,
     Button,
     DataTable,
+    Select,
 )
 from textual.containers import Container, Horizontal
 from textual.binding import Binding
-from textual.events import Key
-import logging
 
 from ui.shared import RETRO_GRADIENT_COLORS, colorize_text_gradient, WowFactorHeader
 
@@ -29,14 +31,15 @@ class CompareCPUScreen(BaseScreen):
     """
     Screen for comparing two CPUs side-by-side.
     Features:
-    - Dropdown selection for first CPU
-    - Dropdown selection for second CPU
-    - Side-by-side comparison display
+    - Select dropdown for first CPU (populated from benchmark data)
+    - Select dropdown for second CPU (populated from benchmark data)
+    - Side-by-side comparison display with better/worse highlighting
+    - Metrics: Average, Max, Min, Std Dev, Sample Count OPS/sec
     """
 
     BINDINGS = [
-        ("b", "go_back", "Back to Main Menu"),
-        ("q", "quit_app", "Quit"),
+        Binding("b", "go_back", "Back"),
+        Binding("q", "quit_app", "Quit"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -47,10 +50,22 @@ class CompareCPUScreen(BaseScreen):
             # CPU selection area
             with Horizontal(classes="cpu-selection"):
                 yield Static("Select First CPU:", id="first_cpu_label", classes="form-label")
-                yield Input(placeholder="Enter first CPU model...", id="first_cpu_input", classes="cpu-input form-input")
+                yield Select(
+                    [],
+                    prompt="-- Select first CPU --",
+                    allow_blank=True,
+                    id="first_cpu_select",
+                    classes="cpu-select form-input",
+                )
 
                 yield Static("Select Second CPU:", id="second_cpu_label", classes="form-label")
-                yield Input(placeholder="Enter second CPU model...", id="second_cpu_input", classes="cpu-input form-input")
+                yield Select(
+                    [],
+                    prompt="-- Select second CPU --",
+                    allow_blank=True,
+                    id="second_cpu_select",
+                    classes="cpu-select form-input",
+                )
 
             yield Button("Compare CPUs", id="compare_button", variant="primary", classes="action-btn")
             yield Static("Loading available CPUs...", id="loading_display")
@@ -60,27 +75,36 @@ class CompareCPUScreen(BaseScreen):
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("CPU COMPARISON")
-        self.available_cpus = []
+        self.available_cpus: list[str] = []
+        self.cpu1_data: list[dict] = []
+        self.cpu2_data: list[dict] = []
         self.load_available_cpus()
 
     def load_available_cpus(self) -> None:
         """Load list of available CPU models from benchmark data."""
         try:
             scores = _get_all_valid_scores()
-            # Extract unique CPU models
-            cpu_models = set()
+            cpu_models: set[str] = set()
             for score in scores:
                 model = score.get("processor_model", "")
                 if model:
                     cpu_models.add(model)
             self.available_cpus = sorted(cpu_models)
+            self._populate_select_widgets()
             self.query_one("#loading_display", Static).display = False
         except Exception as e:
             self._show_error_message()
 
+    def _populate_select_widgets(self) -> None:
+        """Populate both Select widgets with available CPU models."""
+        options: list[tuple[str, str]] = [(model, model) for model in self.available_cpus]
+        if not options:
+            options = [("No CPUs available", "")]
+        self.query_one("#first_cpu_select", Select).set_options(options)
+        self.query_one("#second_cpu_select", Select).set_options(options)
+
     def export_to_csv(self) -> None:
         """Export comparison data to CSV format (placeholder)."""
-        # CompareCPUScreen doesn't have direct export functionality
         pass
 
     def compare_cpu(self, cpu1: str, cpu2: str) -> dict:
@@ -112,16 +136,23 @@ class CompareCPUScreen(BaseScreen):
         """Navigate back to main menu."""
         self.navigation.go_back()
 
+    def _get_selected_cpu(self, select_id: str) -> str:
+        """Get the currently selected CPU value from a Select widget."""
+        select_widget = self.query_one(f"#{select_id}", Select)
+        value = select_widget.value
+        if value == Select.NULL:
+            return ""
+        return str(value)
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "compare_button":
-            first_cpu = self.query_one("#first_cpu_input", Input).value.strip()
-            second_cpu = self.query_one("#second_cpu_input", Input).value.strip()
+            first_cpu = self._get_selected_cpu("first_cpu_select")
+            second_cpu = self._get_selected_cpu("second_cpu_select")
 
             if not first_cpu or not second_cpu:
-                self.navigation.notify("Please enter both CPU models", type="warning")
+                self.navigation.notify("Please select both CPUs", type="warning")
                 return
 
-            # Load scores for each CPU and compare
             try:
                 cpu1_data = get_scores_for_cpu(first_cpu)
                 cpu2_data = get_scores_for_cpu(second_cpu)
@@ -138,78 +169,83 @@ class CompareCPUScreen(BaseScreen):
             self.app.exit()
             event.stop()
 
-    def _update_comparison_table(self, cpu1_data: list, cpu2_data: list) -> None:
-        """Update the comparison table with CPU data.
-
-        Calculates and displays average, max, min OPS/sec and sample count
-        for each CPU side by side.
+    @staticmethod
+    def _calc_stats(scores: list[dict]) -> dict[str, float]:
+        """Calculate statistical metrics from benchmark scores.
 
         Args:
-            cpu1_data: List of benchmark results for CPU 1.
-            cpu2_data: List of benchmark results for CPU 2.
+            scores: List of benchmark score dictionaries with 'ops_per_second' key.
+
+        Returns:
+            Dictionary with avg, max, min, stddev, count metrics.
         """
-        table = self.query_one("#comparison_table", DataTable)
-        table.clear()
-
-        # Add columns
-        table.add_column("Metric", key="metric")
-        table.add_column(cpu1_data[0].get("processor_model", "CPU 1") if cpu1_data else "CPU 1", key="cpu1")
-        table.add_column(cpu2_data[0].get("processor_model", "CPU 2") if cpu2_data else "CPU 2", key="cpu2")
-
-        # Calculate metrics
-        def calc_stats(scores):
-            if not scores:
-                return {"avg": 0, "max": 0, "min": 0, "count": 0}
-            ops = [s.get("ops_per_second", 0) for s in scores]
-            return {
-                "avg": sum(ops) / len(ops),
-                "max": max(ops),
-                "min": min(ops),
-                "count": len(ops)
-            }
-
-        stats1 = calc_stats(cpu1_data)
-        stats2 = calc_stats(cpu2_data)
-
-        # Add rows
-        table.add_row("Average OPS/sec", str(stats1["avg"]), str(stats2["avg"]))
-        table.add_row("Max OPS/sec", str(stats1["max"]), str(stats2["max"]))
-        table.add_row("Min OPS/sec", str(stats1["min"]), str(stats2["min"]))
-        table.add_row("Sample Count", str(stats1["count"]), str(stats2["count"]))
+        if not scores:
+            return {"avg": 0, "max": 0, "min": 0, "stddev": 0, "count": 0}
+        ops = [s.get("ops_per_second", 0) for s in scores]
+        n = len(ops)
+        avg = sum(ops) / n
+        variance = sum((x - avg) ** 2 for x in ops) / n if n > 0 else 0
+        stddev = sqrt(variance)
+        return {
+            "avg": avg,
+            "max": max(ops),
+            "min": min(ops),
+            "stddev": stddev,
+            "count": n,
+        }
 
     def _display_comparison(self) -> None:
         """Display the comparison results in a table.
 
-        Shows Average OPS/sec, Max OPS/sec, and Number of Runs
-        for each CPU in a formatted comparison table.
+        Shows Average, Max, Min, Std Dev, and Sample Count OPS/sec
+        for each CPU with better/worse visual differentiation.
         """
         table = self.query_one("#comparison_table", DataTable)
         table.clear()
 
+        cpu1_name = self._get_selected_cpu("first_cpu_select")
+        cpu2_name = self._get_selected_cpu("second_cpu_select")
+
         # Add columns for comparison
         table.add_column("Metric", key="metric")
-        table.add_column(self.query_one("#first_cpu_input", Input).value.strip(), key="cpu1")
-        table.add_column(self.query_one("#second_cpu_input", Input).value.strip(), key="cpu2")
+        table.add_column(cpu1_name, key="cpu1")
+        table.add_column(cpu2_name, key="cpu2")
 
-        # Calculate comparison metrics
-        cpu1_data = getattr(self, 'cpu1_data', [])
-        cpu2_data = getattr(self, 'cpu2_data', [])
+        cpu1_data = getattr(self, "cpu1_data", [])
+        cpu2_data = getattr(self, "cpu2_data", [])
 
-        def avg_ops(data):
-            if not data:
-                return 0
-            return sum(d.get("ops_per_second", 0) for d in data) / len(data)
+        stats1 = self._calc_stats(cpu1_data)
+        stats2 = self._calc_stats(cpu2_data)
 
-        def max_ops(data):
-            if not data:
-                return 0
-            return max(d.get("ops_per_second", 0) for d in data)
+        # Define metrics where higher is better
+        higher_is_better = {"avg", "max", "min"}
+        # For stddev, lower is better (more consistent)
+        lower_is_better = {"stddev"}
 
-        metrics = [
-            ("Average OPS/sec", avg_ops(cpu1_data), avg_ops(cpu2_data)),
-            ("Max OPS/sec", max_ops(cpu1_data), max_ops(cpu2_data)),
-            ("Number of Runs", len(cpu1_data), len(cpu2_data)),
+        metrics: list[tuple[str, str, float, float, bool]] = [
+            ("Average OPS/sec", "avg", stats1["avg"], stats2["avg"], True),
+            ("Max OPS/sec", "max", stats1["max"], stats2["max"], True),
+            ("Min OPS/sec", "min", stats1["min"], stats2["min"], True),
+            ("Std Dev OPS/sec", "stddev", stats1["stddev"], stats2["stddev"], False),
+            ("Sample Count", "count", float(stats1["count"]), float(stats2["count"]), True),
         ]
 
-        for metric, val1, val2 in metrics:
-            table.add_row(metric, format_large_number(val1), format_large_number(val2))
+        for display_name, key, val1, val2, higher_better in metrics:
+            # Determine which value is better
+            if higher_better:
+                better = 1 if val1 >= val2 else (2 if val2 > val1 else 0)
+            else:
+                better = 1 if val1 <= val2 else (2 if val2 < val1 else 0)
+
+            cell1_value = format_large_number(val1)
+            cell2_value = format_large_number(val2)
+
+            # Apply Rich markup for better (green/bold) or worse (dim) values
+            if better == 1:
+                cell1_value = f"[bold green]{cell1_value}[/]"
+                cell2_value = f"[dim]{cell2_value}[/]"
+            elif better == 2:
+                cell1_value = f"[dim]{cell1_value}[/]"
+                cell2_value = f"[bold green]{cell2_value}[/]"
+
+            table.add_row(display_name, cell1_value, cell2_value)

@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1 merged. I2 (BestScores search fix) on branch/i2-runner. 569 tests pass.
+Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged from branch/i3-settings. 570 tests pass.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -53,6 +53,37 @@ Wave 1 complete. Wave 2 I1 merged. I2 (BestScores search fix) on branch/i2-runne
 - 2 new files: ui/screens/confirmation.py, ui/screens/overlay.py
 - Post-merge test run: 536 passed, 0 failed, 4 skipped, 3 warnings
 - Pushed to origin/master
+
+## Wave 2 - I3: Replace CPU Text Input with Dropdown in CompareCPUScreen (CHUNK-I3)
+- [Done] Replaced two `Input` widgets with `Select` dropdowns in CompareCPUScreen
+  for CPU model selection (eliminates free-text typing errors)
+- [Done] Added `_populate_select_widgets()` to populate both Select widgets from
+  `available_cpus` loaded from benchmark data
+- [Done] Added `_get_selected_cpu()` helper to safely read Select values,
+  returning empty string for unselected (Select.NULL) state
+- [Done] Updated `_display_comparison()` to show 5 metrics with better/worse
+  visual differentiation using Rich markup: bold green for better value,
+  dim for worse value
+- [Done] Metrics expanded to: Average, Max, Min, Std Dev OPS/sec, Sample Count
+  (was only 3 metrics before)
+- [Done] Implemented `_calc_stats()` static method computing avg, max, min,
+  population stddev, and count from benchmark score lists
+- [Done] Removed dead `_update_comparison_table()` method (39 lines of code)
+- [Done] Removed unused imports: `Iterable` from typing, `Key` from
+  `textual.events`, `logging`
+- [Done] Added CSS rules for Select widget styling (.cpu-select, .Select--overlay,
+  .SelectOption, .SelectOption--highlight, .SelectOption--selected, .SelectCurrent)
+  and comparison highlighting (.better, .worse)
+- [Done] Updated test_integration_screen_actions.py::test_compare_cpu_validation_rejects_empty_inputs
+  to use Select widget IDs (#first_cpu_select, #second_cpu_select) and Select.NULL
+- [Done] Updated test_loading_states.py to check for _display_comparison instead of
+  removed _update_comparison_table
+- [Done] Added 29 new tests in test_i3_compare_cpu_dropdown.py covering: Select
+  widget composition, CPU dropdown population, stats calculation correctness,
+  dead code removal verification, better/worse highlighting logic, expanded
+  metrics structure, _get_selected_cpu helper, compare_cpu method, screen inheritance
+- Branch: branch/i3-settings
+- Tests: 570 passed, 0 failed, 4 skipped, 3 warnings
 
 ## Wave 2 - I1: HomeScreen Rework (CHUNK-I1)
 - [Done] CleanupScreen visual improvements: added `[bold green]SUCCESS[/]` and

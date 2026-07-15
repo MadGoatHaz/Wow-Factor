@@ -25,7 +25,7 @@ def test_loading_states():
     # Test CompareCPUScreen
     compare_cpu_screen = CompareCPUScreen()
     assert hasattr(compare_cpu_screen, 'compare_cpu'), "CompareCPUScreen should have compare_cpu method"
-    assert hasattr(compare_cpu_screen, '_update_comparison_table'), "CompareCPUScreen should have _update_comparison_table method"
+    assert hasattr(compare_cpu_screen, '_display_comparison'), "CompareCPUScreen should have _display_comparison method"
     assert hasattr(compare_cpu_screen, '_show_error_message'), "CompareCPUScreen should have _show_error_message method"
     
     # Test ViewAllScoresScreen

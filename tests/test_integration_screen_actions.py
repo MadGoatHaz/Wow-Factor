@@ -559,6 +559,7 @@ def test_benchmark_invalid_threads_rejects_zero():
 
 def test_compare_cpu_validation_rejects_empty_inputs():
     """CompareCPUScreen.on_button_pressed rejects empty CPU model inputs."""
+    from textual.widgets import Select
     from ui.screens.views import CompareCPUScreen
 
     screen = CompareCPUScreen()
@@ -568,22 +569,22 @@ def test_compare_cpu_validation_rejects_empty_inputs():
     mock_nav.notify = MagicMock(side_effect=lambda msg, type="info": captured_messages.append((msg, type)))
     screen._navigation = mock_nav
 
-    first_input = MagicMock()
-    first_input.value = ""
-    second_input = MagicMock()
-    second_input.value = ""
+    first_select = MagicMock()
+    first_select.value = Select.NULL
+    second_select = MagicMock()
+    second_select.value = Select.NULL
 
     mock_event = MagicMock()
     mock_event.button.id = "compare_button"
 
     def fake_query_one(selector, *args):
-        if selector == '#first_cpu_input':
-            return first_input
-        elif selector == '#second_cpu_input':
-            return second_input
+        if selector == '#first_cpu_select':
+            return first_select
+        elif selector == '#second_cpu_select':
+            return second_select
         return MagicMock()
 
     with patch.object(screen, 'query_one', side_effect=fake_query_one):
         screen.on_button_pressed(mock_event)
 
-    assert any("Please enter both CPU models" in msg for msg, _ in captured_messages)
+    assert any("Please select both CPUs" in msg for msg, _ in captured_messages)

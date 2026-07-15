@@ -150,8 +150,8 @@ $gradient-end: #d946ef;
 }
 
 /* ============================================
-   CLEANUP SCREEN STYLES
-   ============================================ */
+    CLEANUP SCREEN STYLES
+    ============================================ */
 
 .status-display {
     padding: 1 2;
@@ -167,4 +167,59 @@ $gradient-end: #d946ef;
 
 .cleanup-warning {
     border: heavy $color-warning;
+}
+
+/* ============================================
+    CPU SELECT DROPDOWN STYLES
+    ============================================ */
+
+.cpu-select {
+    width: 50%;
+    min-width: 30;
+    margin-bottom: 4;
+}
+
+.Select--overlay {
+    background: $bg-card;
+    border: heavy $border-default;
+}
+
+.SelectOption {
+    color: $text-secondary;
+}
+
+.SelectOption--highlight {
+    background: $bg-hover;
+    color: $text-primary;
+    text-style: bold;
+}
+
+.SelectOption--selected {
+    color: $color-primary;
+}
+
+.SelectCurrent {
+    background: $bg-card;
+    color: $text-primary;
+    border: heavy $border-default;
+    padding: 0 2;
+    height: 3;
+}
+
+.SelectCurrent--expanded {
+    border: heavy $color-primary;
+}
+
+/* ============================================
+    COMPARISON TABLE BETTER/WORSE HIGHLIGHTING
+    ============================================ */
+
+/* Rich markup colors for better/worse cells */
+.better {
+    color: $color-success;
+    text-style: bold;
+}
+
+.worse {
+    color: $text-muted;
 }
