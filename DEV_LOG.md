@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. All 3 critical path items merged to master. 536 tests pass.
+Wave 1 complete. Wave 2 I1 (HomeScreen rework) on branch/i1-home. 545 tests pass.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -53,3 +53,20 @@ Wave 1 complete. All 3 critical path items merged to master. 536 tests pass.
 - 2 new files: ui/screens/confirmation.py, ui/screens/overlay.py
 - Post-merge test run: 536 passed, 0 failed, 4 skipped, 3 warnings
 - Pushed to origin/master
+
+## Wave 2 - I1: HomeScreen Rework (CHUNK-I1)
+- [Done] CleanupScreen visual improvements: added `[bold green]SUCCESS[/]` and
+  `[bold yellow]WARNING[/]` Rich markup messages, applied `cleanup-success` and
+  `cleanup-warning` CSS classes, styled with `#status_message` id
+- [Done] Title updated from "DELETE COMPLETE" to "CLEANUP COMPLETE"
+- [Done] Added cleanup-specific CSS rules to styles.tcss: `.status-display` with
+  padding/border/margin, `.cleanup-success` (green border), `.cleanup-warning` (yellow border)
+- [Done] Removed stale `Horizontal` import workaround from
+  `test_app_comprehensive.py::test_clear_invalid_result_compose`
+- [Done] Added 6 new tests: `test_cleanup_screen_deleted_count`,
+  `test_cleanup_screen_has_bindings`, `test_cleanup_screen_inherits_basescreen`,
+  `test_cleanup_screen_imports_horizontal` (test_harness_all_paths.py),
+  `test_clear_invalid_result_success_message` (test_app_comprehensive.py)
+- Branch: branch/i1-home (82d560e)
+- Tests: 545 passed, 0 failed, 4 skipped, 3 warnings
+- Pushed to origin/branch/i1-home
