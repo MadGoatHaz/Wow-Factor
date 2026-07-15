@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged from branch/i3-settings. 570 tests pass.
+Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to master. Post-merge: 598 passed, 4 skipped, 3 warnings.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
