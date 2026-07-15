@@ -1,34 +1,24 @@
 """Cleanup screens for managing invalid scores and related operations."""
 
-from typing import Any, Optional
 from textual.app import ComposeResult
-from textual.screen import Screen
-from textual.containers import Container
+from textual.containers import Container, Horizontal
 from textual.widgets import Static, Button
 
 from ui.shared import WowFactorHeader
+from .base_screen import BaseScreen
 
 
-class ClearInvalidScoresResultScreen(Screen):
+class ClearInvalidScoresResultScreen(BaseScreen):
     """Screen showing results of clearing invalid scores."""
-    
+
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),
         ("q", "quit_app", "Quit"),
     ]
-    
-    def __init__(self, deleted_count: int):
+
+    def __init__(self, deleted_count: int) -> None:
         super().__init__()
         self.deleted_count = deleted_count
-        self._navigation: Optional[Any] = None
-    
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
     
     def compose(self) -> ComposeResult:
         with Container(classes="main-menu-container"):

@@ -2,11 +2,8 @@ import json
 import logging
 import multiprocessing
 import time
-from typing import Any, Optional
-from textual.screen import Screen
 from textual.widgets import Button, Static, Input, Markdown, ProgressBar
 from textual.containers import Container, VerticalScroll, Horizontal
-from textual.events import Key
 from textual.worker import WorkerCancelled
 
 # Import shared components to avoid circular imports
@@ -18,24 +15,14 @@ from core.benchmark import execute_single_benchmark_run, format_large_number
 # Import message classes
 from ui.messages import BenchmarkProgress, BenchmarkCompletion, BatchBenchmarkProgress, BatchBenchmarkCompletion, CooldownMessage
 
+from .base_screen import BaseScreen
 
-class RunSingleBenchmarkScreen(Screen):
+
+class RunSingleBenchmarkScreen(BaseScreen):
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),
         ("q", "quit_app", "Quit"),
     ]
-    
-    def __init__(self) -> None:
-        super().__init__()
-        self._navigation: Optional[Any] = None
-    
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="run-benchmark-screen"):
@@ -127,14 +114,6 @@ class RunSingleBenchmarkScreen(Screen):
             group="benchmark_workers",
         )
 
-    # Add method to access core function
-    def execute_single_benchmark_run(self, duration: float, is_infinite: bool, num_threads: int, progress_callback):
-        return execute_single_benchmark_run(duration, is_infinite, num_threads=num_threads, progress_callback=progress_callback)
-
-    # Add method to access core function
-    def format_large_number(self, num: float):
-        return format_large_number(num)
-
     def stop_benchmark_run(self) -> None:
         if hasattr(self, 'benchmark_worker') and self.benchmark_worker.is_running:
             self.benchmark_worker.cancel() # This will raise WorkerCancelled on the worker thread
@@ -155,7 +134,7 @@ class RunSingleBenchmarkScreen(Screen):
                 ops_per_second = total_ops / elapsed_time if elapsed_time > 0 else 0
                 self.post_message(BenchmarkProgress(total_ops, ops_per_second))
 
-            result = self.execute_single_benchmark_run(duration, is_infinite, num_threads, progress_callback)
+            result = execute_single_benchmark_run(duration, is_infinite, num_threads, progress_callback)
             self.post_message(BenchmarkCompletion(result))
         except Exception as e:
             # Check specifically for WorkerCancelled exception from Textual
@@ -256,23 +235,11 @@ class RunSingleBenchmarkScreen(Screen):
         self.query_one("#result_markdown_display", Markdown).display = True
 
 
-class RunBatchBenchmarkScreen(Screen):
+class RunBatchBenchmarkScreen(BaseScreen):
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),
         ("q", "quit_app", "Quit"),
     ]
-    
-    def __init__(self) -> None:
-        super().__init__()
-        self._navigation: Optional[Any] = None
-    
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
 
     def compose(self) -> ComposeResult:
         with VerticalScroll(classes="run-benchmark-screen"):
@@ -379,14 +346,6 @@ class RunBatchBenchmarkScreen(Screen):
             group="batch_benchmark_workers",
         )
 
-    # Add method to access core function
-    def execute_single_benchmark_run(self, duration: float, is_infinite: bool, num_threads: int, progress_callback):
-        return execute_single_benchmark_run(duration, is_infinite, num_threads=num_threads, progress_callback=progress_callback)
-
-    # Add method to access core function
-    def format_large_number(self, num: float):
-        return format_large_number(num)
-
     def stop_batch_benchmark(self) -> None:
         if hasattr(self, 'batch_worker_instance') and self.batch_worker_instance.is_running:
             self.batch_worker_instance.cancel()
@@ -417,7 +376,7 @@ class RunBatchBenchmarkScreen(Screen):
                     current_run_ops_per_second = total_ops / elapsed if elapsed > 0 else 0.0
                     self.post_message(BatchBenchmarkProgress(i, num_batch_runs, current_run_ops, current_run_ops_per_second))
                 
-                result = self.execute_single_benchmark_run(duration_per_run, False, num_threads, progress_callback)
+                result = execute_single_benchmark_run(duration_per_run, False, num_threads, progress_callback)
                 all_results.append(result)
                 
                 if i < num_batch_runs:

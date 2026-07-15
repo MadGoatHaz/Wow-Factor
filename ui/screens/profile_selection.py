@@ -3,13 +3,14 @@
 Provides interface for selecting or creating benchmark profiles.
 """
 
-from textual.screen import Screen
 from textual.widgets import Button, Static, Label
 from textual.containers import Container, Vertical
-from typing import List, Optional
+from typing import List
+
+from .base_screen import BaseScreen
 
 
-class ProfileSelectionScreen(Screen):
+class ProfileSelectionScreen(BaseScreen):
     """Screen for selecting an existing profile or creating a new one."""
     
     def __init__(self, profiles: List[str], create_new: bool = False) -> None:

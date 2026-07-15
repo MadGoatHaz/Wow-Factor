@@ -2,8 +2,6 @@
 # Renders ranked benchmark score tables with gold/silver/bronze styling,
 # debounced search filtering, and multi-format export support.
 
-from typing import Any, Optional
-from textual.screen import Screen
 from textual.widgets import (
     Static,
     Input,
@@ -28,8 +26,10 @@ from core.benchmark import (
     format_large_number,
 )
 
+from ..base_screen import BaseScreen
 
-class ViewBestScoresScreen(Screen):
+
+class ViewBestScoresScreen(BaseScreen):
     """
     Screen for displaying best scores per machine.
     Features:
@@ -40,16 +40,7 @@ class ViewBestScoresScreen(Screen):
 
     def __init__(self) -> None:
         super().__init__()
-        self._navigation: Optional[Any] = None
         self.current_data = []
-
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
 
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),

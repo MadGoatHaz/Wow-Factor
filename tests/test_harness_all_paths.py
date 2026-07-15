@@ -650,18 +650,20 @@ class TestScreenRunSingleBenchmark:
         source = inspect.getsource(RunSingleBenchmarkScreen.start_benchmark_run)
         assert 'lambda' in source, "run_worker must use lambda for deferred execution"
 
-    def test_execute_single_benchmark_run_delegate(self):
-        """Test the screen delegates to core benchmark correctly."""
-        from ui.screens.benchmark import RunSingleBenchmarkScreen
-        screen = RunSingleBenchmarkScreen()
-        result = screen.execute_single_benchmark_run(1.0, False, 1, None)
+    def test_uses_core_execute_single_benchmark_run(self):
+        """Test the screen uses core benchmark function directly (no proxy)."""
+        from core.benchmark import execute_single_benchmark_run
+        import ui.screens.benchmark as benchmark_mod
+        assert hasattr(benchmark_mod, 'execute_single_benchmark_run')
+        result = execute_single_benchmark_run(1.0, False, 1, None)
         assert "ops_per_second" in result
 
-    def test_format_large_number_delegate(self):
-        """Test the screen delegates format_large_number correctly."""
-        from ui.screens.benchmark import RunSingleBenchmarkScreen
-        screen = RunSingleBenchmarkScreen()
-        assert screen.format_large_number(1_500_000) == "1.50M"
+    def test_uses_core_format_large_number(self):
+        """Test the screen uses core format_large_number directly (no proxy)."""
+        from core.benchmark import format_large_number
+        import ui.screens.benchmark as benchmark_mod
+        assert hasattr(benchmark_mod, 'format_large_number')
+        assert format_large_number(1_500_000) == "1.50M"
 
 
 class TestScreenRunBatchBenchmark:
@@ -693,11 +695,12 @@ class TestScreenRunBatchBenchmark:
         assert asyncio.iscoroutine(coro)
         coro.close()
 
-    def test_execute_single_benchmark_run_delegate(self):
-        """Test batch screen delegates to core benchmark."""
-        from ui.screens.benchmark import RunBatchBenchmarkScreen
-        screen = RunBatchBenchmarkScreen()
-        result = screen.execute_single_benchmark_run(1.0, False, 1, None)
+    def test_uses_core_execute_single_benchmark_run(self):
+        """Test batch screen uses core benchmark function directly (no proxy)."""
+        from core.benchmark import execute_single_benchmark_run
+        import ui.screens.benchmark as benchmark_mod
+        assert hasattr(benchmark_mod, 'execute_single_benchmark_run')
+        result = execute_single_benchmark_run(1.0, False, 1, None)
         assert "ops_per_second" in result
 
 

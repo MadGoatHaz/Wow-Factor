@@ -2,8 +2,6 @@
 # Renders side-by-side CPU comparison tables with statistics.
 # Provides comparison display components for textual-plotext integration.
 
-from typing import Any, Optional
-from textual.screen import Screen
 from textual.widgets import (
     Static,
     Input,
@@ -24,8 +22,10 @@ from core.benchmark import (
     format_large_number,
 )
 
+from ..base_screen import BaseScreen
 
-class CompareCPUScreen(Screen):
+
+class CompareCPUScreen(BaseScreen):
     """
     Screen for comparing two CPUs side-by-side.
     Features:
@@ -33,18 +33,6 @@ class CompareCPUScreen(Screen):
     - Dropdown selection for second CPU
     - Side-by-side comparison display
     """
-
-    def __init__(self) -> None:
-        super().__init__()
-        self._navigation: Optional[Any] = None
-
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
 
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),

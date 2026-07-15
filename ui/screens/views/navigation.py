@@ -2,8 +2,6 @@
 # Handles pagination, search, and filter UI for full benchmark score lists.
 # Provides navigation helpers, pagination calculation, and search filtering.
 
-from typing import Any, Optional
-from textual.screen import Screen
 from textual.widgets import (
     Static,
     Input,
@@ -27,8 +25,10 @@ from core.benchmark import (
     format_large_number,
 )
 
+from ..base_screen import BaseScreen
 
-class ViewAllScoresScreen(Screen):
+
+class ViewAllScoresScreen(BaseScreen):
     """
     Screen for displaying all benchmark scores with pagination.
     Features:
@@ -40,7 +40,6 @@ class ViewAllScoresScreen(Screen):
 
     def __init__(self) -> None:
         super().__init__()
-        self._navigation: Optional[Any] = None
         self.current_page = 1
         self.page_size = 50
         self.total_pages = 1
@@ -51,14 +50,6 @@ class ViewAllScoresScreen(Screen):
         """Export current filtered data to CSV format."""
         from core.exporters import CsvExporter
         CsvExporter.export(self.filtered_scores, "all_scores.csv")
-
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
 
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),

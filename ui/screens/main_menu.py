@@ -1,9 +1,5 @@
-from typing import Any, Optional
-from textual.screen import Screen
 from textual.widgets import Button, Static
 from textual.containers import Container
-from textual.message import Message
-from textual.events import Key
 
 # Import shared components to avoid circular imports
 from ui.shared import WowFactorHeader, RETRO_GRADIENT_COLORS, colorize_text_gradient
@@ -11,26 +7,13 @@ from ui.shared import WowFactorHeader, RETRO_GRADIENT_COLORS, colorize_text_grad
 # Import constants from core
 from core.benchmark import BENCHMARK_DIR
 
-# Import navigation manager for centralized screen transitions
-from ui.navigation import NavigationManager
+from .base_screen import BaseScreen
 
 
-class MainMenuScreen(Screen):
+class MainMenuScreen(BaseScreen):
     BINDINGS = [
         ("q", "quit_app", "Quit"),
     ]
-    
-    def __init__(self) -> None:
-        super().__init__()
-        self._navigation: Optional[Any] = None
-    
-    @property
-    def navigation(self) -> Any:
-        """Get the NavigationManager singleton instance."""
-        if self._navigation is None:
-            from ui.navigation import NavigationManager
-            self._navigation = NavigationManager()
-        return self._navigation
 
     def compose(self) -> ComposeResult:
         with Container(classes="main-menu-container"):
