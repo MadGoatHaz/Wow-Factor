@@ -1,8 +1,41 @@
 /* ============================================
    WowFactor TUI Theme Stylesheet
-   Centralized CSS for applying theme-based styling
-   to all UI components.
+   All colors sourced from ui/theme.py ColorPalette.
+   Variables defined at top level; referenced with $name.
    ============================================ */
+
+/* ============================================
+   THEME TOKENS (from ColorPalette)
+   ============================================ */
+
+$color-gold: #eab308;
+$color-silver: #a1a1aa;
+$color-bronze: #cd7f32;
+$color-primary: #06b6d4;
+$color-primary-dark: #0891b2;
+$color-primary-blue: #3b82f6;
+$color-accent-magenta: #d946ef;
+$color-accent-pink: #ec4899;
+$color-accent-purple: #a855f7;
+$color-accent-yellow: #eab308;
+$color-accent-orange: #f97316;
+$color-success: #22c55e;
+$color-warning: #eab308;
+$color-error: #ef4444;
+$color-info: #3b82f6;
+$bg-dark: #0f172a;
+$bg-darker: #020617;
+$bg-card: #1e293b;
+$bg-hover: #334155;
+$text-primary: #f8fafc;
+$text-secondary: #cbd5e1;
+$text-muted: #64748b;
+$text-dark: #0f172a;
+$border-subtle: #334155;
+$border-default: #475569;
+$border-strong: #94a3b8;
+$gradient-start: #06b6d4;
+$gradient-end: #d946ef;
 
 /* ============================================
    BASE SCREEN CONTAINERS
@@ -11,7 +44,7 @@
 .screen-container {
     height: 100%;
     padding: 8;
-    background: #171717;
+    background: $bg-dark;
 }
 
 /* ============================================
@@ -21,7 +54,7 @@
 .title {
     text-style: bold;
     margin-bottom: 4;
-    color: #f5f5f5;
+    color: $text-primary;
 }
 
 /* ============================================
@@ -32,7 +65,7 @@
 .cpu-input {
     width: 100%;
     padding: 2 4;
-    border: heavy #52525b;
+    border: heavy $border-default;
     margin-bottom: 4;
 }
 
@@ -44,13 +77,13 @@
     height: 1fr;
     margin-top: 4;
     margin-bottom: 8;
-    border: heavy #3f3f46;
+    border: heavy $border-subtle;
 }
 
 /* Table header styling */
 .result-table > DataTableHeaderRow {
-    background: #2d2d2d;
-    color: #f5f5f5;
+    background: $bg-card;
+    color: $text-primary;
     text-style: bold;
 }
 
@@ -61,12 +94,12 @@
 .pagination-container {
     margin-top: 4;
     padding: 2 4;
-    border: heavy #3f3f46;
-    background: #2d2d2d;
+    border: heavy $border-subtle;
+    background: $bg-card;
 }
 
 .pagination-info {
-    color: #a1a1aa;
+    color: $text-secondary;
     margin-bottom: 1;
 }
 
@@ -96,7 +129,7 @@
    ============================================ */
 
 #loading_display {
-    color: #a1a1aa;
+    color: $text-secondary;
     margin-bottom: 8;
 }
 
@@ -105,13 +138,13 @@
    ============================================ */
 
 .gold {
-    color: #eab308;
+    color: $color-gold;
 }
 
 .silver {
-    color: #a1a1aa;
+    color: $color-silver;
 }
 
 .bronze {
-    color: #cd7f32;
+    color: $color-bronze;
 }

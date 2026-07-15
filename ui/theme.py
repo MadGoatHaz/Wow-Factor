@@ -72,15 +72,55 @@ class ColorPalette:
     def get_css_rgb(cls, hex_color: str) -> str:
         """
         Convert a hex color string to CSS rgb() format.
-        
+
         Args:
             hex_color: Hex color string (e.g., '#06b6d4')
-            
+
         Returns:
             CSS rgb() string (e.g., 'rgb(6, 182, 212)')
         """
         r, g, b = cls.get_rgb(hex_color)
         return f"rgb({r}, {g}, {b})"
+
+    @classmethod
+    def to_tcss_variables(cls) -> str:
+        """
+        Generate a string of Textual TCSS variable declarations.
+
+        Textual TCSS uses $variable-name syntax (not CSS custom properties).
+
+        Returns:
+            A multi-line string with TCSS variable definitions
+            mapped from the ColorPalette token values.
+        """
+        palette = cls()
+        return "\n".join([
+            f"$color-primary: {palette.PRIMARY_CYAN};",
+            f"$color-primary-dark: {palette.PRIMARY_DARK};",
+            f"$color-primary-blue: {palette.PRIMARY_BLUE};",
+            f"$color-accent-magenta: {palette.ACCENT_MAGENTA};",
+            f"$color-accent-pink: {palette.ACCENT_PINK};",
+            f"$color-accent-purple: {palette.ACCENT_PURPLE};",
+            f"$color-accent-yellow: {palette.ACCENT_YELLOW};",
+            f"$color-accent-orange: {palette.ACCENT_ORANGE};",
+            f"$color-success: {palette.SUCCESS_GREEN};",
+            f"$color-warning: {palette.WARNING_YELLOW};",
+            f"$color-error: {palette.ERROR_RED};",
+            f"$color-info: {palette.INFO_BLUE};",
+            f"$bg-dark: {palette.BG_DARK};",
+            f"$bg-darker: {palette.BG_DARKER};",
+            f"$bg-card: {palette.BG_CARD};",
+            f"$bg-hover: {palette.BG_HOVER};",
+            f"$text-primary: {palette.TEXT_PRIMARY};",
+            f"$text-secondary: {palette.TEXT_SECONDARY};",
+            f"$text-muted: {palette.TEXT_MUTED};",
+            f"$text-dark: {palette.TEXT_DARK};",
+            f"$border-subtle: {palette.BORDER_SUBTLE};",
+            f"$border-default: {palette.BORDER_DEFAULT};",
+            f"$border-strong: {palette.BORDER_STRONG};",
+            f"$gradient-start: {palette.GRADIENT_START};",
+            f"$gradient-end: {palette.GRADIENT_END};",
+        ])
 
 
 @dataclass(frozen=True)

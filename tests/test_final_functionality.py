@@ -58,10 +58,18 @@ def test_core_functionality():
 
 
 def test_css_styling():
-    """Test that CSS styling is properly defined."""
-    pytest.importorskip("wow_fixed")
-    from wow_fixed import CLI_STYLESHEET
-    assert "background:" in CLI_STYLESHEET and "color:" in CLI_STYLESHEET, "CSS styling missing or incomplete"
+    """Test that CSS styling is properly defined in styles.tcss."""
+    import os
+    tcss_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "ui", "styles.tcss"
+    )
+    assert os.path.exists(tcss_path), f"styles.tcss not found at {tcss_path}"
+    with open(tcss_path, "r") as f:
+        content = f.read()
+    assert "$color-primary:" in content, "TCSS should define $color-primary variable"
+    assert "$bg-dark:" in content, "TCSS should define $bg-dark variable"
+    assert "background: $bg-dark" in content or "$bg-dark" in content, \
+        "TCSS rules should reference $ variables"
     print("✓ CSS styling present")
 
 
