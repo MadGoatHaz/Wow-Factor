@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to master. I4 (Benchmark Progress Bars) implemented on branch/i4. Pre-merge: 624 total tests passed.
+Wave 1 complete. Wave 2 I1-I4 merged. I6 (Profile Creation Screen) implemented on branch/i6. Post-implementation: 667 total tests passed.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -151,3 +151,34 @@ Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to mast
   usage, async cooldown, message field, module-level checks
 - Branch: branch/i4
 - Tests: 624 passed, 0 failed, 4 skipped, 4 warnings
+
+## Wave 2 - I6: Implement Profile Creation Screen (CHUNK-I6)
+- [Done] Created `ui/screens/profile_creation.py` with `ProfileCreationScreen`
+  extending `BaseScreen` — complete form with 5 Input fields (name, duration,
+  threads, batch runs, cooldown), Save/Cancel buttons, error display
+- [Done] Full input validation: name required + max 100 chars + no duplicates,
+  duration 1-3600, threads 1-cpu_count, batch_runs 1-100, cooldown 0-300
+- [Done] Profile persistence via `ConfigManager.create_profile()` with schema
+  validation — profiles saved to `~/.config/wowfactor/benchmark_profiles.json`
+- [Done] `ProfileCreatedMessage` class for cross-screen communication on save
+- [Done] Keybindings: `ctrl+s` save, `b` back, `q` quit — all visible in Footer
+- [Done] Updated `ProfileSelectionScreen` to wire "Create New Profile" button to
+  push `ProfileCreationScreen` (replaces stub notification)
+- [Done] Added `b` and `q` keybindings to `ProfileSelectionScreen`
+- [Done] Removed unused `Static` import from `ProfileSelectionScreen`
+- [Done] Added `_sanitize_id()` method to ProfileSelectionScreen for safe CSS
+  identifiers from profile names with special characters
+- [Done] Registered `ProfileCreationScreen` in `ui/app.py` SCREENS dict
+- [Done] Re-exported `ProfileCreationScreen` and `ProfileCreatedMessage` from
+  `ui/screens/__init__.py`
+- [Done] Added TCSS styles to `styles.tcss` for profile creation form fields,
+  error display, and button container
+- [Done] Updated `test_app_comprehensive.py::test_app_screen_count` and
+  `test_integration_app_startup.py::test_app_has_all_required_screen_types`
+  to expect 13 screens (was 12)
+- [Done] Added 43 new tests in `test_i6_profile_creation.py`: screen inheritance,
+  bindings, widget composition, input validation (9 cases), persistence (3 cases),
+  navigation (2 cases), ProfileSelectionScreen wiring (4 cases), message class,
+  app registration (3 cases), TCSS styles (2 cases), import checks (3 cases)
+- Branch: branch/i6
+- Tests: 667 passed, 0 failed, 4 skipped, 4 warnings

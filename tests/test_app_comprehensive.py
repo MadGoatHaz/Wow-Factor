@@ -51,9 +51,9 @@ class TestAppInstantiation:
         assert expected.issubset(set(WowFactorTUI.SCREENS.keys()))
 
     def test_app_screen_count(self):
-        """App SCREENS dict has exactly 12 entries."""
+        """App SCREENS dict has exactly 13 entries."""
         from ui.app import WowFactorTUI
-        assert len(WowFactorTUI.SCREENS) == 12
+        assert len(WowFactorTUI.SCREENS) == 13
 
     def test_app_has_layout_manager_attr(self):
         """App instance has layout_manager after instantiation."""

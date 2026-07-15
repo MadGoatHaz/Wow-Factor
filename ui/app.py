@@ -21,6 +21,7 @@ from ui.screens.cleanup import ClearInvalidScoresResultScreen
 from ui.screens.overlay import LoadingOverlay
 from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
 from ui.screens.profile_selection import ProfileSelectionScreen
+from ui.screens.profile_creation import ProfileCreationScreen
 from ui.navigation import NavigationManager
 
 
@@ -125,6 +126,7 @@ class WowFactorTUI(App):
         "clear_invalid_confirm": ClearInvalidScoresConfirmationScreen,
         "clear_invalid_result": ClearInvalidScoresResultScreen,
         "profile_selection": ProfileSelectionScreen,
+        "profile_creation": ProfileCreationScreen,
         "analytics": AnalyticsScreen,
         "trends_chart": TrendsChartScreen,
         "loading_overlay": LoadingOverlay,

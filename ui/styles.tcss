@@ -223,3 +223,74 @@ $gradient-end: #d946ef;
 .worse {
     color: $text-muted;
 }
+
+/* ============================================
+    PROFILE SELECTION STYLES
+    ============================================ */
+
+.profile-selection-container {
+    align: center top;
+    padding: 2 4;
+}
+
+#profile-title {
+    text-style: bold;
+    margin-bottom: 2;
+    color: $text-primary;
+}
+
+/* ============================================
+    PROFILE CREATION STYLES
+    ============================================ */
+
+.profile-creation-container {
+    align: center top;
+    padding: 1 4;
+    width: 100%;
+    max-width: 60;
+}
+
+#input_profile_name,
+#input_duration,
+#input_threads,
+#input_batch_runs,
+#input_cooldown {
+    width: 1fr;
+    border: heavy $border-default;
+}
+
+#input_profile_name:focus,
+#input_duration:focus,
+#input_threads:focus,
+#input_batch_runs:focus,
+#input_cooldown:focus {
+    border: heavy $color-primary;
+}
+
+.form-field {
+    margin-bottom: 1;
+}
+
+.form-field > Label {
+    width: 16;
+    color: $text-secondary;
+}
+
+.form-error {
+    color: $color-error;
+    text-style: italic;
+    margin-top: 0;
+    margin-bottom: 1;
+    display: none;
+}
+
+.form-error.visible {
+    display: block;
+}
+
+#profile_buttons {
+    dock: bottom;
+    width: 100%;
+    content-align: center bottom;
+    margin-bottom: 1;
+}

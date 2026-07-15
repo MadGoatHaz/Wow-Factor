@@ -84,18 +84,18 @@ class TestAppInstantiation:
         assert WowFactorTUI.CSS_PATH == "styles.tcss"
 
     def test_app_has_all_required_screen_types(self):
-        """All 12 expected screens are registered in SCREENS dict."""
+        """All 13 expected screens are registered in SCREENS dict."""
         from ui.app import WowFactorTUI
 
         expected = {
             "main_menu", "run_single_benchmark", "run_batch_benchmark",
             "view_best_scores", "compare_cpu", "view_all_scores",
             "clear_invalid_confirm", "clear_invalid_result",
-            "profile_selection", "analytics", "trends_chart",
+            "profile_selection", "profile_creation", "analytics", "trends_chart",
             "loading_overlay",
         }
         assert expected.issubset(set(WowFactorTUI.SCREENS.keys()))
-        assert len(WowFactorTUI.SCREENS) == 12
+        assert len(WowFactorTUI.SCREENS) == 13
 
     def test_app_has_navigation_manager(self):
         """App instance creates with a NavigationManager attached."""

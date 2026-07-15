@@ -13,6 +13,8 @@ from .analytics import AnalyticsScreen, TrendsChartScreen
 from .cleanup import ClearInvalidScoresResultScreen
 from .overlay import LoadingOverlay
 from .confirmation import ClearInvalidScoresConfirmationScreen, ClearInvalidScoresConfirmed
+from .profile_selection import ProfileSelectionScreen
+from .profile_creation import ProfileCreationScreen, ProfileCreatedMessage
 
 __all__ = [
     'ScreenWithServices',
@@ -29,4 +31,7 @@ __all__ = [
     'LoadingOverlay',
     'ClearInvalidScoresConfirmationScreen',
     'ClearInvalidScoresConfirmed',
+    'ProfileSelectionScreen',
+    'ProfileCreationScreen',
+    'ProfileCreatedMessage',
 ]
