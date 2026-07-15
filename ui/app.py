@@ -18,8 +18,8 @@ from ui.screens.benchmark import RunSingleBenchmarkScreen, RunBatchBenchmarkScre
 from ui.screens.views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
 from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
 from ui.screens.cleanup import ClearInvalidScoresResultScreen
-from ui.shared import LoadingOverlay
-from ui.shared import ClearInvalidScoresConfirmationScreen
+from ui.screens.overlay import LoadingOverlay
+from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
 from ui.screens.profile_selection import ProfileSelectionScreen
 from ui.navigation import NavigationManager
 

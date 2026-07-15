@@ -11,6 +11,8 @@ from .benchmark import RunSingleBenchmarkScreen, RunBatchBenchmarkScreen
 from .views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
 from .analytics import AnalyticsScreen, TrendsChartScreen
 from .cleanup import ClearInvalidScoresResultScreen
+from .overlay import LoadingOverlay
+from .confirmation import ClearInvalidScoresConfirmationScreen, ClearInvalidScoresConfirmed
 
 __all__ = [
     'ScreenWithServices',
@@ -23,5 +25,8 @@ __all__ = [
     'ViewAllScoresScreen',
     'AnalyticsScreen',
     'TrendsChartScreen',
-    'ClearInvalidScoresResultScreen'
+    'ClearInvalidScoresResultScreen',
+    'LoadingOverlay',
+    'ClearInvalidScoresConfirmationScreen',
+    'ClearInvalidScoresConfirmed',
 ]

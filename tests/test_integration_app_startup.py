@@ -148,7 +148,7 @@ class TestScreenImport:
 
     def test_loading_overlay_import_and_instantiate(self):
         """LoadingOverlay can be imported and instantiated."""
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
 
         overlay = LoadingOverlay(message="test")
         assert overlay is not None
@@ -156,7 +156,7 @@ class TestScreenImport:
 
     def test_clear_invalid_screens_import_and_instantiate(self):
         """ClearInvalid scores screens can be imported and instantiated."""
-        from ui.shared import ClearInvalidScoresConfirmationScreen
+        from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
         from ui.screens.cleanup import ClearInvalidScoresResultScreen
 
         s1 = ClearInvalidScoresConfirmationScreen(invalid_count=3)

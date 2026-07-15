@@ -127,13 +127,13 @@ class TestScreenInstantiation:
         assert hasattr(screen, 'compose')
 
     def test_clear_invalid_confirm_screen(self):
-        from ui.shared import ClearInvalidScoresConfirmationScreen
+        from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
         screen = ClearInvalidScoresConfirmationScreen()
         assert screen is not None
         assert screen.invalid_count == 0
 
     def test_clear_invalid_confirm_screen_with_count(self):
-        from ui.shared import ClearInvalidScoresConfirmationScreen
+        from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
         screen = ClearInvalidScoresConfirmationScreen(invalid_count=5)
         assert screen.invalid_count == 5
 
@@ -158,14 +158,14 @@ class TestScreenInstantiation:
         assert screen.create_new is True
 
     def test_loading_overlay_default(self):
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
         overlay = LoadingOverlay()
         assert overlay is not None
         assert overlay.message == "Loading..."
-        assert overlay.dim_opacity == 0.7
+        assert overlay.dim_opacity == 0.4
 
     def test_loading_overlay_custom(self):
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
         overlay = LoadingOverlay(message="Please wait", dim_opacity=0.5)
         assert overlay.message == "Please wait"
         assert overlay.dim_opacity == 0.5
@@ -377,13 +377,13 @@ class TestSharedComponents:
         assert result == "test"
 
     def test_clear_invalid_scores_confirmed_message(self):
-        from ui.shared import ClearInvalidScoresConfirmed
+        from ui.screens.confirmation import ClearInvalidScoresConfirmed
         msg = ClearInvalidScoresConfirmed(5)
         assert msg.file_count == 5
         assert isinstance(msg, ClearInvalidScoresConfirmed)
 
     def test_loading_overlay_compose_returns_container(self):
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
         overlay = LoadingOverlay()
         # compose yields a Container
         results = list(overlay.compose())
@@ -621,7 +621,7 @@ class TestScreenCompose:
     async def test_view_best_scores_compose(self):
         from textual.app import App
         from ui.screens.views.rendering import ViewBestScoresScreen
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
         from ui.navigation import NavigationManager
         class TestApp(App):
             SCREENS = {"view_best_scores": ViewBestScoresScreen, "loading_overlay": LoadingOverlay}
@@ -637,7 +637,7 @@ class TestScreenCompose:
     async def test_view_all_scores_compose(self):
         from textual.app import App
         from ui.screens.views.navigation import ViewAllScoresScreen
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
         from ui.navigation import NavigationManager
         class TestApp(App):
             SCREENS = {"view_all_scores": ViewAllScoresScreen, "loading_overlay": LoadingOverlay}
@@ -685,7 +685,7 @@ class TestScreenCompose:
 
     async def test_clear_invalid_confirm_compose(self):
         from textual.app import App
-        from ui.shared import ClearInvalidScoresConfirmationScreen
+        from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
         class TestApp(App):
             SCREENS = {"clear_invalid_confirm": ClearInvalidScoresConfirmationScreen}
             CSS_PATH = None
@@ -725,7 +725,7 @@ class TestScreenCompose:
 
     def test_loading_overlay_compose(self):
         """LoadingOverlay compose works when tested via instance creation."""
-        from ui.shared import LoadingOverlay
+        from ui.screens.overlay import LoadingOverlay
         overlay = LoadingOverlay()
         # LoadingOverlay compose was confirmed working via test_shared_loading_overlay_compose
         assert hasattr(overlay, 'compose')
@@ -739,7 +739,8 @@ class TestScreenCompose:
         from ui.screens.views.navigation import ViewAllScoresScreen
         from ui.screens.views.charts import CompareCPUScreen
         from ui.screens.analytics import AnalyticsScreen, TrendsChartScreen
-        from ui.shared import ClearInvalidScoresConfirmationScreen, LoadingOverlay
+        from ui.screens.confirmation import ClearInvalidScoresConfirmationScreen
+        from ui.screens.overlay import LoadingOverlay
         from ui.screens.cleanup import ClearInvalidScoresResultScreen
         from ui.screens.profile_selection import ProfileSelectionScreen
 
