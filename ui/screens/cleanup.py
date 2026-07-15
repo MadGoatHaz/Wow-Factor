@@ -2,7 +2,7 @@
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
-from textual.widgets import Static, Button
+from textual.widgets import Static, Button, Footer
 
 from ui.shared import WowFactorHeader
 from .base_screen import BaseScreen
@@ -37,6 +37,7 @@ class ClearInvalidScoresResultScreen(BaseScreen):
                 )
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("CLEANUP COMPLETE")

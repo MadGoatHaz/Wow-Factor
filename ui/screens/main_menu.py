@@ -1,4 +1,4 @@
-from textual.widgets import Button, Static
+from textual.widgets import Button, Footer, Static
 from textual.containers import Container
 
 # Import shared components to avoid circular imports
@@ -30,6 +30,7 @@ class MainMenuScreen(BaseScreen):
                 yield Button("Manage Profiles", id="manage_profiles", variant="primary", classes="action-btn")
                 yield Button("Quit", id="quit_app", variant="default", classes="action-btn")
             yield Static("Awaiting command>", id="command_prompt")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BENCHMARK INTERFACE")

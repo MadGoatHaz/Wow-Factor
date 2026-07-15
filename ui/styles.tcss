@@ -223,3 +223,16 @@ $gradient-end: #d946ef;
 .worse {
     color: $text-muted;
 }
+
+/* ============================================
+    FOOTER
+    ============================================ */
+
+Footer {
+    background: $bg-darker;
+    color: $text-muted;
+}
+
+Footer > .footer--bindings {
+    color: $text-muted;
+}

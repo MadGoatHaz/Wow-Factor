@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to master. Post-merge: 598 passed, 4 skipped, 3 warnings.
+Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to master. I5 (Footer Widget) implemented on branch/i5. Pre-merge: 53 new I5 tests passed, 651 total tests passed.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -123,3 +123,24 @@ Wave 1 complete. Wave 2 I1 merged. I3 (CompareCPUScreen dropdown) merged to mast
 - Branch: branch/i2-runner
 - Tests: 569 passed, 0 failed, 4 skipped, 2 warnings
 - Pushed to origin/branch/i2-runner
+
+## Wave 3 - I5: Add Footer Widget to All Screens (CHUNK-I5)
+- [Done] Added `compose()` method to `BaseScreen` that yields `Footer()` —
+  Footer auto-docks to bottom and displays keybindings from BINDINGS
+- [Done] Updated 11 BaseScreen subclasses to include `yield Footer()` in their
+  compose methods: MainMenuScreen, ClearInvalidScoresResultScreen,
+  ProfileSelectionScreen, RunSingleBenchmarkScreen, RunBatchBenchmarkScreen,
+  CompareCPUScreen, ViewBestScoresScreen, ViewAllScoresScreen,
+  TrendsChartScreen, AnalyticsScreen, ClearInvalidScoresConfirmationScreen
+- [Done] Footer placed OUTSIDE main Container blocks so it auto-docks correctly
+  at screen bottom without layout conflicts
+- [Done] Modal overlays excluded from Footer: LoadingOverlay (extends Screen,
+  not BaseScreen), ExportMenuScreen (extends Screen, modal dialog)
+- [Done] Added Footer CSS styling to styles.tcss: background uses $bg-darker,
+  color uses $text-muted (theme tokens from CP1)
+- [Done] Added 53 new tests in test_i5_footer.py covering: BaseScreen compose,
+  Footer presence in all 11 screens, Footer imports, CSS styling with theme tokens,
+  BINDINGS existence on all screens, BaseScreen inheritance verification,
+  modal overlay exclusion (no Footer in LoadingOverlay/ExportMenuScreen)
+- Branch: branch/i5
+- Tests: 651 passed, 0 failed, 4 skipped, 3 warnings

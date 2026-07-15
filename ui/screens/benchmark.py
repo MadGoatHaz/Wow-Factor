@@ -2,7 +2,7 @@ import json
 import logging
 import multiprocessing
 import time
-from textual.widgets import Button, Static, Input, Markdown, ProgressBar
+from textual.widgets import Button, Static, Input, Markdown, ProgressBar, Footer
 from textual.containers import Container, VerticalScroll, Horizontal
 from textual.worker import WorkerCancelled
 
@@ -41,6 +41,7 @@ class RunSingleBenchmarkScreen(BaseScreen):
             yield Markdown("", id="result_markdown_display") # Using Markdown for flexible output
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BENCHMARK")
@@ -262,6 +263,7 @@ class RunBatchBenchmarkScreen(BaseScreen):
             yield Markdown("", id="batch_markdown_display")
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BATCH BENCHMARK")
