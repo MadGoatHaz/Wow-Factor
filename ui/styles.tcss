@@ -148,3 +148,23 @@ $gradient-end: #d946ef;
 .bronze {
     color: $color-bronze;
 }
+
+/* ============================================
+   CLEANUP SCREEN STYLES
+   ============================================ */
+
+.status-display {
+    padding: 1 2;
+    border: heavy $border-subtle;
+    margin-top: 4;
+    margin-bottom: 4;
+    background: $bg-card;
+}
+
+.cleanup-success {
+    border: heavy $color-success;
+}
+
+.cleanup-warning {
+    border: heavy $color-warning;
+}

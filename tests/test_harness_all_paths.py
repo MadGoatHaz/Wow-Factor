@@ -967,6 +967,31 @@ class TestScreenCleanup:
         screen = ClearInvalidScoresResultScreen(deleted_count=0)
         assert screen is not None
 
+    def test_cleanup_screen_deleted_count(self):
+        """Test cleanup screen stores deleted count correctly."""
+        from ui.screens.cleanup import ClearInvalidScoresResultScreen
+        screen = ClearInvalidScoresResultScreen(deleted_count=5)
+        assert screen.deleted_count == 5
+
+    def test_cleanup_screen_has_bindings(self):
+        """Test cleanup screen has expected keybindings."""
+        from ui.screens.cleanup import ClearInvalidScoresResultScreen
+        # BINDINGS is a list of (key, action, description) tuples
+        binding_keys = [b[0] for b in ClearInvalidScoresResultScreen.BINDINGS]
+        assert "b" in binding_keys
+        assert "q" in binding_keys
+
+    def test_cleanup_screen_inherits_basescreen(self):
+        """Test cleanup screen inherits from BaseScreen."""
+        from ui.screens.cleanup import ClearInvalidScoresResultScreen
+        from ui.screens.base_screen import BaseScreen
+        assert issubclass(ClearInvalidScoresResultScreen, BaseScreen)
+
+    def test_cleanup_screen_imports_horizontal(self):
+        """Test cleanup module imports Horizontal (fix for P0 bug)."""
+        import ui.screens.cleanup as cleanup_module
+        assert hasattr(cleanup_module, "Horizontal")
+
 
 class TestScreenProfileSelection:
     """Test profile selection screen."""

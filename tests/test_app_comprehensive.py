@@ -696,21 +696,31 @@ class TestScreenCompose:
 
     async def test_clear_invalid_result_compose(self):
         from textual.app import App
-        from textual.containers import Horizontal
-        import ui.screens.cleanup as cleanup_module
         from ui.screens.cleanup import ClearInvalidScoresResultScreen
-        # Workaround: production code missing 'Horizontal' import in cleanup.py
-        cleanup_module.Horizontal = Horizontal
-        try:
-            class TestApp(App):
-                SCREENS = {"clear_invalid_result": ClearInvalidScoresResultScreen}
-                CSS_PATH = None
-            async with TestApp().run_test() as pilot:
-                pilot.app.push_screen(ClearInvalidScoresResultScreen(deleted_count=0))
-                await pilot.pause()
-                assert pilot.app.screen is not None
-        finally:
-            del cleanup_module.Horizontal
+        class TestApp(App):
+            SCREENS = {"clear_invalid_result": ClearInvalidScoresResultScreen}
+            CSS_PATH = None
+        async with TestApp().run_test() as pilot:
+            pilot.app.push_screen(ClearInvalidScoresResultScreen(deleted_count=0))
+            await pilot.pause()
+            assert pilot.app.screen is not None
+            # Verify status message widget exists with correct ID
+            status = pilot.app.screen.query_one("#status_message")
+            assert status is not None
+
+    async def test_clear_invalid_result_success_message(self):
+        """Test cleanup screen shows success message when files were deleted."""
+        from textual.app import App
+        from ui.screens.cleanup import ClearInvalidScoresResultScreen
+        class TestApp(App):
+            SCREENS = {"clear_invalid_result": ClearInvalidScoresResultScreen}
+            CSS_PATH = None
+        async with TestApp().run_test() as pilot:
+            pilot.app.push_screen(ClearInvalidScoresResultScreen(deleted_count=5))
+            await pilot.pause()
+            status = pilot.app.screen.query_one("#status_message")
+            # Static widget stores its content; verify classes applied
+            assert "cleanup-success" in status.classes
 
     async def test_profile_selection_compose_empty(self):
         from textual.app import App
