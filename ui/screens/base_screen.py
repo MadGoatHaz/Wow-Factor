@@ -3,11 +3,13 @@ Base screen classes with service injection support.
 
 This module provides:
 - ScreenWithServices: Mixin class for Textual screens to access registered services
-- BaseScreen: Template class for extracted screens
+- BaseScreen: Template class for extracted screens with Footer widget
 """
 
 from typing import Any, Optional
+from textual.app import ComposeResult
 from textual.screen import Screen as TextualScreen
+from textual.widgets import Footer
 
 
 class ScreenWithServices:
@@ -96,7 +98,19 @@ class BaseScreen(ScreenWithServices, TextualScreen):
     
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-    
+
+    def compose(self) -> ComposeResult:
+        """
+        Compose the base screen widget tree.
+
+        Yields a Footer widget that auto-docks to the bottom and displays
+        keybindings from the screen's BINDINGS attribute. Subclasses should
+        yield their content first, then include Footer via:
+            yield Footer()
+        or by calling yield from super().compose() at the end.
+        """
+        yield Footer()
+
     def on_show(self) -> None:
         """
         Called when the screen is shown.

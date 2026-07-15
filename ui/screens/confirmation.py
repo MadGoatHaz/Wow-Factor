@@ -7,7 +7,7 @@ Provides confirmation dialogs for destructive actions like clearing invalid scor
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
 from textual.message import Message
-from textual.widgets import Static, Button
+from textual.widgets import Static, Button, Footer, Footer
 
 from ui.screens.base_screen import BaseScreen
 from ui.shared import RETRO_GRADIENT_COLORS, WowFactorHeader, colorize_text_gradient
@@ -40,6 +40,7 @@ class ClearInvalidScoresConfirmationScreen(BaseScreen):
             with Horizontal(classes="action-buttons"):
                 yield Button("Yes, Clear All", id="confirm_clear", variant="error")
                 yield Button("Cancel", id="cancel_clear", variant="default")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("CLEAR INVALID SCORES CONFIRMATION")

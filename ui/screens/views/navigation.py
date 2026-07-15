@@ -7,6 +7,7 @@ from textual.widgets import (
     Input,
     Button,
     DataTable,
+    Footer,
 )
 from textual.containers import Container, Horizontal
 from textual.binding import Binding
@@ -83,6 +84,7 @@ class ViewAllScoresScreen(BaseScreen):
                 yield Button("Export CSV", id="export_csv", variant="primary")
                 yield Button("Export JSON", id="export_json", variant="primary")
                 yield Button("Back", id="back_to_main_menu", variant="default")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("ALL SCORES")

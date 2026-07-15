@@ -11,7 +11,7 @@ from datetime import datetime
 
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
-from textual.widgets import Static, Button
+from textual.widgets import Static, Button, Footer
 from textual.binding import Binding
 from textual.message import Message
 
@@ -82,6 +82,7 @@ class TrendsChartScreen(BaseScreen):
             
             with Horizontal(classes="action-buttons compact-button"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("TRENDS CHART")
@@ -236,6 +237,7 @@ class AnalyticsScreen(BaseScreen):
             with Horizontal(classes="action-buttons compact-button"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
                 yield Button("Generate Report", id="generate_report", variant="primary", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("ANALYTICS")

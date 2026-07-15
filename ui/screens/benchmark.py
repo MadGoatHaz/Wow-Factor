@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import multiprocessing
-from textual.widgets import Button, Static, Input, ProgressBar, DataTable
+from textual.widgets import Button, Static, Input, ProgressBar, DataTable, Footer
 from textual.containers import Container, VerticalScroll, Horizontal
 from textual.worker import WorkerCancelled
 
@@ -40,6 +40,7 @@ class RunSingleBenchmarkScreen(BaseScreen):
             yield DataTable(id="result_table", zebra_stripes=True)
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BENCHMARK")
@@ -285,6 +286,7 @@ class RunBatchBenchmarkScreen(BaseScreen):
             yield DataTable(id="batch_result_table", zebra_stripes=True)
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BATCH BENCHMARK")

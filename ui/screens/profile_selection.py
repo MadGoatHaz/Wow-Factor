@@ -4,12 +4,12 @@ Provides interface for selecting or creating benchmark profiles.
 """
 
 import re
+from textual.widgets import Button, Footer, Label
+from textual.containers import Container
 from typing import List
 
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.widgets import Button, Label
-from textual.containers import Container
 
 from .base_screen import BaseScreen
 from .profile_creation import ProfileCreationScreen, ProfileCreatedMessage
@@ -54,6 +54,7 @@ class ProfileSelectionScreen(BaseScreen):
                     yield Button("Create New Profile", id="create_new_profile", variant="primary", classes="action-btn")
 
             yield Button("Cancel", id="cancel_selection", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""

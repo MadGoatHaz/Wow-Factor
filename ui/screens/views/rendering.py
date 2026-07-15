@@ -10,6 +10,7 @@ from textual.widgets import (
     Input,
     Button,
     DataTable,
+    Footer,
 )
 from textual.containers import Container, Horizontal
 from typing import TYPE_CHECKING
@@ -61,6 +62,7 @@ class ViewBestScoresScreen(BaseScreen):
             with Horizontal(classes="action-buttons"):
                 yield Button("Export", id="export", variant="primary", classes="action-btn")
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("BEST SCORES")

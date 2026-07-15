@@ -11,6 +11,7 @@ from textual.widgets import (
     Button,
     DataTable,
     Select,
+    Footer,
 )
 from textual.containers import Container, Horizontal
 from textual.binding import Binding
@@ -72,6 +73,7 @@ class CompareCPUScreen(BaseScreen):
             yield DataTable(id="comparison_table", classes="result-table")
             with Horizontal(classes="action-buttons"):
                 yield Button("Back", id="back_to_main_menu", variant="default")
+        yield Footer()
 
     def on_mount(self) -> None:
         self.query_one("#app-header", WowFactorHeader).update_title("CPU COMPARISON")

@@ -294,3 +294,16 @@ $gradient-end: #d946ef;
     content-align: center bottom;
     margin-bottom: 1;
 }
+
+/* ============================================
+    FOOTER
+    ============================================ */
+
+Footer {
+    background: $bg-darker;
+    color: $text-muted;
+}
+
+Footer > .footer--bindings {
+    color: $text-muted;
+}
