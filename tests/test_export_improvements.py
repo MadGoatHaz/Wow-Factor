@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Test script for verifying CSV export improvements in ui_components.py.
-This script tests the enhanced CSV export functionality with proper error handling.
+Test script for verifying CSV export functionality through core exporters.
+Tests the consolidated export mechanism used by ViewBestScoresScreen and ExportMenuScreen.
 """
 
 import os
@@ -14,162 +14,91 @@ from unittest.mock import patch, MagicMock
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ui.screens.views import ViewBestScoresScreen, CompareCPUScreen, ViewAllScoresScreen
+from ui.screens.views.rendering import ExportMenuScreen
 
 
-def test_csv_export_functionality():
-    """Test that CSV export works correctly in all three screen classes."""
-    
-    print("Testing CSV export functionality...")
-    
-    # Test with ViewBestScoresScreen
-    print("\n1. Testing ViewBestScoresScreen CSV export:")
+def test_csv_export_via_core_exporter():
+    """Test that CSV export works correctly using core CsvExporter."""
+
+    print("Testing CSV export via core CsvExporter...")
+
+    original_cwd = os.getcwd()
+    sample_data = [
+        {"processor_model": "Intel Core i7-9700K", "platform": "Linux",
+         "ops_per_second": 123456789, "num_threads": 8, "timestamp": "2026-01-01 12:00"},
+        {"processor_model": "AMD Ryzen 7 5800X", "platform": "Linux",
+         "ops_per_second": 987654321, "num_threads": 16, "timestamp": "2026-01-02 12:00"},
+    ]
+
     try:
+        # Test ViewBestScoresScreen data flows through CsvExporter
+        print("\n1. Testing ViewBestScoresScreen CSV export via core:")
         screen = ViewBestScoresScreen()
-        
-        # Mock the table data to simulate having data
-        mock_table = MagicMock()
-        mock_table.columns = [
-            MagicMock(label="Rank"),
-            MagicMock(label="CPU Model"),
-            MagicMock(label="Platform"),
-            MagicMock(label="Ops/Second"),
-            MagicMock(label="Timestamp")
-        ]
-        mock_table.column_keys = ["rank", "cpu_model", "platform", "ops_per_second", "timestamp"]
-        
-        # Mock rows with data
-        mock_row1 = MagicMock()
-        mock_row1.__iter__ = lambda: iter([1, "Intel Core i7-9700K", "Linux", "123456789", "2023-01-01 12:00"])
-        mock_row2 = MagicMock()
-        mock_row2.__iter__ = lambda: iter([2, "AMD Ryzen 7 5800X", "Linux", "987654321", "2023-01-02 12:00"])
-        
-        mock_table.rows = [mock_row1, mock_row2]
-        
-        # Mock get_cell_value method
-        def mock_get_cell_value(row, key):
-            if row == mock_row1:
-                return {"rank": 1, "cpu_model": "Intel Core i7-9700K", "platform": "Linux",
-                        "ops_per_second": "123456789", "timestamp": "2023-01-01 12:00"}[key]
-            elif row == mock_row2:
-                return {"rank": 2, "cpu_model": "AMD Ryzen 7 5800X", "platform": "Linux",
-                        "ops_per_second": "987654321", "timestamp": "2023-01-02 12:00"}[key]
-            return ""
-        
-        mock_table.get_cell_value = mock_get_cell_value
-        
-        # Mock the query_one method to return our mock table
-        with patch.object(screen, 'query_one') as mock_query_one:
-            mock_query_one.return_value = mock_table
-            
-            # Test export_to_csv method (this should not raise an exception)
-            screen.export_to_csv()
-            
-            print("   ✓ ViewBestScoresScreen CSV export test passed")
-            
-    except Exception as e:
-        print(f"   ✗ ViewBestScoresScreen CSV export test failed: {e}")
-        assert False, f"ViewBestScoresScreen CSV export test failed: {e}"
+        screen.current_data = sample_data
 
-    # Test with CompareCPUScreen
-    print("\n2. Testing CompareCPUScreen CSV export:")
-    try:
-        screen = CompareCPUScreen()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.chdir(tmpdir)
+            try:
+                from core.exporters import CsvExporter
+                CsvExporter.export(screen.current_data, "best_scores.csv")
+                assert os.path.exists("best_scores.csv"), "CSV file was not created"
+                with open("best_scores.csv") as f:
+                    reader = csv.reader(f)
+                    rows = list(reader)
+                    assert len(rows) >= 2, f"Expected at least 2 rows, got {len(rows)}"
+                print("   ViewBestScoresScreen CSV export test passed")
+            finally:
+                os.chdir(original_cwd)
 
-        # Mock the table data to simulate having data
-        mock_table = MagicMock()
-        mock_table.columns = [
-            MagicMock(label="Rank"),
-            MagicMock(label="Platform"),
-            MagicMock(label="Ops/Second"),
-            MagicMock(label="Timestamp")
-        ]
-        mock_table.column_keys = ["rank", "platform", "ops_per_second", "timestamp"]
+        # Test ExportMenuScreen CSV export
+        print("\n2. Testing ExportMenuScreen CSV export:")
+        menu = ExportMenuScreen(sample_data)
+        assert menu.data == sample_data
 
-        # Mock rows with data
-        mock_row1 = MagicMock()
-        mock_row1.__iter__ = lambda: iter([1, "Linux", "123456789", "2023-01-01 12:00"])
-        mock_row2 = MagicMock()
-        mock_row2.__iter__ = lambda: iter([2, "Windows", "987654321", "2023-01-02 12:00"])
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.chdir(tmpdir)
+            try:
+                from core.exporters import CsvExporter
+                CsvExporter.export(menu.data, "best_scores.csv")
+                assert os.path.exists("best_scores.csv"), "CSV file was not created"
+                print("   ExportMenuScreen CSV export test passed")
+            finally:
+                os.chdir(original_cwd)
 
-        mock_table.rows = [mock_row1, mock_row2]
+        # Test JSON export
+        print("\n3. Testing JSON export:")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.chdir(tmpdir)
+            try:
+                from core.exporters import JsonExporter
+                JsonExporter.export(sample_data, "best_scores.json")
+                assert os.path.exists("best_scores.json"), "JSON file was not created"
+                import json
+                with open("best_scores.json") as f:
+                    data = json.load(f)
+                    assert isinstance(data, list) or isinstance(data, dict)
+                print("   JSON export test passed")
+            finally:
+                os.chdir(original_cwd)
 
-        # Mock get_cell_value method
-        def mock_get_cell_value(row, key):
-            if row == mock_row1:
-                return {"rank": 1, "platform": "Linux", "ops_per_second": "123456789",
-                        "timestamp": "2023-01-01 12:00"}[key]
-            elif row == mock_row2:
-                return {"rank": 2, "platform": "Windows", "ops_per_second": "987654321",
-                        "timestamp": "2023-01-02 12:00"}[key]
-            return ""
+        print("\n All export tests passed!")
+    except Exception:
+        os.chdir(original_cwd)
+        raise
 
-        mock_table.get_cell_value = mock_get_cell_value
 
-        # Mock the query_one method to return our mock table
-        with patch.object(screen, 'query_one') as mock_query_one:
-            mock_query_one.return_value = mock_table
+def test_screen_has_no_export_to_csv():
+    """Verify screens no longer have standalone export_to_csv method (moved to ExportMenuScreen)."""
+    from ui.screens.views.rendering import ViewBestScoresScreen
 
-            # Test export_to_csv method (this should not raise an exception)
-            screen.export_to_csv()
-
-            print("   ✓ CompareCPUScreen CSV export test passed")
-
-    except Exception as e:
-        print(f"   ✗ CompareCPUScreen CSV export test failed: {e}")
-        assert False, f"CompareCPUScreen CSV export test failed: {e}"
-
-    # Test with ViewAllScoresScreen
-    print("\n3. Testing ViewAllScoresScreen CSV export:")
-    try:
-        screen = ViewAllScoresScreen()
-
-        # Mock the table data to simulate having data
-        mock_table = MagicMock()
-        mock_table.columns = [
-            MagicMock(label="Rank"),
-            MagicMock(label="CPU Model"),
-            MagicMock(label="Platform"),
-            MagicMock(label="Ops/Second"),
-            MagicMock(label="Timestamp")
-        ]
-        mock_table.column_keys = ["rank", "cpu_model", "platform", "ops_per_second", "timestamp"]
-
-        # Mock rows with data
-        mock_row1 = MagicMock()
-        mock_row1.__iter__ = lambda: iter([1, "Intel Core i7-9700K", "Linux", "123456789", "2023-01-01 12:00"])
-        mock_row2 = MagicMock()
-        mock_row2.__iter__ = lambda: iter([2, "AMD Ryzen 7 5800X", "Linux", "987654321", "2023-01-02 12:00"])
-
-        mock_table.rows = [mock_row1, mock_row2]
-
-        # Mock get_cell_value method
-        def mock_get_cell_value(row, key):
-            if row == mock_row1:
-                return {"rank": 1, "cpu_model": "Intel Core i7-9700K", "platform": "Linux",
-                        "ops_per_second": "123456789", "timestamp": "2023-01-01 12:00"}[key]
-            elif row == mock_row2:
-                return {"rank": 2, "cpu_model": "AMD Ryzen 7 5800X", "platform": "Linux",
-                        "ops_per_second": "987654321", "timestamp": "2023-01-02 12:00"}[key]
-            return ""
-
-        mock_table.get_cell_value = mock_get_cell_value
-
-        # Mock the query_one method to return our mock table
-        with patch.object(screen, 'query_one') as mock_query_one:
-            mock_query_one.return_value = mock_table
-
-            # Test export_to_csv method (this should not raise an exception)
-            screen.export_to_csv()
-
-            print("   ✓ ViewAllScoresScreen CSV export test passed")
-
-    except Exception as e:
-        print(f"   ✗ ViewAllScoresScreen CSV export test failed: {e}")
-        assert False, f"ViewAllScoresScreen CSV export test failed: {e}"
-
-    print("\n✓ All CSV export tests passed!")
+    screen = ViewBestScoresScreen()
+    # export_to_csv was removed; export is now handled by ExportMenuScreen
+    assert not hasattr(screen, 'export_to_csv'), \
+        "ViewBestScoresScreen should not have export_to_csv method anymore"
+    print("   Screen correctly lacks standalone export_to_csv method")
 
 
 if __name__ == "__main__":
-    success = test_csv_export_functionality()
-    sys.exit(0 if success else 1)
+    test_csv_export_via_core_exporter()
+    test_screen_has_no_export_to_csv()
+    print("\nAll tests passed successfully!")

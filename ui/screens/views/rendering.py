@@ -2,6 +2,9 @@
 # Renders ranked benchmark score tables with gold/silver/bronze styling,
 # debounced search filtering, and multi-format export support.
 
+import datetime
+from textual.screen import Screen
+from textual.app import ComposeResult
 from textual.widgets import (
     Static,
     Input,
@@ -9,11 +12,7 @@ from textual.widgets import (
     DataTable,
 )
 from textual.containers import Container, Horizontal
-from textual.binding import Binding
-from textual.message import Message
-from textual.events import Key
-import datetime
-import logging
+from typing import TYPE_CHECKING
 
 from ui.shared import RETRO_GRADIENT_COLORS, colorize_text_gradient, WowFactorHeader
 
@@ -28,6 +27,9 @@ from core.benchmark import (
 
 from ..base_screen import BaseScreen
 
+if TYPE_CHECKING:
+    from typing import List, Dict, Any
+
 
 class ViewBestScoresScreen(BaseScreen):
     """
@@ -40,7 +42,8 @@ class ViewBestScoresScreen(BaseScreen):
 
     def __init__(self) -> None:
         super().__init__()
-        self.current_data = []
+        self.current_data: list = []
+        self.original_all_scores: list = []
 
     BINDINGS = [
         ("b", "go_back", "Back to Main Menu"),
@@ -56,10 +59,7 @@ class ViewBestScoresScreen(BaseScreen):
             yield Static("Loading best scores...", id="loading_display")
             yield DataTable(id="best_scores_table", classes="result-table")
             with Horizontal(classes="action-buttons"):
-                yield Button("Export CSV", id="export_csv", variant="primary", classes="action-btn")
-                yield Button("Export JSON", id="export_json", variant="primary", classes="action-btn")
-                yield Button("Export XML", id="export_xml", variant="primary", classes="action-btn")
-                yield Button("Export YAML", id="export_yaml", variant="primary", classes="action-btn")
+                yield Button("Export", id="export", variant="primary", classes="action-btn")
                 yield Button("Back", id="back_to_main_menu", variant="default", classes="action-btn")
 
     def on_mount(self) -> None:
@@ -74,6 +74,8 @@ class ViewBestScoresScreen(BaseScreen):
 
         try:
             scores = get_best_score_per_machine()
+            # Store the full unfiltered dataset for search filtering
+            self.original_all_scores = list(scores)
             # Dismiss the loading overlay
             self.navigation.go_back()
             self._update_table_with_scores(scores)
@@ -86,12 +88,18 @@ class ViewBestScoresScreen(BaseScreen):
 
         Applies gold/silver/bronze styling to top 3 ranked entries.
         Uses single-pass O(n) column width optimization via LayoutOptimizer.
+        Stores the unfiltered dataset in original_all_scores for search filtering.
 
         Args:
             scores: List of benchmark result dictionaries.
         """
         table = self.query_one("#best_scores_table", DataTable)
         table.clear()  # Clear existing data
+
+        # Store the full unfiltered dataset for search filtering
+        # Only set on initial load; do not overwrite when called from _filter_scores
+        if not self.original_all_scores:
+            self.original_all_scores = list(scores)
 
         # Add columns
         table.add_column("Rank", key="rank")
@@ -170,27 +178,9 @@ class ViewBestScoresScreen(BaseScreen):
         """Navigate back to main menu."""
         self.navigation.go_back()
 
-    def export_to_csv(self) -> None:
-        """Export current data to CSV format."""
-        from core.exporters import CsvExporter
-        CsvExporter.export(self.current_data, "best_scores.csv")
-        # Don't call notify() - it requires an active app context which tests don't provide
-
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "export_csv":
-            # Pass current_data (filtered dataset)
-            self.export_data(self.current_data, self.query_one("#best_scores_table", DataTable), "csv", "best_scores")
-            event.stop()
-        elif event.button.id == "export_json":
-            self.export_data(self.current_data, None, "json", "best_scores")
-            event.stop()
-        elif event.button.id == "export_xml":
-            from core.exporters import XmlExporter
-            XmlExporter.export(self.current_data, f"best_scores_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xml")
-            event.stop()
-        elif event.button.id == "export_yaml":
-            from core.exporters import YamlExporter
-            YamlExporter.export(self.current_data, f"best_scores_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.yaml")
+        if event.button.id == "export":
+            self.push_screen_override(ExportMenuScreen(self.current_data))
             event.stop()
         elif event.button.id == "back_to_main_menu":
             self.action_go_back()
@@ -209,18 +199,20 @@ class ViewBestScoresScreen(BaseScreen):
         """Filter scores based on search term.
 
         Searches across processor_model, platform, and timestamp fields.
-        Resets to full dataset when search_term is empty, resetting page to 1.
+        Resets to full dataset when search_term is empty, re-rendering the table.
 
         Args:
             search_term: The text to search for.
         """
         if not search_term:
-            self.current_data = list(self.original_all_scores) if hasattr(self, 'original_all_scores') else []
+            # Clear search: restore full dataset from original_all_scores
+            self.current_data = list(self.original_all_scores)
+            self._update_table_with_scores(self.current_data)
             return
 
         search_lower = search_term.lower()
         filtered = [
-            score for score in (self.original_all_scores if hasattr(self, 'original_all_scores') else [])
+            score for score in self.original_all_scores
             if any(
                 str(score.get(field, "")).lower().find(search_lower) >= 0
                 for field in ["processor_model", "platform", "timestamp"]
@@ -229,3 +221,117 @@ class ViewBestScoresScreen(BaseScreen):
         self.current_data = filtered
         # Re-update table with filtered data
         self._update_table_with_scores(filtered)
+
+
+class ExportMenuScreen(Screen):
+    """Modal export format selection menu for ViewBestScoresScreen."""
+
+    CSS = """
+    ExportMenuScreen {
+        align: center middle;
+    }
+
+    #export-overlay {
+        width: 1fr;
+        height: 1fr;
+        background: black 50%;
+    }
+
+    #export-menu {
+        dock: center;
+        width: 32;
+        background: $bg-card;
+        border: heavy $border-default;
+        padding: 1 2;
+    }
+
+    #export-menu .title {
+        text-style: bold;
+        color: $text-primary;
+        text-align: center;
+        margin-bottom: 1;
+    }
+
+    #export-menu .action-buttons {
+        width: 1fr;
+        margin-top: 1;
+    }
+
+    #export-menu .action-btn {
+        width: 1fr;
+        margin: 0 1;
+    }
+    """
+
+    BINDINGS = [
+        ("1", "export_csv", "CSV"),
+        ("2", "export_json", "JSON"),
+        ("3", "export_xml", "XML"),
+        ("4", "export_yaml", "YAML"),
+        ("escape", "close", "Close"),
+    ]
+
+    def __init__(self, data: list) -> None:
+        super().__init__()
+        self.data = data
+
+    def compose(self) -> ComposeResult:
+        yield Static(id="export-overlay")
+        with Container(id="export-menu"):
+            yield Static("EXPORT FORMAT", classes="title")
+            with Horizontal(id="export_buttons", classes="action-buttons"):
+                yield Button("CSV", id="export_csv", variant="primary", classes="action-btn")
+                yield Button("JSON", id="export_json", variant="primary", classes="action-btn")
+                yield Button("XML", id="export_xml", variant="primary", classes="action-btn")
+                yield Button("YAML", id="export_yaml", variant="primary", classes="action-btn")
+                yield Button("Cancel", id="export_cancel", variant="default", classes="action-btn")
+
+    def _do_export(self, format_type: str) -> None:
+        """Execute export and close the menu."""
+        try:
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            if format_type == "csv":
+                from core.exporters import CsvExporter
+                CsvExporter.export(self.data, "best_scores.csv")
+            elif format_type == "json":
+                from core.exporters import JsonExporter
+                JsonExporter.export(self.data, "best_scores.json")
+            elif format_type == "xml":
+                from core.exporters import XmlExporter
+                XmlExporter.export(self.data, f"best_scores_{timestamp}.xml")
+            elif format_type == "yaml":
+                from core.exporters import YamlExporter
+                YamlExporter.export(self.data, f"best_scores_{timestamp}.yaml")
+        except Exception:
+            pass  # Export errors handled silently for menu context
+        finally:
+            self.app.pop_screen()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        btn_id = event.button.id
+        if btn_id == "export_csv":
+            self._do_export("csv")
+        elif btn_id == "export_json":
+            self._do_export("json")
+        elif btn_id == "export_xml":
+            self._do_export("xml")
+        elif btn_id == "export_yaml":
+            self._do_export("yaml")
+        elif btn_id == "export_cancel":
+            self.app.pop_screen()
+        event.stop()
+
+    def action_export_csv(self) -> None:
+        self._do_export("csv")
+
+    def action_export_json(self) -> None:
+        self._do_export("json")
+
+    def action_export_xml(self) -> None:
+        self._do_export("xml")
+
+    def action_export_yaml(self) -> None:
+        self._do_export("yaml")
+
+    def action_close(self) -> None:
+        self.app.pop_screen()

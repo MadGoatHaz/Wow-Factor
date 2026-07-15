@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1 (HomeScreen rework) on branch/i1-home. 545 tests pass.
+Wave 1 complete. Wave 2 I1 merged. I2 (BestScores search fix) on branch/i2-runner. 569 tests pass.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -70,3 +70,25 @@ Wave 1 complete. Wave 2 I1 (HomeScreen rework) on branch/i1-home. 545 tests pass
 - Branch: branch/i1-home (82d560e)
 - Tests: 545 passed, 0 failed, 4 skipped, 3 warnings
 - Pushed to origin/branch/i1-home
+
+## Wave 2 - I2: Fix ViewBestScoresScreen Search (CHUNK-I2)
+- [Done] Fixed P0 bug: search filtering against undefined `self.original_all_scores`
+- [Done] Added `self.original_all_scores = []` initialization in `__init__`
+- [Done] Populated `self.original_all_scores` in `load_data()` before calling
+  `_update_table_with_scores` (guards against overwrite during filter re-renders)
+- [Done] Fixed `_filter_scores` to filter from `original_all_scores` and re-render
+  DataTable after both filtering and clearing search
+- [Done] Consolidated 4 export buttons (CSV, JSON, XML, YAML) into single "Export"
+  button that pushes `ExportMenuScreen` modal overlay
+- [Done] Created `ExportMenuScreen(Screen)` with 4 export format buttons,
+  keyboard bindings (1-4), Escape to close, and core exporter delegation
+- [Done] Removed dead `export_to_csv` method from ViewBestScoresScreen
+- [Done] Cleaned up unused imports (Binding, Message, Key, logging, datetime from screen)
+- [Done] Added `ExportMenuScreen` to `ui/screens/views/__init__.py` re-exports
+- [Done] Updated `test_export_improvements.py`: removed `export_to_csv` calls,
+  uses `core.exporters` directly, fixed working directory leak with os.chdir
+- [Done] Added 27 new tests in `test_i2_search_filter.py`: initialization, filtering
+  logic, case insensitivity, clear restoration, export menu structure, button consolidation
+- Branch: branch/i2-runner
+- Tests: 569 passed, 0 failed, 4 skipped, 2 warnings
+- Pushed to origin/branch/i2-runner
