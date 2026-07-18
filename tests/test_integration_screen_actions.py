@@ -506,38 +506,47 @@ def test_compare_cpu_load_cpus_method_exists():
 # ============================================================================
 
 def test_benchmark_invalid_duration_rejects_non_integer():
-    """start_benchmark_run rejects non-integer duration values."""
+    """start_benchmark_run rejects non-integer duration values via inline error."""
     from ui.screens.benchmark import RunSingleBenchmarkScreen
 
     screen = RunSingleBenchmarkScreen()
 
-    captured_messages = []
     mock_nav = MagicMock()
-    mock_nav.notify = MagicMock(side_effect=lambda msg, type="info": captured_messages.append((msg, type)))
+    mock_nav.notify = MagicMock()
     mock_nav.navigate_to = MagicMock()
     screen._navigation = mock_nav
 
-    mock_input = MagicMock()
-    mock_input.value = "abc"
+    duration_input = MagicMock()
+    duration_input.value = "abc"
+    threads_input = MagicMock()
+    threads_input.value = "1"
+    error_widget = MagicMock()
 
     def fake_query_one(selector, *args):
-        return mock_input
+        if selector == '#duration_input':
+            return duration_input
+        elif selector == '#threads_input':
+            return threads_input
+        elif selector == '#duration_error':
+            return error_widget
+        return MagicMock()
 
     with patch.object(screen, 'query_one', side_effect=fake_query_one):
         screen.start_benchmark_run()
 
-    assert any("Invalid duration" in msg for msg, _ in captured_messages)
+    error_widget.update.assert_called()
+    call_arg = error_widget.update.call_args[0][0]
+    assert "'abc'" in call_arg and "not a valid integer" in call_arg
 
 
 def test_benchmark_invalid_threads_rejects_zero():
-    """start_benchmark_run rejects thread count < 1."""
+    """start_benchmark_run rejects thread count < 1 via inline error."""
     from ui.screens.benchmark import RunSingleBenchmarkScreen
 
     screen = RunSingleBenchmarkScreen()
 
-    captured_messages = []
     mock_nav = MagicMock()
-    mock_nav.notify = MagicMock(side_effect=lambda msg, type="info": captured_messages.append((msg, type)))
+    mock_nav.notify = MagicMock()
     mock_nav.navigate_to = MagicMock()
     screen._navigation = mock_nav
 
@@ -545,18 +554,23 @@ def test_benchmark_invalid_threads_rejects_zero():
     duration_input.value = "15"
     threads_input = MagicMock()
     threads_input.value = "0"
+    error_widget = MagicMock()
 
     def fake_query_one(selector, *args):
         if selector == '#duration_input':
             return duration_input
         elif selector == '#threads_input':
             return threads_input
+        elif selector == '#threads_error':
+            return error_widget
         return MagicMock()
 
     with patch.object(screen, 'query_one', side_effect=fake_query_one):
         screen.start_benchmark_run()
 
-    assert any("Thread count must be at least 1" in msg for msg, _ in captured_messages)
+    error_widget.update.assert_called()
+    call_arg = error_widget.update.call_args[0][0]
+    assert "Thread count must be at least 1" in call_arg
 
 
 def test_compare_cpu_validation_rejects_empty_inputs():

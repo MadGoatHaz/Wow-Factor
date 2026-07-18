@@ -79,40 +79,64 @@ class TestThreadingUIIntegration(unittest.TestCase):
         # but the fact it was called implies validation passed.
 
     def test_start_benchmark_validation_invalid_threads(self):
-        """Test that start_benchmark_run handles invalid thread counts."""
-        self.mock_threads_input.value = "0" # Invalid
-        
+        """Test that start_benchmark_run handles invalid thread counts via inline error."""
+        self.mock_threads_input.value = "0"  # Invalid
+
+        # Use a single shared mock so both _clear_inline_error and _show_inline_error
+        # calls to query_one("#threads_error") return the same widget
+        shared_error_widget = MagicMock()
+        original_side_effect = self.screen.query_one.side_effect
+        def side_effect_with_error(selector, type_hint=None):
+            if "#threads_error" in selector:
+                return shared_error_widget
+            return original_side_effect(selector, type_hint)
+        self.screen.query_one.side_effect = side_effect_with_error
+
         self.screen.start_benchmark_run()
-        
-        # Verify error notification via navigation service
-        self.screen.navigation.notify.assert_called_with(
-            "Thread count must be at least 1.", type="error"
-        )
-        
+
+        # The shared error widget should have update called by _show_inline_error
+        shared_error_widget.update.assert_called()
+        # The last update call should be the error message (after _clear updates with "")
+        call_arg = shared_error_widget.update.call_args[0][0]
+        self.assertIn("Thread count must be at least 1", call_arg)
+
         # Verify worker was NOT started
         self.screen.run_worker.assert_not_called()
 
     def test_start_benchmark_validation_non_integer_threads(self):
-        """Test that start_benchmark_run handles non-integer thread inputs."""
-        self.mock_threads_input.value = "four" # Invalid
-        
+        """Test that start_benchmark_run handles non-integer thread inputs via inline error."""
+        self.mock_threads_input.value = "four"  # Invalid
+
+        # Use a single shared mock so both _clear_inline_error and _show_inline_error
+        # calls to query_one("#threads_error") return the same widget
+        shared_error_widget = MagicMock()
+        original_side_effect = self.screen.query_one.side_effect
+        def side_effect_with_error(selector, type_hint=None):
+            if "#threads_error" in selector:
+                return shared_error_widget
+            return original_side_effect(selector, type_hint)
+        self.screen.query_one.side_effect = side_effect_with_error
+
         self.screen.start_benchmark_run()
-        
-        # Verify error notification via navigation service
-        self.screen.navigation.notify.assert_called_with(
-            "Invalid thread count. Please enter a positive integer.", type="error"
-        )
-        
+
+        # The shared error widget should have update called by _show_inline_error
+        shared_error_widget.update.assert_called()
+        # The last update call should be the error message (after _clear updates with "")
+        call_arg = shared_error_widget.update.call_args[0][0]
+        self.assertIn("four", call_arg)
+        self.assertIn("not a valid integer", call_arg)
+
         # Verify worker was NOT started
         self.screen.run_worker.assert_not_called()
         
     def test_start_benchmark_validation_max_threads_warning(self):
         """
-        Ideally we would test max threads warning if implemented, 
-        but currently the code just checks >= 1.
-        Just verifying standard behavior for a high but valid number.
+        Test that a high but valid thread count (within CPU core limit)
+        allows the worker to start.
         """
-        self.mock_threads_input.value = "128"
+        import multiprocessing
+        cpu_cores = multiprocessing.cpu_count() or 1
+        self.mock_threads_input.value = str(min(8, cpu_cores))  # Safe within any CPU
         self.screen.start_benchmark_run()
         self.screen.run_worker.assert_called_once()
 
