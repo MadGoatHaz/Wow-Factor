@@ -614,10 +614,11 @@ def aggregate_scores_by_cpu(
 
 def get_score_distribution(
     data: List[Dict],
-    bin_size: int = 500
+    num_bins: int = 20
 ) -> Tuple[List[str], List[int]]:
     """
-    Calculates score distribution for histogram.
+    Calculates score distribution for histogram using fixed bin count.
+    Filters out extreme outliers to prevent runaway bin creation.
     """
     if not data:
         return [], []
@@ -631,22 +632,41 @@ def get_score_distribution(
     if not scores:
         return [], []
 
-    min_score = min(scores)
-    max_score = max(scores)
+    # Sort scores and filter outliers using 1st/99th percentiles
+    scores_sorted = sorted(scores)
+    n = len(scores_sorted)
+    if n < 3:
+        return [], []
 
-    start_bin = (int(min_score) // bin_size) * bin_size
-    end_bin = (int(max_score) // bin_size) * bin_size + bin_size
+    # Use percentile-based bounds to filter extreme outliers
+    low_idx = max(0, int(n * 0.01))
+    high_idx = min(n - 1, int(n * 0.99))
+    min_score = scores_sorted[low_idx]
+    max_score = scores_sorted[high_idx]
 
-    bins = OrderedDict()
-    current = start_bin
-    while current < end_bin:
-        label = f"{current}-{current + bin_size}"
+    if min_score >= max_score:
+        return [f"{int(min_score)}"], [n]
+
+    # Create fixed number of bins for consistent chart rendering
+    step = (max_score - min_score) / num_bins
+    if step <= 0:
+        step = 1.0
+
+    bins: Dict[str, int] = OrderedDict()
+    for i in range(num_bins):
+        bin_start = min_score + i * step
+        bin_end = min_score + (i + 1) * step
+        label = f"{bin_start:,.0f}-{bin_end:,.0f}"
         bins[label] = 0
-        current += bin_size
 
     for score in scores:
-        bin_start = (int(score) // bin_size) * bin_size
-        label = f"{bin_start}-{bin_start + bin_size}"
+        # Skip extreme outliers outside our percentile range
+        if score < min_score or score > max_score:
+            continue
+        idx = int((score - min_score) / step)
+        if idx >= num_bins:
+            idx = num_bins - 1
+        label = f"{min_score + idx * step:,.0f}-{min_score + (idx + 1) * step:,.0f}"
         if label in bins:
             bins[label] += 1
 
