@@ -4,7 +4,7 @@ Started: 2026-07-15
 Blueprint: plans/BLUEPRINT.md
 
 @@@ CURRENT_STATE @@@
-Wave 1 complete. Wave 2 I1-I6 merged. I5 (Footer Widget) merged to master. Post-merge: 667 total tests passed.
+Wave 1 complete. Wave 2 I1-I6 merged. Wave 3 I5 merged. I7 tests for system_deps.py on branch/i7. Post-merge target: 737+ total tests passed.
 
 ## Wave 1 - CP1: Unify Theme Tokens With TCSS
 - [Done] Added `to_tcss_variables()` method to ColorPalette in theme.py
@@ -203,3 +203,18 @@ Wave 1 complete. Wave 2 I1-I6 merged. I5 (Footer Widget) merged to master. Post-
   modal overlay exclusion (no Footer in LoadingOverlay/ExportMenuScreen)
 - Branch: branch/i5
 - Tests: 651 passed, 0 failed, 4 skipped, 3 warnings
+
+## Wave 3 - I7: Tests for core/system_deps.py (CHUNK-I7)
+- [Done] Created `tests/test_system_deps.py` with 17 tests for `check_gamemode()`
+- [Done] Platform guard tests: macOS early return, Windows early return
+- [Done] gamemoded found tests: returns None, emits info log
+- [Done] gamemoded not found: emits warning log
+- [Done] Package manager detection: apt, pacman, dnf, zypper individually verified
+- [Done] No package manager fallback: manual install message verified
+- [Done] Interactive install flow: success (subprocess.check_call), failure
+  (CalledProcessError), generic exception (RuntimeError), user decline ('n')
+- [Done] Non-interactive EOFError handling verified
+- [Done] Output structure: MISSING DEPENDENCY banner, package manager priority order
+  (apt wins over pacman when both present)
+- Branch: branch/i7
+- Tests: 737 passed, 0 failed, 4 skipped, 4 warnings
