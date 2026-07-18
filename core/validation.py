@@ -1,90 +1,133 @@
-"""WowFactor input validation layer for benchmark duration and thread inputs.
-
-Provides pure validation functions that return (value, error_message) tuples.
-Used by the benchmark UI screens to validate user input both inline and
-before starting benchmark runs.
-"""
-
-from __future__ import annotations
+"""Input validation layer for benchmark parameters."""
 
 import multiprocessing
 
-MAX_BATCH_RUNS: int = 100
-MIN_BATCH_RUNS: int = 2
-DEFAULT_CPU_COUNT: int = multiprocessing.cpu_count()
+from core.exceptions import BenchmarkInputError
+
+
+def _get_max_threads() -> int:
+    """Return the maximum number of threads allowed for benchmarks."""
+    return multiprocessing.cpu_count() or 1
 
 
 class Validation:
-    """Pure validation utilities for benchmark input fields."""
+    """
+    Centralized input validation for benchmark parameters.
 
-    @staticmethod
-    def validate_duration(duration_str: str) -> tuple[int, str | None]:
-        """Validate a benchmark duration string.
+    All methods return a tuple of (validated_value, error_message).
+    If validation succeeds, error_message is None.
+    If validation fails, validated_value is None.
+    """
+
+    def validate_duration(self, value: str) -> tuple:
+        """
+        Validate the benchmark duration.
 
         Duration must be a positive integer (> 0).
 
         Args:
-            duration_str: Raw string from the input field.
+            value: Raw string from the input widget.
 
         Returns:
-            Tuple of (validated_duration, error_message_or_None).
+            Tuple of (duration_int, None) on success or (None, error_str) on failure.
         """
-        if not duration_str:
-            return (0, "Duration is required.")
+        if not value or not value.strip():
+            return (None, "Duration cannot be empty.")
         try:
-            duration = int(duration_str)
-        except (ValueError, OverflowError):
-            return (0, "Duration must be a positive integer.")
+            duration = int(value)
+        except ValueError:
+            return (None, f"'{value}' is not a valid integer for duration.")
         if duration <= 0:
-            return (0, "Duration must be greater than 0.")
+            return (None, "Duration must be greater than 0.")
         return (duration, None)
 
-    @staticmethod
-    def validate_threads(threads_str: str, max_threads: int | None = None) -> tuple[int, str | None]:
-        """Validate a thread count string.
+    def validate_threads(self, value: str) -> tuple:
+        """
+        Validate the thread count.
 
         Thread count must be an integer within [1, cpu_count()].
 
         Args:
-            threads_str: Raw string from the input field.
-            max_threads: Optional override for maximum threads (defaults to cpu_count).
+            value: Raw string from the input widget.
 
         Returns:
-            Tuple of (validated_threads, error_message_or_None).
+            Tuple of (threads_int, None) on success or (None, error_str) on failure.
         """
-        if not threads_str:
-            return (0, "Thread count is required.")
+        max_threads = _get_max_threads()
+        if not value or not value.strip():
+            return (None, "Thread count cannot be empty.")
         try:
-            threads = int(threads_str)
-        except (ValueError, OverflowError):
-            return (0, "Thread count must be a positive integer.")
-        limit = max_threads if max_threads is not None else DEFAULT_CPU_COUNT
+            threads = int(value)
+        except ValueError:
+            return (None, f"'{value}' is not a valid integer for threads.")
         if threads < 1:
-            return (0, "Thread count must be at least 1.")
-        if threads > limit:
-            return (0, f"Thread count cannot exceed {limit} (CPU cores).")
+            return (None, "Thread count must be at least 1.")
+        if threads > max_threads:
+            return (None, f"Thread count must not exceed {max_threads} (CPU cores).")
         return (threads, None)
 
-    @staticmethod
-    def validate_batch_runs(runs_str: str) -> tuple[int, str | None]:
-        """Validate a batch runs count string.
+    def validate_batch_runs(self, value: str) -> tuple:
+        """
+        Validate the batch run count.
 
         Batch runs must be an integer within [2, 100].
 
         Args:
-            runs_str: Raw string from the input field.
+            value: Raw string from the input widget.
 
         Returns:
-            Tuple of (validated_runs, error_message_or_None).
+            Tuple of (batch_runs_int, None) on success or (None, error_str) on failure.
         """
-        if not runs_str:
-            return (0, "Batch runs is required.")
+        if not value or not value.strip():
+            return (None, "Batch runs cannot be empty.")
         try:
-            runs = int(runs_str)
-        except (ValueError, OverflowError):
-            return (0, "Batch runs must be an integer.")
-        if runs < MIN_BATCH_RUNS:
-            return (0, f"Batch runs must be at least {MIN_BATCH_RUNS}.")
-        if runs > MAX_BATCH_RUNS:
-            return (0, f"Batch runs cannot exceed {MAX_BATCH_RUNS}.")
+            runs = int(value)
+        except ValueError:
+            return (None, f"'{value}' is not a valid integer for batch runs.")
+        if runs < 2:
+            return (None, "Batch runs must be at least 2.")
+        if runs > 100:
+            return (None, "Batch runs must not exceed 100.")
         return (runs, None)
+
+
+# Module-level convenience functions that raise exceptions (for non-UI usage).
+def validate_duration(value: str) -> int:
+    """Validate duration, raising BenchmarkInputError on failure."""
+    result, err = Validation().validate_duration(value)
+    if err:
+        raise BenchmarkInputError(err)
+    return result
+
+
+def validate_threads(value: str) -> int:
+    """Validate threads, raising BenchmarkInputError on failure."""
+    result, err = Validation().validate_threads(value)
+    if err:
+        raise BenchmarkInputError(err)
+    return result
+
+
+def validate_batch_runs(value: str) -> int:
+    """Validate batch runs, raising BenchmarkInputError on failure."""
+    result, err = Validation().validate_batch_runs(value)
+    if err:
+        raise BenchmarkInputError(err)
+    return result
+
+
+def validate_inputs(duration: str, threads: str) -> dict:
+    """Validate duration and threads together, raising on first failure."""
+    return {
+        "duration": validate_duration(duration),
+        "threads": validate_threads(threads),
+    }
+
+
+def validate_batch_inputs(batch_runs: str, duration: str, threads: str) -> dict:
+    """Validate batch inputs together, raising on first failure."""
+    return {
+        "batch_runs": validate_batch_runs(batch_runs),
+        "duration": validate_duration(duration),
+        "threads": validate_threads(threads),
+    }

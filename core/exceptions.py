@@ -8,6 +8,10 @@ class BenchmarkError(WowFactorError):
     """Base exception for benchmark-related errors."""
     pass
 
+class BenchmarkInputError(BenchmarkError):
+    """Raised when benchmark input validation fails."""
+    pass
+
 class BenchmarkCancelledError(BenchmarkError):
     """Raised when a benchmark is cancelled by the user."""
     pass
