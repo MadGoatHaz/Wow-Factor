@@ -9,3 +9,4 @@ All 16 chunks merged. 809 tests pass. GUI rework complete.
 - **Test**: Updated `test_load_data_worker_is_async` to `test_load_data_worker_is_sync` for both screen classes.
 - 171 tests pass (navigation + integration + harness). App starts cleanly with no TypeError or RuntimeWarning.
 - **Verification (2026-07-18)**: Re-confirmed both fixes hold. `timeout 5 python wowfactor.py` starts without crash. Full pytest suite passes. No TypeError on `ProfileSelectionScreen.__init__()` and no `RuntimeWarning` for coroutine.
+- **Re-push (2026-07-18)**: Rebased `branch/fix-profile-crash` onto latest `master`. Pushed with `--force-with-lease`. All 30 targeted tests (TrendsChart + Profile + app startup) pass.
