@@ -4,7 +4,7 @@
 All 16 chunks merged. 809 tests pass. GUI rework complete.
 
 ## branch/fix-profile-crash
-- **Fix**: `ProfileSelectionScreen.__init__` now accepts `profiles=None` (default) so navigation with `create_new=True` no longer crashes
-- **Fix**: `TrendsChartScreen._load_data_worker` and `AnalyticsScreen._load_data_worker` changed from `async def` to `def` — eliminates `RuntimeWarning: coroutine was never awaited` when run via `run_worker(thread=True)`
-- **Test**: Updated `test_load_data_worker_is_async` to `test_load_data_worker_is_sync` for both screen classes
-- 152 tests pass. App starts cleanly with no TypeError or RuntimeWarning.
+- **Fix**: `main_menu.py` line 86 passed `profile_names=profile_names` to `ProfileSelectionScreen`, but `__init__` expects `profiles`. Changed to `profiles=profile_names`.
+- **Fix**: `TrendsChartScreen._load_data_worker` and `AnalyticsScreen._load_data_worker` already `def` (sync) — no coroutine warning when run via `run_worker(thread=True)`.
+- **Test**: Updated `test_load_data_worker_is_async` to `test_load_data_worker_is_sync` for both screen classes.
+- 171 tests pass (navigation + integration + harness). App starts cleanly with no TypeError or RuntimeWarning.
