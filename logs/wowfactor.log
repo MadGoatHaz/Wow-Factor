@@ -2441,3 +2441,453 @@ AttributeError: 'WowFactorTUI' object has no attribute 'run_in_thread'
 [2026-07-18 09:50:15,069] INFO core.benchmark: Benchmark finished. Total operations: 920000 in 5.51s with 1 threads.
 [2026-07-18 09:50:15,069] INFO core.benchmark: Saving benchmark results: 166938.39 ops/s, 5.5 s, 1 threads
 [2026-07-18 09:50:16,221] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_095015.json'
+[2026-07-18 10:19:52,816] INFO core.analytics_engine: Detecting trend for CPU: CPU1 (window=5)
+[2026-07-18 10:19:52,816] WARNING core.analytics_engine: Insufficient data for trend on CPU1: 1 points
+[2026-07-18 10:19:52,821] INFO core.config: Created profile 'HarnessTest'
+[2026-07-18 10:19:52,821] INFO core.config: Saved 1 profiles to /tmp/tmpfxg_rijq/benchmark_profiles.json
+[2026-07-18 10:19:52,821] INFO core.config: Deleted profile 'HarnessTest'
+[2026-07-18 10:19:52,821] INFO core.config: Saved 0 profiles to /tmp/tmpfxg_rijq/benchmark_profiles.json
+[2026-07-18 10:19:52,822] INFO core.exporters: Exporting 1 scores to CSV: test_harness_csv_output.csv
+[2026-07-18 10:19:52,822] INFO core.exporters: CSV export complete: test_harness_csv_output.csv
+[2026-07-18 10:19:52,823] INFO core.exporters: Exporting analytics report to JSON: test_harness_json_output.json
+[2026-07-18 10:19:52,823] INFO core.exporters: Analytics JSON export complete: test_harness_json_output.json
+[2026-07-18 10:19:52,823] INFO core.exporters: Exporting 1 scores to XML: test_harness_xml_output.xml
+[2026-07-18 10:19:52,823] INFO core.exporters: XML export complete: test_harness_xml_output.xml
+[2026-07-18 10:19:52,824] INFO core.exporters: Exporting 1 scores to YAML: test_harness_yaml_output.yaml
+[2026-07-18 10:19:52,824] INFO core.exporters: YAML export complete: test_harness_yaml_output.yaml
+[2026-07-18 10:19:52,825] INFO core.exporters: Exporting stats for 1 CPUs to CSV: test_harness_stats.csv
+[2026-07-18 10:19:52,825] INFO core.exporters: Stats CSV export complete: test_harness_stats.csv
+[2026-07-18 10:19:52,826] INFO core.exporters: Exporting 1 rankings to CSV: test_harness_rankings.csv
+[2026-07-18 10:19:52,826] INFO core.exporters: Rankings CSV export complete: test_harness_rankings.csv
+[2026-07-18 10:19:52,827] INFO core.exporters: Exporting comparison report to JSON: test_harness_comparison.json
+[2026-07-18 10:19:52,827] INFO core.exporters: Comparison JSON export complete: test_harness_comparison.json
+[2026-07-18 10:19:52,827] INFO core.exporters: Exporting summary text report: test_harness_summary.txt
+[2026-07-18 10:19:52,828] INFO core.exporters: Summary text report export complete: test_harness_summary.txt
+[2026-07-18 10:19:52,880] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:19:52,912] INFO core.power: GameMode activated successfully (PID: 45436).
+[2026-07-18 10:19:52,913] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:19:52,913] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:19:52,929] INFO core.power: GameMode deactivated successfully (PID: 45436).
+[2026-07-18 10:19:52,939] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:19:58,950] INFO core.benchmark: Benchmark finished. Total operations: 1820000 in 6.01s with 1 threads.
+[2026-07-18 10:19:58,950] INFO core.benchmark: Saving benchmark results: 302786.01 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:20:00,104] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_101958.json'
+[2026-07-18 10:20:00,108] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:20:06,120] INFO core.benchmark: Benchmark finished. Total operations: 1846000 in 6.01s with 1 threads.
+[2026-07-18 10:20:06,120] INFO core.benchmark: Saving benchmark results: 307078.50 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:20:07,271] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102006.json'
+[2026-07-18 10:20:07,349] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:20:13,360] INFO core.benchmark: Benchmark finished. Total operations: 1826000 in 6.01s with 1 threads.
+[2026-07-18 10:20:13,360] INFO core.benchmark: Saving benchmark results: 303769.06 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:20:14,507] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102013.json'
+[2026-07-18 10:20:14,564] INFO core.exporters: Exporting 10 scores to CSV: e2e_test.csv
+[2026-07-18 10:20:14,564] INFO core.exporters: CSV export complete: e2e_test.csv
+[2026-07-18 10:20:14,565] INFO core.exporters: Exporting analytics report to JSON: e2e_test.json
+[2026-07-18 10:20:14,565] INFO core.exporters: Analytics JSON export complete: e2e_test.json
+[2026-07-18 10:20:14,565] INFO core.exporters: Exporting 10 scores to XML: e2e_test.xml
+[2026-07-18 10:20:14,566] INFO core.exporters: XML export complete: e2e_test.xml
+[2026-07-18 10:20:14,566] INFO core.exporters: Exporting 10 scores to YAML: e2e_test.yaml
+[2026-07-18 10:20:14,566] INFO core.exporters: YAML export complete: e2e_test.yaml
+[2026-07-18 10:20:14,567] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:20:20,578] INFO core.benchmark: Benchmark finished. Total operations: 1872000 in 6.01s with 1 threads.
+[2026-07-18 10:20:20,578] INFO core.benchmark: Saving benchmark results: 311409.20 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:20:21,730] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102020.json'
+[2026-07-18 10:20:21,831] INFO core.analytics_engine: Comparing CPU profiles: CPU1 vs CPU2
+[2026-07-18 10:20:21,832] INFO core.analytics_engine: Detecting trend for CPU: NonExistent CPU (window=5)
+[2026-07-18 10:20:21,832] WARNING core.analytics_engine: Insufficient data for trend on NonExistent CPU: 0 points
+[2026-07-18 10:20:21,832] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:20:21,864] INFO core.power: GameMode activated successfully (PID: 45436).
+[2026-07-18 10:20:21,865] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:20:21,866] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:20:21,882] INFO core.power: GameMode deactivated successfully (PID: 45436).
+[2026-07-18 10:20:24,742] INFO core.config: Created profile 'Test Profile'
+[2026-07-18 10:20:24,743] INFO core.config: Saved 1 profiles to /tmp/tmpuwcj3843/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:20:24,743] INFO core.config: Created profile 'Integration Test'
+[2026-07-18 10:20:24,743] INFO core.config: Saved 1 profiles to /tmp/tmpgok0brdn/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:20:24,743] INFO core.config: Loaded 1 profiles from /tmp/tmpgok0brdn/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:20:24,744] INFO core.config: Created profile 'Dup'
+[2026-07-18 10:20:24,744] INFO core.config: Saved 1 profiles to /tmp/tmpdw1oqq2v/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:20:24,744] WARNING core.config: Profile 'Dup' already exists
+[2026-07-18 10:20:26,440] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:20:46,441] INFO core.benchmark: Benchmark finished. Total operations: 27236000 in 20.00s with 1 threads.
+[2026-07-18 10:20:46,442] INFO core.benchmark: Saving benchmark results: 1361702.30 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:20:47,590] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102046.json'
+[2026-07-18 10:20:47,599] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:22:06,411] INFO core.analytics_engine: Detecting trend for CPU: CPU1 (window=5)
+[2026-07-18 10:22:06,411] WARNING core.analytics_engine: Insufficient data for trend on CPU1: 1 points
+[2026-07-18 10:22:06,416] INFO core.config: Created profile 'HarnessTest'
+[2026-07-18 10:22:06,416] INFO core.config: Saved 1 profiles to /tmp/tmp56wu4vlp/benchmark_profiles.json
+[2026-07-18 10:22:06,417] INFO core.config: Deleted profile 'HarnessTest'
+[2026-07-18 10:22:06,417] INFO core.config: Saved 0 profiles to /tmp/tmp56wu4vlp/benchmark_profiles.json
+[2026-07-18 10:22:06,417] INFO core.exporters: Exporting 1 scores to CSV: test_harness_csv_output.csv
+[2026-07-18 10:22:06,417] INFO core.exporters: CSV export complete: test_harness_csv_output.csv
+[2026-07-18 10:22:06,418] INFO core.exporters: Exporting analytics report to JSON: test_harness_json_output.json
+[2026-07-18 10:22:06,418] INFO core.exporters: Analytics JSON export complete: test_harness_json_output.json
+[2026-07-18 10:22:06,419] INFO core.exporters: Exporting 1 scores to XML: test_harness_xml_output.xml
+[2026-07-18 10:22:06,419] INFO core.exporters: XML export complete: test_harness_xml_output.xml
+[2026-07-18 10:22:06,419] INFO core.exporters: Exporting 1 scores to YAML: test_harness_yaml_output.yaml
+[2026-07-18 10:22:06,420] INFO core.exporters: YAML export complete: test_harness_yaml_output.yaml
+[2026-07-18 10:22:06,421] INFO core.exporters: Exporting stats for 1 CPUs to CSV: test_harness_stats.csv
+[2026-07-18 10:22:06,421] INFO core.exporters: Stats CSV export complete: test_harness_stats.csv
+[2026-07-18 10:22:06,421] INFO core.exporters: Exporting 1 rankings to CSV: test_harness_rankings.csv
+[2026-07-18 10:22:06,421] INFO core.exporters: Rankings CSV export complete: test_harness_rankings.csv
+[2026-07-18 10:22:06,422] INFO core.exporters: Exporting comparison report to JSON: test_harness_comparison.json
+[2026-07-18 10:22:06,422] INFO core.exporters: Comparison JSON export complete: test_harness_comparison.json
+[2026-07-18 10:22:06,423] INFO core.exporters: Exporting summary text report: test_harness_summary.txt
+[2026-07-18 10:22:06,423] INFO core.exporters: Summary text report export complete: test_harness_summary.txt
+[2026-07-18 10:22:06,473] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:22:06,506] INFO core.power: GameMode activated successfully (PID: 46292).
+[2026-07-18 10:22:06,506] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:22:06,507] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:22:06,524] INFO core.power: GameMode deactivated successfully (PID: 46292).
+[2026-07-18 10:22:06,534] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:22:12,544] INFO core.benchmark: Benchmark finished. Total operations: 1824000 in 6.01s with 1 threads.
+[2026-07-18 10:22:12,545] INFO core.benchmark: Saving benchmark results: 303453.98 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:22:13,693] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102212.json'
+[2026-07-18 10:22:13,697] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:22:19,709] INFO core.benchmark: Benchmark finished. Total operations: 1786000 in 6.01s with 1 threads.
+[2026-07-18 10:22:19,709] INFO core.benchmark: Saving benchmark results: 297092.06 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:22:20,858] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102219.json'
+[2026-07-18 10:22:20,933] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:22:26,944] INFO core.benchmark: Benchmark finished. Total operations: 1864000 in 6.01s with 1 threads.
+[2026-07-18 10:22:26,944] INFO core.benchmark: Saving benchmark results: 310072.55 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:22:28,097] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102226.json'
+[2026-07-18 10:22:28,155] INFO core.exporters: Exporting 10 scores to CSV: e2e_test.csv
+[2026-07-18 10:22:28,155] INFO core.exporters: CSV export complete: e2e_test.csv
+[2026-07-18 10:22:28,156] INFO core.exporters: Exporting analytics report to JSON: e2e_test.json
+[2026-07-18 10:22:28,156] INFO core.exporters: Analytics JSON export complete: e2e_test.json
+[2026-07-18 10:22:28,157] INFO core.exporters: Exporting 10 scores to XML: e2e_test.xml
+[2026-07-18 10:22:28,157] INFO core.exporters: XML export complete: e2e_test.xml
+[2026-07-18 10:22:28,157] INFO core.exporters: Exporting 10 scores to YAML: e2e_test.yaml
+[2026-07-18 10:22:28,157] INFO core.exporters: YAML export complete: e2e_test.yaml
+[2026-07-18 10:22:28,158] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:22:34,194] INFO core.benchmark: Benchmark finished. Total operations: 1900000 in 6.04s with 1 threads.
+[2026-07-18 10:22:34,194] INFO core.benchmark: Saving benchmark results: 314791.10 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:22:35,343] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102234.json'
+[2026-07-18 10:22:35,445] INFO core.analytics_engine: Comparing CPU profiles: CPU1 vs CPU2
+[2026-07-18 10:22:35,445] INFO core.analytics_engine: Detecting trend for CPU: NonExistent CPU (window=5)
+[2026-07-18 10:22:35,445] WARNING core.analytics_engine: Insufficient data for trend on NonExistent CPU: 0 points
+[2026-07-18 10:22:35,446] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:22:35,479] INFO core.power: GameMode activated successfully (PID: 46292).
+[2026-07-18 10:22:35,480] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:22:35,481] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:22:35,498] INFO core.power: GameMode deactivated successfully (PID: 46292).
+[2026-07-18 10:22:38,402] INFO core.config: Created profile 'Test Profile'
+[2026-07-18 10:22:38,402] INFO core.config: Saved 1 profiles to /tmp/tmplwnpc4pu/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:22:38,403] INFO core.config: Created profile 'Integration Test'
+[2026-07-18 10:22:38,403] INFO core.config: Saved 1 profiles to /tmp/tmpz0opn7o_/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:22:38,403] INFO core.config: Loaded 1 profiles from /tmp/tmpz0opn7o_/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:22:38,404] INFO core.config: Created profile 'Dup'
+[2026-07-18 10:22:38,404] INFO core.config: Saved 1 profiles to /tmp/tmp01i4pk7z/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:22:38,404] WARNING core.config: Profile 'Dup' already exists
+[2026-07-18 10:22:39,962] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:22:59,966] INFO core.benchmark: Benchmark finished. Total operations: 27954000 in 20.00s with 1 threads.
+[2026-07-18 10:22:59,966] INFO core.benchmark: Saving benchmark results: 1397430.90 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:23:01,118] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102259.json'
+[2026-07-18 10:23:01,127] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:23:21,141] INFO core.benchmark: Benchmark finished. Total operations: 27842000 in 20.01s with 1 threads.
+[2026-07-18 10:23:21,142] INFO core.benchmark: Saving benchmark results: 1391110.36 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:23:22,294] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102321.json'
+[2026-07-18 10:23:22,475] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:23:22,507] INFO core.power: GameMode activated successfully (PID: 46292).
+[2026-07-18 10:23:22,507] INFO core.power: Set all 1 CPUs to performance mode.
+[2026-07-18 10:23:22,507] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:23:22,524] INFO core.power: GameMode deactivated successfully (PID: 46292).
+[2026-07-18 10:23:22,527] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:23:22,561] INFO core.power: GameMode activated successfully (PID: 46292).
+[2026-07-18 10:23:22,562] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:23:22,562] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:23:22,578] INFO core.power: GameMode deactivated successfully (PID: 46292).
+[2026-07-18 10:23:22,581] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:23:22,613] INFO core.power: GameMode activated successfully (PID: 46292).
+[2026-07-18 10:23:22,614] INFO core.power: Set all 1 CPUs to performance mode.
+[2026-07-18 10:23:22,614] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:23:22,630] INFO core.power: GameMode deactivated successfully (PID: 46292).
+[2026-07-18 10:23:22,630] INFO core.power: Restored CPU governors for 1 CPUs.
+[2026-07-18 10:23:22,632] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:23:22,632] WARNING core.power: Power management not implemented for platform: Darwin
+[2026-07-18 10:23:22,632] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:23:22,633] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:24,634] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:26,636] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:28,638] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:30,639] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:32,641] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:34,643] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:36,647] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:38,648] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:40,650] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:42,652] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:44,655] INFO root: GameMode daemon (gamemoded) detected.
+[2026-07-18 10:23:44,656] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:23:46,657] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:23:52,670] INFO core.benchmark: Benchmark finished. Total operations: 1826000 in 6.01s with 1 threads.
+[2026-07-18 10:23:52,670] INFO core.benchmark: Saving benchmark results: 303700.06 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:23:53,817] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102352.json'
+[2026-07-18 10:23:53,818] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 2 threads, infinite=False
+[2026-07-18 10:23:59,838] INFO core.benchmark: Benchmark finished. Total operations: 1616000 in 6.02s with 2 threads.
+[2026-07-18 10:23:59,838] INFO core.benchmark: Saving benchmark results: 268439.79 ops/s, 6.0 s, 2 threads
+[2026-07-18 10:24:00,993] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102359.json'
+[2026-07-18 10:24:00,994] INFO core.benchmark: Starting benchmark: 0.5s (warmup 5.0s), 4 threads, infinite=False
+[2026-07-18 10:24:07,263] INFO core.benchmark: Benchmark finished. Total operations: 832000 in 6.27s with 4 threads.
+[2026-07-18 10:24:07,263] INFO core.benchmark: Saving benchmark results: 132728.26 ops/s, 6.3 s, 4 threads
+[2026-07-18 10:24:08,415] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102407.json'
+[2026-07-18 10:24:08,540] INFO core.benchmark: Starting benchmark: 0.1s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:24:13,652] INFO core.benchmark: Benchmark finished. Total operations: 186000 in 5.11s with 1 threads.
+[2026-07-18 10:24:13,652] INFO core.benchmark: Saving benchmark results: 36385.39 ops/s, 5.1 s, 1 threads
+[2026-07-18 10:24:14,804] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102413.json'
+[2026-07-18 10:24:14,805] INFO core.benchmark: Starting benchmark: 0.5s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:24:20,316] INFO core.benchmark: Benchmark finished. Total operations: 832000 in 5.51s with 1 threads.
+[2026-07-18 10:24:20,316] INFO core.benchmark: Saving benchmark results: 150963.41 ops/s, 5.5 s, 1 threads
+[2026-07-18 10:24:21,469] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_102420.json'
+[2026-07-18 10:32:12,020] INFO core.analytics_engine: Detecting trend for CPU: CPU1 (window=5)
+[2026-07-18 10:32:12,020] WARNING core.analytics_engine: Insufficient data for trend on CPU1: 1 points
+[2026-07-18 10:32:12,024] INFO core.config: Created profile 'HarnessTest'
+[2026-07-18 10:32:12,025] INFO core.config: Saved 1 profiles to /tmp/tmpxf5z7f1_/benchmark_profiles.json
+[2026-07-18 10:32:12,025] INFO core.config: Deleted profile 'HarnessTest'
+[2026-07-18 10:32:12,025] INFO core.config: Saved 0 profiles to /tmp/tmpxf5z7f1_/benchmark_profiles.json
+[2026-07-18 10:32:12,025] INFO core.exporters: Exporting 1 scores to CSV: test_harness_csv_output.csv
+[2026-07-18 10:32:12,025] INFO core.exporters: CSV export complete: test_harness_csv_output.csv
+[2026-07-18 10:32:12,026] INFO core.exporters: Exporting analytics report to JSON: test_harness_json_output.json
+[2026-07-18 10:32:12,026] INFO core.exporters: Analytics JSON export complete: test_harness_json_output.json
+[2026-07-18 10:32:12,027] INFO core.exporters: Exporting 1 scores to XML: test_harness_xml_output.xml
+[2026-07-18 10:32:12,027] INFO core.exporters: XML export complete: test_harness_xml_output.xml
+[2026-07-18 10:32:12,028] INFO core.exporters: Exporting 1 scores to YAML: test_harness_yaml_output.yaml
+[2026-07-18 10:32:12,028] INFO core.exporters: YAML export complete: test_harness_yaml_output.yaml
+[2026-07-18 10:32:12,029] INFO core.exporters: Exporting stats for 1 CPUs to CSV: test_harness_stats.csv
+[2026-07-18 10:32:12,029] INFO core.exporters: Stats CSV export complete: test_harness_stats.csv
+[2026-07-18 10:32:12,029] INFO core.exporters: Exporting 1 rankings to CSV: test_harness_rankings.csv
+[2026-07-18 10:32:12,029] INFO core.exporters: Rankings CSV export complete: test_harness_rankings.csv
+[2026-07-18 10:32:12,030] INFO core.exporters: Exporting comparison report to JSON: test_harness_comparison.json
+[2026-07-18 10:32:12,030] INFO core.exporters: Comparison JSON export complete: test_harness_comparison.json
+[2026-07-18 10:32:12,031] INFO core.exporters: Exporting summary text report: test_harness_summary.txt
+[2026-07-18 10:32:12,031] INFO core.exporters: Summary text report export complete: test_harness_summary.txt
+[2026-07-18 10:32:12,084] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:32:12,115] INFO core.power: GameMode activated successfully (PID: 50177).
+[2026-07-18 10:32:12,116] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:32:12,117] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:32:12,133] INFO core.power: GameMode deactivated successfully (PID: 50177).
+[2026-07-18 10:32:12,143] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:32:18,154] INFO core.benchmark: Benchmark finished. Total operations: 1796000 in 6.01s with 1 threads.
+[2026-07-18 10:32:18,154] INFO core.benchmark: Saving benchmark results: 298778.89 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:32:19,303] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103218.json'
+[2026-07-18 10:32:19,308] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:32:25,319] INFO core.benchmark: Benchmark finished. Total operations: 1842000 in 6.01s with 1 threads.
+[2026-07-18 10:32:25,319] INFO core.benchmark: Saving benchmark results: 306446.88 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:32:26,466] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103225.json'
+[2026-07-18 10:32:26,538] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:32:32,550] INFO core.benchmark: Benchmark finished. Total operations: 1870000 in 6.01s with 1 threads.
+[2026-07-18 10:32:32,550] INFO core.benchmark: Saving benchmark results: 311077.47 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:32:33,698] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103232.json'
+[2026-07-18 10:32:33,756] INFO core.exporters: Exporting 10 scores to CSV: e2e_test.csv
+[2026-07-18 10:32:33,756] INFO core.exporters: CSV export complete: e2e_test.csv
+[2026-07-18 10:32:33,757] INFO core.exporters: Exporting analytics report to JSON: e2e_test.json
+[2026-07-18 10:32:33,757] INFO core.exporters: Analytics JSON export complete: e2e_test.json
+[2026-07-18 10:32:33,758] INFO core.exporters: Exporting 10 scores to XML: e2e_test.xml
+[2026-07-18 10:32:33,758] INFO core.exporters: XML export complete: e2e_test.xml
+[2026-07-18 10:32:33,758] INFO core.exporters: Exporting 10 scores to YAML: e2e_test.yaml
+[2026-07-18 10:32:33,759] INFO core.exporters: YAML export complete: e2e_test.yaml
+[2026-07-18 10:32:33,759] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:32:39,770] INFO core.benchmark: Benchmark finished. Total operations: 1878000 in 6.01s with 1 threads.
+[2026-07-18 10:32:39,770] INFO core.benchmark: Saving benchmark results: 312436.19 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:32:40,920] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103239.json'
+[2026-07-18 10:32:41,022] INFO core.analytics_engine: Comparing CPU profiles: CPU1 vs CPU2
+[2026-07-18 10:32:41,023] INFO core.analytics_engine: Detecting trend for CPU: NonExistent CPU (window=5)
+[2026-07-18 10:32:41,023] WARNING core.analytics_engine: Insufficient data for trend on NonExistent CPU: 0 points
+[2026-07-18 10:32:41,024] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:32:41,054] INFO core.power: GameMode activated successfully (PID: 50177).
+[2026-07-18 10:32:41,055] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:32:41,055] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:32:41,071] INFO core.power: GameMode deactivated successfully (PID: 50177).
+[2026-07-18 10:32:43,848] INFO core.config: Created profile 'Test Profile'
+[2026-07-18 10:32:43,848] INFO core.config: Saved 1 profiles to /tmp/tmpfgt60qoi/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:32:43,849] INFO core.config: Created profile 'Integration Test'
+[2026-07-18 10:32:43,849] INFO core.config: Saved 1 profiles to /tmp/tmpkomcd_zt/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:32:43,849] INFO core.config: Loaded 1 profiles from /tmp/tmpkomcd_zt/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:32:43,850] INFO core.config: Created profile 'Dup'
+[2026-07-18 10:32:43,850] INFO core.config: Saved 1 profiles to /tmp/tmpdnel4r8v/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:32:43,850] WARNING core.config: Profile 'Dup' already exists
+[2026-07-18 10:32:45,478] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:33:05,489] INFO core.benchmark: Benchmark finished. Total operations: 28152000 in 20.01s with 1 threads.
+[2026-07-18 10:33:05,489] INFO core.benchmark: Saving benchmark results: 1406843.78 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:33:06,635] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103305.json'
+[2026-07-18 10:33:06,644] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:33:26,670] INFO core.benchmark: Benchmark finished. Total operations: 28336000 in 20.03s with 1 threads.
+[2026-07-18 10:33:26,670] INFO core.benchmark: Saving benchmark results: 1414965.06 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:33:27,819] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103326.json'
+[2026-07-18 10:33:27,971] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:33:28,004] INFO core.power: GameMode activated successfully (PID: 50177).
+[2026-07-18 10:33:28,005] INFO core.power: Set all 1 CPUs to performance mode.
+[2026-07-18 10:33:28,005] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:33:28,021] INFO core.power: GameMode deactivated successfully (PID: 50177).
+[2026-07-18 10:33:28,023] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:33:28,054] INFO core.power: GameMode activated successfully (PID: 50177).
+[2026-07-18 10:33:28,054] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:33:28,054] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:33:28,069] INFO core.power: GameMode deactivated successfully (PID: 50177).
+[2026-07-18 10:33:28,072] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:33:28,103] INFO core.power: GameMode activated successfully (PID: 50177).
+[2026-07-18 10:33:28,104] INFO core.power: Set all 1 CPUs to performance mode.
+[2026-07-18 10:33:28,104] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:33:28,120] INFO core.power: GameMode deactivated successfully (PID: 50177).
+[2026-07-18 10:33:28,120] INFO core.power: Restored CPU governors for 1 CPUs.
+[2026-07-18 10:33:28,121] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:33:28,121] WARNING core.power: Power management not implemented for platform: Darwin
+[2026-07-18 10:33:28,121] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:33:28,122] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:30,123] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:32,125] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:34,127] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:36,128] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:38,130] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:40,132] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:42,135] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:44,137] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:46,138] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:48,140] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:50,143] INFO root: GameMode daemon (gamemoded) detected.
+[2026-07-18 10:33:50,144] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:33:52,145] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:33:58,158] INFO core.benchmark: Benchmark finished. Total operations: 1818000 in 6.01s with 1 threads.
+[2026-07-18 10:33:58,158] INFO core.benchmark: Saving benchmark results: 302338.55 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:33:59,305] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103358.json'
+[2026-07-18 10:33:59,307] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 2 threads, infinite=False
+[2026-07-18 10:34:05,334] INFO core.benchmark: Benchmark finished. Total operations: 1632000 in 6.03s with 2 threads.
+[2026-07-18 10:34:05,334] INFO core.benchmark: Saving benchmark results: 270769.33 ops/s, 6.0 s, 2 threads
+[2026-07-18 10:34:06,478] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103405.json'
+[2026-07-18 10:34:06,480] INFO core.benchmark: Starting benchmark: 0.5s (warmup 5.0s), 4 threads, infinite=False
+[2026-07-18 10:35:13,538] INFO core.analytics_engine: Detecting trend for CPU: CPU1 (window=5)
+[2026-07-18 10:35:13,538] WARNING core.analytics_engine: Insufficient data for trend on CPU1: 1 points
+[2026-07-18 10:35:13,543] INFO core.config: Created profile 'HarnessTest'
+[2026-07-18 10:35:13,543] INFO core.config: Saved 1 profiles to /tmp/tmpggkzz51q/benchmark_profiles.json
+[2026-07-18 10:35:13,543] INFO core.config: Deleted profile 'HarnessTest'
+[2026-07-18 10:35:13,543] INFO core.config: Saved 0 profiles to /tmp/tmpggkzz51q/benchmark_profiles.json
+[2026-07-18 10:35:13,544] INFO core.exporters: Exporting 1 scores to CSV: test_harness_csv_output.csv
+[2026-07-18 10:35:13,544] INFO core.exporters: CSV export complete: test_harness_csv_output.csv
+[2026-07-18 10:35:13,545] INFO core.exporters: Exporting analytics report to JSON: test_harness_json_output.json
+[2026-07-18 10:35:13,545] INFO core.exporters: Analytics JSON export complete: test_harness_json_output.json
+[2026-07-18 10:35:13,546] INFO core.exporters: Exporting 1 scores to XML: test_harness_xml_output.xml
+[2026-07-18 10:35:13,546] INFO core.exporters: XML export complete: test_harness_xml_output.xml
+[2026-07-18 10:35:13,546] INFO core.exporters: Exporting 1 scores to YAML: test_harness_yaml_output.yaml
+[2026-07-18 10:35:13,546] INFO core.exporters: YAML export complete: test_harness_yaml_output.yaml
+[2026-07-18 10:35:13,547] INFO core.exporters: Exporting stats for 1 CPUs to CSV: test_harness_stats.csv
+[2026-07-18 10:35:13,548] INFO core.exporters: Stats CSV export complete: test_harness_stats.csv
+[2026-07-18 10:35:13,548] INFO core.exporters: Exporting 1 rankings to CSV: test_harness_rankings.csv
+[2026-07-18 10:35:13,548] INFO core.exporters: Rankings CSV export complete: test_harness_rankings.csv
+[2026-07-18 10:35:13,549] INFO core.exporters: Exporting comparison report to JSON: test_harness_comparison.json
+[2026-07-18 10:35:13,549] INFO core.exporters: Comparison JSON export complete: test_harness_comparison.json
+[2026-07-18 10:35:13,550] INFO core.exporters: Exporting summary text report: test_harness_summary.txt
+[2026-07-18 10:35:13,550] INFO core.exporters: Summary text report export complete: test_harness_summary.txt
+[2026-07-18 10:35:13,601] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:35:13,633] INFO core.power: GameMode activated successfully (PID: 51301).
+[2026-07-18 10:35:13,634] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:35:13,634] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:35:13,650] INFO core.power: GameMode deactivated successfully (PID: 51301).
+[2026-07-18 10:35:13,660] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:35:19,671] INFO core.benchmark: Benchmark finished. Total operations: 1826000 in 6.01s with 1 threads.
+[2026-07-18 10:35:19,671] INFO core.benchmark: Saving benchmark results: 303764.64 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:35:20,821] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103519.json'
+[2026-07-18 10:35:20,825] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:35:26,837] INFO core.benchmark: Benchmark finished. Total operations: 1838000 in 6.01s with 1 threads.
+[2026-07-18 10:35:26,837] INFO core.benchmark: Saving benchmark results: 305752.63 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:35:27,983] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103526.json'
+[2026-07-18 10:35:28,055] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:35:34,066] INFO core.benchmark: Benchmark finished. Total operations: 1874000 in 6.01s with 1 threads.
+[2026-07-18 10:35:34,066] INFO core.benchmark: Saving benchmark results: 311761.97 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:35:35,215] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103534.json'
+[2026-07-18 10:35:35,273] INFO core.exporters: Exporting 10 scores to CSV: e2e_test.csv
+[2026-07-18 10:35:35,273] INFO core.exporters: CSV export complete: e2e_test.csv
+[2026-07-18 10:35:35,274] INFO core.exporters: Exporting analytics report to JSON: e2e_test.json
+[2026-07-18 10:35:35,274] INFO core.exporters: Analytics JSON export complete: e2e_test.json
+[2026-07-18 10:35:35,275] INFO core.exporters: Exporting 10 scores to XML: e2e_test.xml
+[2026-07-18 10:35:35,275] INFO core.exporters: XML export complete: e2e_test.xml
+[2026-07-18 10:35:35,276] INFO core.exporters: Exporting 10 scores to YAML: e2e_test.yaml
+[2026-07-18 10:35:35,276] INFO core.exporters: YAML export complete: e2e_test.yaml
+[2026-07-18 10:35:35,276] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:35:41,287] INFO core.benchmark: Benchmark finished. Total operations: 1842000 in 6.01s with 1 threads.
+[2026-07-18 10:35:41,287] INFO core.benchmark: Saving benchmark results: 306461.38 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:35:42,438] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103541.json'
+[2026-07-18 10:35:42,539] INFO core.analytics_engine: Comparing CPU profiles: CPU1 vs CPU2
+[2026-07-18 10:35:42,539] INFO core.analytics_engine: Detecting trend for CPU: NonExistent CPU (window=5)
+[2026-07-18 10:35:42,539] WARNING core.analytics_engine: Insufficient data for trend on NonExistent CPU: 0 points
+[2026-07-18 10:35:42,540] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:35:42,570] INFO core.power: GameMode activated successfully (PID: 51301).
+[2026-07-18 10:35:42,570] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:35:42,571] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:35:42,587] INFO core.power: GameMode deactivated successfully (PID: 51301).
+[2026-07-18 10:35:45,377] INFO core.config: Created profile 'Test Profile'
+[2026-07-18 10:35:45,377] INFO core.config: Saved 1 profiles to /tmp/tmpkv4rdpbp/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:35:45,378] INFO core.config: Created profile 'Integration Test'
+[2026-07-18 10:35:45,378] INFO core.config: Saved 1 profiles to /tmp/tmpmz90m_bd/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:35:45,378] INFO core.config: Loaded 1 profiles from /tmp/tmpmz90m_bd/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:35:45,379] INFO core.config: Created profile 'Dup'
+[2026-07-18 10:35:45,379] INFO core.config: Saved 1 profiles to /tmp/tmpjbnf8jit/wowfactor_config/benchmark_profiles.json
+[2026-07-18 10:35:45,379] WARNING core.config: Profile 'Dup' already exists
+[2026-07-18 10:35:46,938] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:36:06,945] INFO core.benchmark: Benchmark finished. Total operations: 28060000 in 20.01s with 1 threads.
+[2026-07-18 10:36:06,945] INFO core.benchmark: Saving benchmark results: 1402495.34 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:36:08,094] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103606.json'
+[2026-07-18 10:36:08,104] INFO core.benchmark: Starting benchmark: 15s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:36:28,140] INFO core.benchmark: Benchmark finished. Total operations: 27660000 in 20.04s with 1 threads.
+[2026-07-18 10:36:28,140] INFO core.benchmark: Saving benchmark results: 1380518.75 ops/s, 20.0 s, 1 threads
+[2026-07-18 10:36:29,293] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103628.json'
+[2026-07-18 10:36:29,446] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:36:29,478] INFO core.power: GameMode activated successfully (PID: 51301).
+[2026-07-18 10:36:29,479] INFO core.power: Set all 1 CPUs to performance mode.
+[2026-07-18 10:36:29,479] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:36:29,494] INFO core.power: GameMode deactivated successfully (PID: 51301).
+[2026-07-18 10:36:29,496] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:36:29,526] INFO core.power: GameMode activated successfully (PID: 51301).
+[2026-07-18 10:36:29,527] WARNING core.power: Permission denied modifying CPU governors. Run as root for automatic CPU performance switching.
+[2026-07-18 10:36:29,527] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:36:29,542] INFO core.power: GameMode deactivated successfully (PID: 51301).
+[2026-07-18 10:36:29,546] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:36:29,576] INFO core.power: GameMode activated successfully (PID: 51301).
+[2026-07-18 10:36:29,576] INFO core.power: Set all 1 CPUs to performance mode.
+[2026-07-18 10:36:29,576] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:36:29,592] INFO core.power: GameMode deactivated successfully (PID: 51301).
+[2026-07-18 10:36:29,592] INFO core.power: Restored CPU governors for 1 CPUs.
+[2026-07-18 10:36:29,593] INFO core.power: Entering PowerPlanManager context...
+[2026-07-18 10:36:29,593] WARNING core.power: Power management not implemented for platform: Darwin
+[2026-07-18 10:36:29,593] INFO core.power: Exiting PowerPlanManager context...
+[2026-07-18 10:36:29,595] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:31,596] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:33,598] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:35,599] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:37,601] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:39,603] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:41,605] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:43,608] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:45,610] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:47,612] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:49,613] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:51,616] INFO root: GameMode daemon (gamemoded) detected.
+[2026-07-18 10:36:51,617] WARNING root: GameMode daemon (gamemoded) not found.
+[2026-07-18 10:36:53,618] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:36:59,629] INFO core.benchmark: Benchmark finished. Total operations: 1822000 in 6.01s with 1 threads.
+[2026-07-18 10:36:59,630] INFO core.benchmark: Saving benchmark results: 303114.98 ops/s, 6.0 s, 1 threads
+[2026-07-18 10:37:00,781] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103659.json'
+[2026-07-18 10:37:00,782] INFO core.benchmark: Starting benchmark: 1.0s (warmup 5.0s), 2 threads, infinite=False
+[2026-07-18 10:37:06,809] INFO core.benchmark: Benchmark finished. Total operations: 1644000 in 6.03s with 2 threads.
+[2026-07-18 10:37:06,809] INFO core.benchmark: Saving benchmark results: 272801.79 ops/s, 6.0 s, 2 threads
+[2026-07-18 10:37:07,960] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103706.json'
+[2026-07-18 10:37:07,961] INFO core.benchmark: Starting benchmark: 0.5s (warmup 5.0s), 4 threads, infinite=False
+[2026-07-18 10:37:14,023] INFO core.benchmark: Benchmark finished. Total operations: 1696000 in 6.06s with 4 threads.
+[2026-07-18 10:37:14,023] INFO core.benchmark: Saving benchmark results: 279759.41 ops/s, 6.1 s, 4 threads
+[2026-07-18 10:37:15,170] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103714.json'
+[2026-07-18 10:37:15,204] INFO core.benchmark: Starting benchmark: 0.1s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:37:20,316] INFO core.benchmark: Benchmark finished. Total operations: 182000 in 5.11s with 1 threads.
+[2026-07-18 10:37:20,316] INFO core.benchmark: Saving benchmark results: 35605.39 ops/s, 5.1 s, 1 threads
+[2026-07-18 10:37:21,468] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103720.json'
+[2026-07-18 10:37:21,469] INFO core.benchmark: Starting benchmark: 0.5s (warmup 5.0s), 1 threads, infinite=False
+[2026-07-18 10:37:26,980] INFO core.benchmark: Benchmark finished. Total operations: 912000 in 5.51s with 1 threads.
+[2026-07-18 10:37:26,980] INFO core.benchmark: Saving benchmark results: 165493.35 ops/s, 5.5 s, 1 threads
+[2026-07-18 10:37:28,130] INFO core.benchmark: Benchmark JSON results saved to 'benchmark_results/results_20260718_103726.json'
+2026-07-18 12:22:18,027 [INFO] Not running in a virtual environment. Starting setup...
+2026-07-18 12:22:18,027 [INFO] Virtual environment already exists at /mnt/Optane/Documents/WowFactor/.venv.
+2026-07-18 12:22:18,027 [INFO] Installing/Updating dependencies from requirements.txt ...
+2026-07-18 12:22:18,856 [INFO] Dependencies installed successfully.
+2026-07-18 12:22:18,857 [INFO] Setup complete. Launching application inside the virtual environment...
+[2026-07-18 12:22:18,891] INFO root: Running in a virtual environment. Launching WowFactor TUI ...
+[2026-07-18 12:22:18,894] INFO root: GameMode daemon (gamemoded) detected.
+[2026-07-18 12:22:18,960] INFO root: Textual 8.2.8 loaded.

@@ -1,43 +1,29 @@
-# STATUS REPORT — 2026-07-18
+# WowFactor — Chunk Status Report
 
-## Repository State
+Generated: 2026-07-18
 
-- **Active branch:** `branch/i7`
-- **HEAD:** `bea4dbc` (Merge branch 'branch/i5')
-- **Uncommitted changes:** `logs/wowfactor.log` (modified), `plans/EXECUTION_PLAN.md` and `plans/STATUS.md` (untracked)
+## Chunks DONE (merged to master)
 
-## Chunks Completed vs Pending
+| Chunk | Description | Source |
+|-------|-------------|--------|
+| CP1 | Unify Theme Tokens With TCSS | Wave 1, DEV_LOG.md |
+| CP2 | Universal BaseScreen Adoption + Navigation Mixin | Wave 1, DEV_LOG.md |
+| CP3 | Extract Shared Screens to Proper Modules | Wave 1, DEV_LOG.md |
+| I1 | HomeScreen Rework (CleanupScreen) | Wave 2, DEV_LOG.md |
+| I2 | Fix ViewBestScoresScreen Search + Export consolidation | Wave 2, DEV_LOG.md |
+| I3 | Replace CPU Text Input with Select Dropdown | Wave 2, DEV_LOG.md |
+| I4 | Fix Benchmark Progress Bars + DataTable results | Wave 2, DEV_LOG.md |
+| I5 | Add Footer Widget to All Screens | Wave 3, DEV_LOG.md |
+| I6 | Implement Profile Creation Screen | Wave 2, DEV_LOG.md |
+| I7 | Tests for core/system_deps.py | Wave 3, DEV_LOG.md |
+| I8 | Fix skipped test — test_cpu_sleep.py | Isolated, DEV_LOG.md |
+| I9 | Split comprehensive_test_suite.py into logical sub-files | Git log: merge(i9) on master |
+| I10 | Input validation layer for benchmark duration/thread | Git log: feat(gui-i10) on master |
+| I11 | C1 — Type hints for core/benchmark.py | Git log: feat(gui-i11) on master |
+| I12 | E-1 centralized theme | Git log: feat(gui-i12) on master |
 
-### Completed (Merged to master)
-| Chunk | Description | Tests Added |
-|-------|-------------|-------------|
-| CP1 | Unify Theme Tokens With TCSS | — |
-| CP2 | Universal BaseScreen Adoption | — |
-| CP3 | Extract Shared Screens | — |
-| I1 | HomeScreen Rework | 6 |
-| I2 | Fix ViewBestScoresScreen Search | 27 |
-| I3 | CPU Select Dropdown | 29 |
-| I4 | Benchmark Progress Bars + DataTable | 26 |
-| I5 | Footer Widget on All Screens | 53 |
-| I6 | Profile Creation Screen | 43 |
+## Chunks PENDING
 
-### Pending
-| Chunk | Branch | Status |
-|-------|--------|--------|
-| I7 | `branch/i7` | Active — work in progress |
+**None.** All tracked chunks from BUILD_BLUEPRINT.md and plans/REMAINING_CHUNKS.md are merged to master.
 
-## Branch Summary
-
-- **Merged to master:** cp1-theme, cp2-basescreen, cp3-shared, i1-home, i2-runner, i3-settings, i4, i5, i6
-- **Unmerged / archival:** branch/cp-1..4, branch/fix-*, branch/i-1..5, branch/i-8, branch/integration-test-suite, feature/exporter-sorting-metadata
-- **Current working branch:** `branch/i7` (not yet pushed)
-
-## Test Count
-
-- **Total collected:** 724 tests
-- **Last known pass rate (I6 merge):** 667 passed, 0 failed, 4 skipped, 4 warnings
-
-## Notes
-
-- Post-timeout: resume I7 implementation on `branch/i7`. No conflicts expected.
-- Master is stable at `bea4dbc` with I5 Footer merged.
+C1 (type hints for core/benchmark.py) was implemented as I11 and is on master. No pending chunks remain.

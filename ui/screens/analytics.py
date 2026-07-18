@@ -92,7 +92,7 @@ class TrendsChartScreen(BaseScreen):
         """Load benchmark data and prepare for chart rendering."""
         self.run_worker(lambda: self._load_data_worker(), thread=True, group="data_loading")
 
-    async def _load_data_worker(self):
+    def _load_data_worker(self):
         """Worker function to load all valid scores from disk."""
         try:
             all_scores = _get_all_valid_scores()
@@ -246,7 +246,7 @@ class AnalyticsScreen(BaseScreen):
     def load_data(self) -> None:
         self.run_worker(lambda: self._load_data_worker(), thread=True, group="data_loading")
 
-    async def _load_data_worker(self):
+    def _load_data_worker(self):
         try:
             all_scores = _get_all_valid_scores()
             self.post_message(DataLoadComplete(all_scores))

@@ -23,7 +23,7 @@ class ProfileSelectionScreen(BaseScreen):
         Binding("q", "quit", "Quit", show=True),
     ]
 
-    def __init__(self, profiles: List[str], create_new: bool = False) -> None:
+    def __init__(self, profiles: List[str] | None = None, create_new: bool = False) -> None:
         super().__init__()
         self.profiles = profiles
         self.create_new = create_new
