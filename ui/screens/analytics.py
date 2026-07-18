@@ -194,7 +194,7 @@ class TrendsChartScreen(BaseScreen):
             tab_id = f"cpu_plot_{safe_name}"
             pane = TabPane(cpu_model[:50], PlotextPlot(id=tab_id))
             tabbed_content.add_pane(pane)
-
+        
         # Refresh the tabbed content to show new tabs
         tabbed_content.refresh()
     
