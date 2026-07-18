@@ -892,13 +892,12 @@ class TestScreenAnalytics:
         screen = AnalyticsScreen()
         assert hasattr(screen, 'BINDINGS')
 
-    def test_load_data_worker_is_async(self):
+    def test_load_data_worker_is_sync(self):
         from ui.screens.analytics import AnalyticsScreen
         import asyncio
         screen = AnalyticsScreen()
-        coro = screen._load_data_worker()
-        assert asyncio.iscoroutine(coro)
-        coro.close()
+        result = screen._load_data_worker()
+        assert not asyncio.iscoroutine(result)
 
 
 class TestScreenTrendsChart:
@@ -929,13 +928,12 @@ class TestScreenTrendsChart:
         ts = convert_timestamp_to_unix("")
         assert ts == 0.0
 
-    def test_load_data_worker_is_async(self):
+    def test_load_data_worker_is_sync(self):
         from ui.screens.analytics import TrendsChartScreen
         import asyncio
         screen = TrendsChartScreen()
-        coro = screen._load_data_worker()
-        assert asyncio.iscoroutine(coro)
-        coro.close()
+        result = screen._load_data_worker()
+        assert not asyncio.iscoroutine(result)
 
 
 class TestScreenBaseScreen:
