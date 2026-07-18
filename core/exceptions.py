@@ -47,3 +47,7 @@ class ConfigValidationError(ConfigError):
 class SystemErrorCustom(WowFactorError):
     """Base exception for system-level errors."""
     pass
+
+class InputValidationError(WowFactorError):
+    """Raised when user input fails validation."""
+    pass

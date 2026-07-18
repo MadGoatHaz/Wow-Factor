@@ -307,3 +307,16 @@ Footer {
 Footer > .footer--bindings {
     color: $text-muted;
 }
+
+/* ============================================
+    INLINE VALIDATION ERRORS
+    ============================================ */
+
+.validation-error {
+    color: $color-error;
+    text-style: italic;
+    height: 1;
+    margin-top: 0;
+    margin-bottom: 1;
+    visibility: hidden;
+}

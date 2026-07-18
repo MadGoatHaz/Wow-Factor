@@ -11,10 +11,15 @@ from ui.shared import WowFactorHeader, RETRO_GRADIENT_COLORS, colorize_text_grad
 # Import core benchmark functions
 from core.benchmark import execute_single_benchmark_run, format_large_number
 
+# Import validation layer
+from core.validation import Validation
+
 # Import message classes
 from ui.messages import BenchmarkProgress, BenchmarkCompletion, BatchBenchmarkProgress, BatchBenchmarkCompletion, CooldownMessage
 
 from .base_screen import BaseScreen
+
+_validation = Validation()
 
 
 class RunSingleBenchmarkScreen(BaseScreen):
@@ -27,10 +32,12 @@ class RunSingleBenchmarkScreen(BaseScreen):
         with VerticalScroll(classes="run-benchmark-screen"):
             yield WowFactorHeader(id="app-header")
             yield Static(colorize_text_gradient("RUN NEW BENCHMARK", RETRO_GRADIENT_COLORS), classes="title")
-            yield Static("Enter test duration in seconds (0 for infinite):", classes="form-label")
+            yield Static("Enter test duration in seconds (minimum 1):", classes="form-label")
             yield Input(value="15", placeholder="Duration (seconds)", id="duration_input", type="integer", classes="form-input")
+            yield Static("", id="duration_error", classes="validation-error")
             yield Static(f"Number of Threads (Max: {multiprocessing.cpu_count()}):", classes="form-label")
             yield Input(value="1", placeholder="Threads", id="threads_input", type="integer", classes="form-input")
+            yield Static("", id="threads_error", classes="validation-error")
             with Horizontal(classes="action-buttons"):
                 yield Button("Start", id="start_benchmark", variant="primary", classes="action-btn")
                 yield Button("Stop", id="stop_benchmark", variant="error", disabled=True, classes="action-btn")
@@ -49,6 +56,14 @@ class RunSingleBenchmarkScreen(BaseScreen):
         self.query_one("#benchmark_progress", ProgressBar).display = False
         self.query_one("#result_table", DataTable).display = False
         self._benchmark_duration = 0  # Track duration for progress bar
+
+    def _show_inline_error(self, widget_id: str, message: str) -> None:
+        self.query_one(f"#{widget_id}", Static).update(f"[red]{message}[/red]")
+        self.query_one(f"#{widget_id}", Static).display = True
+
+    def _clear_inline_error(self, widget_id: str) -> None:
+        self.query_one(f"#{widget_id}", Static).update("")
+        self.query_one(f"#{widget_id}", Static).display = False
 
     def action_go_back(self) -> None:
         self.navigation.go_back()
@@ -71,31 +86,24 @@ class RunSingleBenchmarkScreen(BaseScreen):
         threads_input_widget = self.query_one("#threads_input", Input)
         duration_str = duration_input_widget.value
         threads_str = threads_input_widget.value
-        
-        # Validate that input is an integer (including zero for infinite)
-        try:
-            duration = int(duration_str)
-        except ValueError:
-            self.navigation.notify("Invalid duration. Please enter a positive integer or 0 for infinite.", type="error")
-            return
-            
-        # Validate range: must be non-negative (positive integer or zero)
-        if duration < 0:
-            self.navigation.notify("Invalid duration. Please enter a positive integer or 0 for infinite.", type="error")
+
+        # Clear any previous inline errors
+        self._clear_inline_error("duration_error")
+        self._clear_inline_error("threads_error")
+
+        # Validate duration
+        duration, dur_err = _validation.validate_duration(duration_str)
+        if dur_err:
+            self._show_inline_error("duration_error", dur_err)
             return
 
         # Validate threads
-        try:
-            num_threads = int(threads_str)
-        except ValueError:
-            self.navigation.notify("Invalid thread count. Please enter a positive integer.", type="error")
-            return
-        
-        if num_threads < 1:
-            self.navigation.notify("Thread count must be at least 1.", type="error")
+        num_threads, thr_err = _validation.validate_threads(threads_str)
+        if thr_err:
+            self._show_inline_error("threads_error", thr_err)
             return
 
-        is_infinite = (duration == 0)
+        is_infinite = False
 
         # Track duration for meaningful progress bar
         self._benchmark_duration = duration
@@ -271,10 +279,13 @@ class RunBatchBenchmarkScreen(BaseScreen):
             yield Static(colorize_text_gradient("RUN BATCH BENCHMARK", RETRO_GRADIENT_COLORS), classes="title")
             yield Static("Number of batch runs (2-100):", classes="form-label")
             yield Input(value="5", placeholder="Batch Runs (2-100)", id="batch_runs_input", type="integer", classes="form-input")
+            yield Static("", id="batch_runs_error", classes="validation-error")
             yield Static("Number of threads (default: 1):", classes="form-label")
             yield Input(value="1", placeholder="Number of threads", id="num_threads_input", type="integer", classes="form-input")
-            yield Static("Duration for each run in seconds (default: 15):", classes="form-label")
+            yield Static("", id="num_threads_error", classes="validation-error")
+            yield Static("Duration for each run in seconds (minimum 1):", classes="form-label")
             yield Input(value="15", placeholder="Duration (seconds)", id="duration_input", type="integer", classes="form-input")
+            yield Static("", id="batch_duration_error", classes="validation-error")
             with Horizontal(classes="action-buttons"):
                 yield Button("Start Batch", id="start_batch_benchmark", variant="primary", classes="action-btn")
                 yield Button("Stop Batch", id="stop_batch_benchmark", variant="error", disabled=True, classes="action-btn")
@@ -297,6 +308,14 @@ class RunBatchBenchmarkScreen(BaseScreen):
         self.query_one("#batch_progress", ProgressBar).display = False
         self._total_batch_runs = 0  # Track total for progress bar
 
+    def _show_inline_error(self, widget_id: str, message: str) -> None:
+        self.query_one(f"#{widget_id}", Static).update(f"[red]{message}[/red]")
+        self.query_one(f"#{widget_id}", Static).display = True
+
+    def _clear_inline_error(self, widget_id: str) -> None:
+        self.query_one(f"#{widget_id}", Static).update("")
+        self.query_one(f"#{widget_id}", Static).display = False
+
     def action_go_back(self) -> None:
         self.navigation.go_back()
 
@@ -318,40 +337,28 @@ class RunBatchBenchmarkScreen(BaseScreen):
         batch_runs_input = self.query_one("#batch_runs_input", Input)
         duration_input = self.query_one("#duration_input", Input)
 
-        # Validate batch runs input
-        try:
-            num_batch_runs = int(batch_runs_input.value)
-        except ValueError:
-            self.navigation.notify("Invalid number of batch runs. Please enter an integer between 2 and 100.", type="error")
-            return
-            
-        # Validate range for batch runs: must be between 2 and 100 inclusive
-        if not (2 <= num_batch_runs <= 100):
-            self.navigation.notify("Number of batch runs must be between 2 and 100.", type="error")
+        # Clear any previous inline errors
+        self._clear_inline_error("batch_runs_error")
+        self._clear_inline_error("num_threads_error")
+        self._clear_inline_error("batch_duration_error")
+
+        # Validate batch runs
+        num_batch_runs, runs_err = _validation.validate_batch_runs(batch_runs_input.value)
+        if runs_err:
+            self._show_inline_error("batch_runs_error", runs_err)
             return
 
-        # Validate duration per run input
-        try:
-            duration_per_run = int(duration_input.value)
-        except ValueError:
-            self.navigation.notify("Invalid duration. Please enter a positive integer for duration per run.", type="error")
-            return
-            
-        # Validate range for duration per run: must be positive (greater than 0)
-        if duration_per_run <= 0:
-            self.navigation.notify("Duration per run must be a positive integer.", type="error")
+        # Validate duration per run
+        duration_per_run, dur_err = _validation.validate_duration(duration_input.value)
+        if dur_err:
+            self._show_inline_error("batch_duration_error", dur_err)
             return
 
-        # Validate num_threads input
+        # Validate thread count
         num_threads_input = self.query_one("#num_threads_input", Input)
-        try:
-            num_threads = int(num_threads_input.value)
-        except ValueError:
-            self.navigation.notify("Invalid thread count. Please enter a positive integer.", type="error")
-            return
-            
-        if num_threads < 1:
-            self.navigation.notify("Thread count must be at least 1.", type="error")
+        num_threads, thr_err = _validation.validate_threads(num_threads_input.value)
+        if thr_err:
+            self._show_inline_error("num_threads_error", thr_err)
             return
 
         self.query_one("#start_batch_benchmark", Button).disabled = True
