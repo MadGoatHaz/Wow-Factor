@@ -11,6 +11,8 @@ from unittest.mock import MagicMock, patch, call
 import pytest
 
 from ui.notifications import NotificationType, ToastNotification
+from ui.theme import ColorPalette
+from ui.theme import ColorPalette
 
 
 # ---------------------------------------------------------------------------
@@ -115,26 +117,26 @@ class TestColorMapping:
     """Each NotificationType maps to its expected bg/fg colors."""
 
     def test_info_colors(self, info_toast):
-        assert info_toast.bg_color == "#17a2b8"
-        assert info_toast.fg_color == "#ffffff"
+        assert info_toast.bg_color == ColorPalette.INFO_BLUE
+        assert info_toast.fg_color == ColorPalette.TEXT_PRIMARY
 
     def test_success_colors(self, success_toast):
-        assert success_toast.bg_color == "#28a745"
-        assert success_toast.fg_color == "#ffffff"
+        assert success_toast.bg_color == ColorPalette.SUCCESS_GREEN
+        assert success_toast.fg_color == ColorPalette.TEXT_PRIMARY
 
     def test_warning_colors(self, warning_toast):
-        assert warning_toast.bg_color == "#ffc107"
-        assert warning_toast.fg_color == "#212529"
+        assert warning_toast.bg_color == ColorPalette.WARNING_YELLOW
+        assert warning_toast.fg_color == ColorPalette.TEXT_DARK
 
     def test_error_colors(self, error_toast):
-        assert error_toast.bg_color == "#dc3545"
-        assert error_toast.fg_color == "#ffffff"
+        assert error_toast.bg_color == ColorPalette.ERROR_RED
+        assert error_toast.fg_color == ColorPalette.TEXT_PRIMARY
 
     def test_colors_class_dict_matches(self):
-        assert ToastNotification.COLORS[NotificationType.INFO]["bg"] == "#17a2b8"
-        assert ToastNotification.COLORS[NotificationType.SUCCESS]["bg"] == "#28a745"
-        assert ToastNotification.COLORS[NotificationType.WARNING]["bg"] == "#ffc107"
-        assert ToastNotification.COLORS[NotificationType.ERROR]["bg"] == "#dc3545"
+        assert ToastNotification.COLORS[NotificationType.INFO]["bg"] == ColorPalette.INFO_BLUE
+        assert ToastNotification.COLORS[NotificationType.SUCCESS]["bg"] == ColorPalette.SUCCESS_GREEN
+        assert ToastNotification.COLORS[NotificationType.WARNING]["bg"] == ColorPalette.WARNING_YELLOW
+        assert ToastNotification.COLORS[NotificationType.ERROR]["bg"] == ColorPalette.ERROR_RED
 
 
 # ---------------------------------------------------------------------------
@@ -215,7 +217,7 @@ class TestStacking:
         t1 = ToastNotification(message="t1", type_=NotificationType.SUCCESS)
         t2 = ToastNotification(message="t2", type_=NotificationType.ERROR)
         assert t1.bg_color != t2.bg_color
-        assert t1.fg_color == t2.fg_color  # both are "#ffffff"
+        assert t1.fg_color == t2.fg_color  # both are ColorPalette.TEXT_PRIMARY
 
 
 # ---------------------------------------------------------------------------

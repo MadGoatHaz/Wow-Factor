@@ -14,6 +14,8 @@ from unittest.mock import MagicMock, patch, PropertyMock
 
 from ui.navigation import NavigationManager
 from ui.notifications import ToastNotification, NotificationType
+from ui.theme import ColorPalette
+from ui.theme import ColorPalette
 
 
 # ============================================================================
@@ -408,8 +410,8 @@ def test_toast_notification_properties():
         duration=5,
     )
 
-    assert notification.bg_color == "#dc3545"
-    assert notification.fg_color == "#ffffff"
+    assert notification.bg_color == ColorPalette.ERROR_RED
+    assert notification.fg_color == ColorPalette.TEXT_PRIMARY
     assert notification.message == "Color test"
     assert notification.is_expired is False
 

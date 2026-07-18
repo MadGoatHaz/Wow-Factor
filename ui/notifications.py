@@ -7,6 +7,8 @@ from enum import Enum
 import time
 from typing import Optional, Callable
 
+from ui.theme import ColorPalette
+
 
 class NotificationType(Enum):
     """Defines the visual style categories for notifications."""
@@ -28,12 +30,14 @@ class ToastNotification:
         on_dismissed (Callable): Optional callback when notification closes.
     """
 
-    # Color definitions for each notification type (hex format)
+    # Color definitions for each notification type — sourced from ColorPalette
+    _PALETTE = ColorPalette()
+
     COLORS = {
-        NotificationType.SUCCESS: {"bg": "#28a745", "fg": "#ffffff"},
-        NotificationType.ERROR: {"bg": "#dc3545", "fg": "#ffffff"},
-        NotificationType.WARNING: {"bg": "#ffc107", "fg": "#212529"},
-        NotificationType.INFO: {"bg": "#17a2b8", "fg": "#ffffff"},
+        NotificationType.SUCCESS: {"bg": _PALETTE.SUCCESS_GREEN, "fg": _PALETTE.TEXT_PRIMARY},
+        NotificationType.ERROR: {"bg": _PALETTE.ERROR_RED, "fg": _PALETTE.TEXT_PRIMARY},
+        NotificationType.WARNING: {"bg": _PALETTE.WARNING_YELLOW, "fg": _PALETTE.TEXT_DARK},
+        NotificationType.INFO: {"bg": _PALETTE.INFO_BLUE, "fg": _PALETTE.TEXT_PRIMARY},
     }
 
     def __init__(
