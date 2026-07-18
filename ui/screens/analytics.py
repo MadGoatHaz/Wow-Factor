@@ -167,19 +167,33 @@ class TrendsChartScreen(BaseScreen):
     def _update_cpu_tabs(self, cpu_scores_by_time: Dict[str, List[Dict]]) -> None:
         """Update the TabbedContent to show individual CPU trend charts."""
         tabbed_content = self.query_one(TabbedContent)
-        
-        # Remove all existing tabs except the first one (All CPUs Combined)
-        while len(tabbed_content._panes) > 1:
-            tabbed_content.remove_pane(1)
-        
+
+        # Save current active tab ID to restore after removal
+        saved_active = tabbed_content.active or ""
+
+        # Remove all tabs except the first one (All CPUs Combined) by pane ID
+        # In Textual 8.x, remove_pane requires a pane_id string, not an index
+        to_remove = []
+        for child in tabbed_content.walk_children(TabPane):
+            if child.id and child.id != "all_cpus_plot":
+                to_remove.append(child.id)
+        for pane_id in to_remove:
+            tabbed_content.remove_pane(pane_id)
+
+        # Restore active tab
+        tabbed_content.active = saved_active
+
         # Add a tab for each CPU
         for cpu_model, scores in cpu_scores_by_time.items():
             if not scores:
                 continue
-            
-            # Create new tab pane with plotext plot
-            tab_id = f"cpu_plot_{cpu_model.replace(' ', '_')}"
-            tabbed_content.add_pane(cpu_model[:50], PlotextPlot(id=tab_id))
+
+            # Sanitize CPU model name to create a valid CSS identifier
+            import re
+            safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', cpu_model)
+            tab_id = f"cpu_plot_{safe_name}"
+            pane = TabPane(cpu_model[:50], PlotextPlot(id=tab_id))
+            tabbed_content.add_pane(pane)
         
         # Refresh the tabbed content to show new tabs
         tabbed_content.refresh()
