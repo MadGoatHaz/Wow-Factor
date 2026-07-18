@@ -614,10 +614,12 @@ def aggregate_scores_by_cpu(
 
 def get_score_distribution(
     data: List[Dict],
-    num_bins: int = 20
+    num_bins: int = 20,
+    bin_size: Optional[float] = None
 ) -> Tuple[List[str], List[int]]:
     """
-    Calculates score distribution for histogram using fixed bin count.
+    Calculates score distribution for histogram.
+    Uses fixed bin count (num_bins) or explicit bin_size if provided.
     Filters out extreme outliers to prevent runaway bin creation.
     """
     if not data:
@@ -632,11 +634,18 @@ def get_score_distribution(
     if not scores:
         return [], []
 
-    # Sort scores and filter outliers using 1st/99th percentiles
+    # Sort scores
     scores_sorted = sorted(scores)
     n = len(scores_sorted)
+
+    # Handle small datasets without percentile filtering
     if n < 3:
-        return [], []
+        min_score = scores_sorted[0]
+        max_score = scores_sorted[-1]
+        if min_score == max_score:
+            return [f"{int(min_score)}"], [n]
+        step = max(abs(max_score - min_score), 1.0)
+        return [f"{int(min_score)}-{int(min_score + step)}"], [n]
 
     # Use percentile-based bounds to filter extreme outliers
     low_idx = max(0, int(n * 0.01))
@@ -647,10 +656,20 @@ def get_score_distribution(
     if min_score >= max_score:
         return [f"{int(min_score)}"], [n]
 
-    # Create fixed number of bins for consistent chart rendering
-    step = (max_score - min_score) / num_bins
+    # Determine step size: use explicit bin_size if provided, otherwise derive from num_bins
+    if bin_size is not None and bin_size > 0:
+        step = bin_size
+    else:
+        step = (max_score - min_score) / num_bins
+
     if step <= 0:
         step = 1.0
+
+    # Calculate number of bins needed
+    if bin_size is not None:
+        num_bins = max(1, int(math.ceil((max_score - min_score) / step)))
+    else:
+        num_bins = num_bins
 
     bins: Dict[str, int] = OrderedDict()
     for i in range(num_bins):
