@@ -8,7 +8,7 @@ import time
 import json
 import re
 import platform
-from typing import List, Dict, Any, Optional, Callable, Tuple
+from typing import List, Dict, Any, Optional, Callable, Tuple, Union
 from collections import OrderedDict
 import multiprocessing
 import math
@@ -39,7 +39,7 @@ def _is_cache_valid(cache_key: str) -> bool:
     return time.time() - timestamp < _CACHE_TTL
 
 
-def _get_from_cache(cache_key: str) -> Any:
+def _get_from_cache(cache_key: str) -> Optional[object]:
     """Get item from cache if valid"""
     if _is_cache_valid(cache_key):
         logger.debug("Cache hit: %s", cache_key)
@@ -52,7 +52,7 @@ def _get_from_cache(cache_key: str) -> Any:
         return None
 
 
-def _set_in_cache(cache_key: str, value: Any) -> None:
+def _set_in_cache(cache_key: str, value: object) -> None:
     """Set item in cache"""
     _cache.pop(cache_key, None)
     _cache[cache_key] = (time.time(), value)
@@ -100,7 +100,7 @@ def _cleanup_expired_cache() -> None:
         _cache.pop(k, None)
 
 
-def _monitor_cpu_freq(stop_event: threading.Event, freq_queue: queue.Queue) -> None:
+def _monitor_cpu_freq(stop_event: threading.Event, freq_queue: queue.Queue[float]) -> None:
     """
     Monitors CPU frequency in a separate thread.
     Puts the maximum seen frequency into the queue.
@@ -259,7 +259,7 @@ def save_benchmark_results(stats: Dict, duration: float, num_threads: int = 1) -
     return result_data
 
 
-def _cpu_workload(duration: float, warmup_time: float, queue: Any, is_infinite: bool = False) -> int:
+def _cpu_workload(duration: float, warmup_time: float, queue: queue.Queue[int], is_infinite: bool = False) -> int:
     """
     CPU-intensive workload using heavy floating point math.
     Runs for a warmup period (results discarded) then for the specified duration.
@@ -654,7 +654,7 @@ def get_score_distribution(
 
 
 def export_data_to_json(
-    screen_instance: Any,
+    screen_instance: object,
     screen_type: str,
     data: List[Dict]
 ) -> Dict:
