@@ -83,7 +83,7 @@ class MainMenuScreen(BaseScreen):
             if not profile_names:
                 self.navigation.navigate_to("profile_selection", create_new=True)
             else:
-                self.navigation.navigate_to("profile_selection", profile_names=profile_names)
+                self.navigation.navigate_to("profile_selection", profiles=profile_names)
             event.stop() # Stop event propagation
         elif event.button.id == "compare_cpu":
             self.navigation.navigate_to("compare_cpu")
